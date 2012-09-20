@@ -1,4 +1,92 @@
 import os,sys
+import itertools
+import math
+
+sys.setrecursionlimit(100000)
+
+BASES = ['A','C','G','U']
+BOLTZMANN = 0.0019872041
+T = 310.15
+
+#Just generate all possible combination with maxint
+STACKING_ENERGY = {k:sys.maxint for k in itertools.product(
+                    BASES, repeat=4)}
+#Adjust with turner04
+#The order of the nucleotides is from 5' -> 3'
+STACKING_ENERGY.update({('A', 'A', 'U', 'U'):-0.9,
+                        ('A', 'C', 'G', 'U'):-2.2,
+                        ('A', 'G', 'C', 'U'):-2.1,
+                        ('A', 'G', 'U', 'U'):-0.6,
+                        ('A', 'U', 'A', 'U'):-1.1,
+                        ('A', 'U', 'G', 'U'):-1.4,
+                        ('C', 'A', 'U', 'G'):-2.1,
+                        ('C', 'C', 'G', 'G'):-3.3,
+                        ('C', 'G', 'C', 'G'):-2.4,
+                        ('C', 'G', 'U', 'G'):-1.4,
+                        ('C', 'U', 'A', 'G'):-2.1,
+                        ('C', 'U', 'G', 'G'):-2.1,
+                        ('G', 'A', 'U', 'C'):-2.4,
+                        ('G', 'C', 'G', 'C'):-3.4,
+                        ('G', 'G', 'C', 'C'):-3.3,
+                        ('G', 'G', 'U', 'C'):-1.5,
+                        ('G', 'U', 'A', 'C'):-2.2,
+                        ('G', 'U', 'G', 'C'):-2.5,
+                        ('G', 'A', 'U', 'U'):-1.3,
+                        ('G', 'C', 'G', 'U'):-2.5,
+                        ('G', 'G', 'C', 'U'):-2.1,
+                        ('G', 'G', 'U', 'U'):-0.5,
+                        ('G', 'U', 'A', 'U'):-1.4,
+                        ('G', 'U', 'G', 'U'):1.3,
+                        ('U', 'A', 'U', 'A'):-1.3,
+                        ('U', 'C', 'G', 'A'):-2.4,
+                        ('U', 'G', 'C', 'A'):-2.1,
+                        ('U', 'G', 'U', 'A'):-1.0,
+                        ('U', 'U', 'A', 'A'):-0.9,
+                        ('U', 'U', 'G', 'A'):-1.3,
+                        ('U', 'A', 'U', 'G'):-1.0,
+                        ('U', 'C', 'G', 'G'):-1.5,
+                        ('U', 'G', 'C', 'G'):-1.4,
+                        ('U', 'G', 'U', 'G'):0.3,
+                        ('U', 'U', 'A', 'G'):-0.6,
+                        ('U', 'U', 'G', 'G'):-0.5})
+
+ISO = {((k1,k2),(k3,k4)):sys.maxint for (k1,k2,k3,k4) in 
+                             itertools.product(BASES, repeat=4)}
+ISO.update({(('A', 'U'), ('A', 'U')): 0.0,
+            (('A', 'U'), ('C', 'G')): 0.34,
+            (('A', 'U'), ('G', 'C')): 0.21,
+            (('A', 'U'), ('G', 'U')): 2.11,
+            (('A', 'U'), ('U', 'A')): 0.31,
+            (('C', 'G'), ('A', 'U')): 0.34,
+            (('C', 'G'), ('C', 'G')): 0.0,
+            (('C', 'G'), ('G', 'C')): 0.26,
+            (('C', 'G'), ('G', 'U')): 2.39,
+            (('C', 'G'), ('U', 'A')): 0.21,
+            (('C', 'G'), ('U', 'G')): 2.14,
+            (('G', 'C'), ('A', 'U')): 0.21,
+            (('G', 'C'), ('C', 'G')): 0.26,
+            (('G', 'C'), ('G', 'C')): 0.0,
+            (('G', 'C'), ('G', 'U')): 2.14,
+            (('G', 'C'), ('U', 'A')): 0.34,
+            (('G', 'C'), ('U', 'G')): 2.39,
+            (('G', 'U'), ('A', 'U')): 2.11,
+            (('G', 'U'), ('C', 'G')): 2.39,
+            (('G', 'U'), ('G', 'C')): 2.14,
+            (('G', 'U'), ('G', 'U')): 0.0,
+            (('G', 'U'), ('U', 'A')): 2.4,
+            (('G', 'U'), ('U', 'G')): 4.48,
+            (('U', 'A'), ('A', 'U')): 0.31,
+            (('U', 'A'), ('C', 'G')): 0.21,
+            (('U', 'A'), ('G', 'C')): 0.34,
+            (('U', 'A'), ('G', 'U')): 2.4,
+            (('U', 'A'), ('U', 'A')): 0.0,
+            (('U', 'A'), ('U', 'G')): 2.11,
+            (('U', 'G'), ('A', 'U')): 2.4,
+            (('U', 'G'), ('C', 'G')): 2.14,
+            (('U', 'G'), ('G', 'C')): 2.39,
+            (('U', 'G'), ('G', 'U')): 4.48,
+            (('U', 'G'), ('U', 'A')): 2.11,
+            (('U', 'G'), ('U', 'G')): 0.0})
 
 class memoize(object):
     """Generically memoizes a function results."""
@@ -27,11 +115,17 @@ def delta(seq,i,c):
   else:
     return 1
 
-BASES = ['A','C','G','U']
-
+def energy(seq,struct,(a,b),(a2,b2),(i,j),alpha=1.0):
+  #stacking energy, so if not stacked or i == 0 or j+1 out of len, return 1
+  return 1
+  if i == 0 or j == len(seq)-1 or struct[i-1] != j+1 :
+    return 1
+  E = STACKING_ENERGY[a,a2,b2,b]
+  iso = ISO[(seq[i-1],seq[j+1]),(a,b)]+ISO[(seq[i],seq[j]),(a2,b2)]
+  return  math.exp(-((alpha*E)+(1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
-def forward(seq,struct,(i,j),(a,b),m):
+def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
   result = 0.
   if m<0: return 0
   if i > j :
@@ -52,15 +146,26 @@ def forward(seq,struct,(i,j),(a,b),m):
     elif k>i:
       for a2 in BASES:
         for b2 in BASES:
-          d = delta(seq,i,a2)+delta(seq,j,b2)
-          for m2 in range(m-d+1):
+          d = delta(seq,i,a2)+delta(seq,k,b2)
+          #if 'k' in middle
+          if k < j:
+            for m2 in range(m-d+1):
+              result += forward(seq,struct,
+                                  (i+1,k-1),
+                                  (a2,b2),
+                                  m2)*forward(seq,struct,
+                                  (k+1,j),
+                                  (b2,b),
+                                  m-m2-d)   
+          else :
             result += forward(seq,struct,
                               (i+1,k-1),
                               (a2,b2),
-                              m2)*forward(seq,struct,
-                              (k+1,j),
-                              (b2,b),
-                              m-m2-d)   
+                              m-d)*energy(seq,struct,
+                                         (a,b),
+                                         (a2,b2),
+                                         (i,j),
+                                         alpha)
   return result
 
 def getNext(struct,j):
@@ -178,6 +283,16 @@ def backward(seq,struct,(i,j),(a,b),m):
   #print "B",i,j,m, result
   return result
 
+def validate_struct(seq,struct):
+  val_bp = (('A', 'U'), ('U', 'A'), ('G', 'C'), ('C', 'G'), ('G', 'U'), ('U', 'G'))
+  for i, first in enumerate(seq):
+    if struct[i] == -1 or struct[i] < i:
+      continue
+    if (first, seq[struct[i]]) not in val_bp:
+      return False
+  return True
+
+
 def parseStruct(dbn):
   p = []
   result = [-1 for c in dbn]
@@ -220,6 +335,7 @@ def testSingleSequence(seq,struct,m):
   backward.resetCache()
   n = len(seq)
   print "  Forward: \t",forward(seq,struct,(0,n-1),('A','G'),m)
+  """
   print "  Backward: "
   for x in range(n):
     tot = 0.
@@ -242,6 +358,7 @@ def testSingleSequence(seq,struct,m):
       print "    ",(i,j),"U->\t",tot
       #if tot!= forward(seq,struct,(0,n-1),('A','G'),m):
       #  sys.exit()
+      """
   
 
 
@@ -256,17 +373,26 @@ def test(n,m):
 
 
 if __name__ == "__main__":
-  try:
-    n = int(sys.argv[1])
-    m = int(sys.argv[2])
-    test(n,m)
-  except ValueError, e:
+  #try:
+   # n = int(sys.argv[1])
+   # m = int(sys.argv[2])
+    #test(n,m)
+  #except ValueError, e:
     #seq = sys.argv[1]
     #dbn = sys.argv[2]
     #m = int(sys.argv[3])
-    seq = "GCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACU"
-    dbn = "((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))"
-    m = 15
-    struct = parseStruct(dbn)
-    #print getBPs(seq,struct,m)
-    testSingleSequence(seq,struct,m)
+  seq = "GCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACU"
+#  dbn = "((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))"
+  dbn = "...((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((((.(((((((((((((((..(((.....)))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))).)))))))))))))))..))))"
+  struct = parseStruct(dbn)
+
+  #print getBPs(seq,struct,m)
+  if not validate_struct(seq, struct):
+    print 'The secondary structure contains non watson-crick base pairs'
+  m =  15
+  testSingleSequence(seq,struct,m)
+
+
+
+
+
