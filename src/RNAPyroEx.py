@@ -142,7 +142,7 @@ def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
                             (i+1,j),
                             (a2,b),
                             m-d)
-    elif k>i:
+    elif i < k <= j: #If k > j we return 0
       for a2 in BASES:
         for b2 in BASES:
           d = delta(seq,i,a2)+delta(seq,k,b2)
