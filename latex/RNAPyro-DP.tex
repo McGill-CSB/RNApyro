@@ -161,7 +161,7 @@ $$
     \displaystyle
     \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}
     \Y{i-1,j}{m- \Kron_{a',s[i]}}{a',\beta} &
-    \text{If }S[i]=-1\\
+    \text{Elif }S[i]=-1\\
     \displaystyle
     \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}
 		 e^{\frac{-E_{ a' b' \to \alpha \beta }}{RT}}
@@ -179,6 +179,7 @@ $$
 		 \Y{k-1,j}{m- \Kron_{a'b',s[k]s[i]} - m'}{a',\alpha}
      \Z{k+1,i-1}{m'}{a',b'} &
 		 \text{Elif }-1 < S{[i]}=k < i\\
+		 0 & \text{Else}
   \end{array}\right.
 $$
 \subsection*{}
