@@ -67,44 +67,128 @@
 \newcommand{\ub}{\bullet}
 
 
-Forward computation:
-\begin{equation}
-  \Z{i,j}{m}{\alpha,\beta} = \left\{
+%Forward computation:
+%\begin{equation}
+%  \Z{i,j}{m}{\alpha,\beta} = \left\{
+%  \begin{array}{ll}
+%    \displaystyle
+%    \sum_{\substack{a'\in \B,\\ \Kron_{a',a}\le m}}  
+%      \Z{i+1,j}{m-\Kron_{a',a}}{a',\beta} & \text{If }S_{[i]}=\varnothing\text{ and }s_{[i]}=a\\
+%    \displaystyle
+%    \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',ab}\le m}}  
+%    \sum_{m'=0}^{m-\Kron_{a'b',ab}}      \underset{\text{If }s[i-1]=j+1}{\left(e^{\frac{-E_{\alpha \beta \to a' b'}}{RT}}\times\right)} \Z{i+1,k-1}{m-m'-\Kron_{a'b',ab}}{a',b'}\underset{\text{If }s[i-1]\neq j+1}{\left(\times\Z{k+1,j}{m'}{b',\beta}\right)} & \text{If }S_{[i]}=k, s_{[i]}=a\text{ and }s_{[k]}=b.
+%  \end{array}
+%\right.
+%\end{equation}
+%
+%Backward computation:
+%\begin{equation}
+%  \Y{i,j}{m}{\alpha,\beta} = \left\{
+%  \begin{array}{ll}
+%    \displaystyle
+%    \sum_{\substack{a'\in \B,\\ \Kron_{a',a}\le m}}  
+%      \Y{i-1,j}{m-\Kron_{a',a}}{a',\beta} & \text{If }S_{[i]}=\varnothing\text{ and }s_{[i-1]}=a\\
+%    \displaystyle
+%    \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',ab}\le m}}  
+%    \sum_{m'=0}^{m-\Kron_{a'b',ab}}      
+%      e^{\frac{-E_{\alpha \beta \to a' b'}}{RT}}
+%      \times \Y{i-1,k+1}{m-m'-\Kron_{a'b',ab}}{a',b'}
+%      \times\Z{j,k-1}{m'}{\beta,b'}
+%    & \text{If }S_{[i]}=k, s_{[i]}=a\text{ and }s_{[k]}=b.
+%  \end{array}
+%\right.
+%\end{equation}
+
+\section{Implemented}
+Given:
+\begin{itemize}
+	\item an RNA sequence $s$ of length $n$
+	\item $s[i]:=$ nucleotide at position $i$ in $s$
+	\item $\displaystyle
+		S[i]:=\left\{
+		\begin{array}{rl}
+			-1 & \text{If position }i \text{ unpaired}\\
+	 		k  & \text{If position }i \text{ paired with position }k
+		\end{array}\right.
+		$\\
+		S[-1] = -1, special value allowing to compute $S[i-1]$ when $i\equiv 0$
+	\item $BASES:=\{A, U, G, C\}$
+	\item $ \Kron_{a,a'}:=\left\{
+		\begin{array}{ll}
+			1 &\text{If }a \equiv a'\\
+			0 &\text{Else}
+		\end{array}\right.$
+	\item $\Z{i,j}{m}{\alpha,\beta}:=$ Partition function of the subsequence of $s$ from nucleotides $i$ to $j$ with $m$ mutations when nucleotides at positions $i-1=\alpha$ and $j+1=\beta$
+	\item $\Y{i,j}{m}{\alpha,\beta}:=$ Partition function of $s$ excluding subsequence  from $i+1$ to $j-1$ with $m$ mutations when nucleotides at positions $i+1=\alpha$ and $j-1=\beta$ 	\end{itemize}
+\subsection{Forward}
+Initial conditions:
+$$
+	\forall i \in (0,\cdots,n-1):\, \Z{i+1,i}{m}{\alpha,\beta}=\left\{
+	\begin{array}{ll}
+		1 &\text{If } m = 0\\
+		0 &\text{Else }
+	\end{array}\right.
+$$
+Recursion:
+$$
+	\Z{i,j}{m}{\alpha,\beta}:=\left\{
   \begin{array}{ll}
-    \displaystyle
-    \sum_{\substack{a'\in \B,\\ \Kron_{a',a}\le m}}  
-      \Z{i+1,j}{m-\Kron_{a',a}}{a',\beta} & \text{If }S_{[i]}=\varnothing\text{ and }s_{[i]}=a\\
-    \displaystyle
-    \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',ab}\le m}}  
-    \sum_{m'=0}^{m-\Kron_{a'b',ab}}      \underset{\text{If }s[i-1]=j+1}{\left(e^{\frac{-E_{\alpha \beta \to a' b'}}{RT}}\times\right)} \Z{i+1,k-1}{m-m'-\Kron_{a'b',ab}}{a',b'}\underset{\text{If }s[i-1]\neq j+1}{\left(\times\Z{k+1,j}{m'}{b',\beta}\right)} & \text{If }S_{[i]}=k, s_{[i]}=a\text{ and }s_{[k]}=b.
-  \end{array}
-\right.
-\end{equation}
+  		\displaystyle
+      \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}  
+      \Z{i+1,j}{m-\Kron_{a',s[i]}}{a',\beta} & \text{If }S{[i]}=-1\\
+      \displaystyle
+      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}  
+			 e^{\frac{-E_{\alpha \beta \to a' b'}}{RT}}
+			 \Z{i+1,j-1}{m-\Kron_{a'b',s[i]s[j]}}{a',b'}&
+			 \text{Elif }S{[i]}=j \land S{[i-1]}=j+1\\
+			 \displaystyle
+      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s[i]s[k]}\le m}}
+      \sum_{m'=0}^{m-\Kron_{a'b',s[i]s[k]}}
+      \Z{i+1,k-1}{m-\Kron_{a'b',s[i]s[k]}-m'}{a',b'}
+      \Z{k+1,j}{m'}{b',\beta} & \text{Elif }S[i]=k \land i < k \leq j\\
+      0 &\text{Else}
+	\end{array}\right.
+$$
 
-Backward computation:
-\begin{equation}
-  \Y{i,j}{m}{\alpha,\beta} = \left\{
+\section{To Implement}
+\subsection{Backward}
+Initial conditions:
+	
+	
+Recursion:
+$$
+	\Y{i,j}{m}{\alpha,\beta} = \left\{
   \begin{array}{ll}
+  	 \displaystyle
+		 \Z{j+1,n-1}{-\Kron_{\beta,s[i]}}{\beta,s[n-1]} & \text{If }S[i]=-1 \land i = 0\\
     \displaystyle
-    \sum_{\substack{a'\in \B,\\ \Kron_{a',a}\le m}}  
-      \Y{i-1,j}{m-\Kron_{a',a}}{a',\beta} & \text{If }S_{[i]}=\varnothing\text{ and }s_{[i-1]}=a\\
+    \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}
+    \Y{i-1,j}{m- \Kron_{a',s[i]}}{a',\beta} &
+    \text{If }S[i]=-1\\
     \displaystyle
-    \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',ab}\le m}}  
-    \sum_{m'=0}^{m-\Kron_{a'b',ab}}      
-      e^{\frac{-E_{\alpha \beta \to a' b'}}{RT}}
-      \times \Y{i-1,k+1}{m-m'-\Kron_{a'b',ab}}{a',b'}
-      \times\Z{j,k-1}{m'}{\beta,b'}
-    & \text{If }S_{[i]}=k, s_{[i]}=a\text{ and }s_{[k]}=b.
-  \end{array}
-\right.
-\end{equation}
-
-\section{First section}
-
-Your text goes here.
-
-\subsection{A subsection}
-
-More text.
-
+    \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}
+		 e^{\frac{-E_{ a' b' \to \alpha \beta }}{RT}}
+    \Y{i-1,j+1}{m- \Kron_{a'b',s[i]s[j]}}{a',b'} &
+   	 \text{Elif }S{[i]}=j \land S{[i+1]}=j-1\\
+		 \displaystyle
+		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[k]}\le m}}
+		 \sum_{m'=0}^{m-\Kron_{a'b',s[i]s[k]}}
+		 \Y{i-1,k+1}{m- \Kron_{a'b',s[i]s[k+1]} - m'}{a',b'}
+     \Z{j+1,k-1}{m'}{\beta,b'} &
+		 \text{Elif }S{[i]}=k > i\\
+		 \displaystyle
+		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[k]s[i]}\le m}}
+		 \sum_{m'=0}^{m-\Kron_{a'b',s[k]s[i]}}
+		 \Y{k-1,j}{m- \Kron_{a'b',s[k]s[i]} - m'}{a',\alpha}
+     \Z{k+1,i-1}{m'}{a',b'} &
+		 \text{Elif }-1 < S{[i]}=k < i\\
+  \end{array}\right.
+$$
+\subsection*{}
+We must have:
+$$
+	\Z{0,n-1}{m}{X,X} \equiv     
+	\sum_{\substack{a'\in \B,\\ \Kron_{a,s[n-1]}\le m}}	
+	\Y{n-1,n-1}{m-\Kron_{a,s[n-1]}}{a,a}
+$$
 \end{document}
