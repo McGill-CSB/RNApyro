@@ -152,13 +152,24 @@ $$
 
 \section{To Implement}
 \subsection{Backward}	
+Initial conditions:
+$$
+	\Y{-1,n}{m}{X,X}:=\left\{
+	\begin{array}{ll}
+		1 & \text{If } m = 0\\
+		0 & \text{Else}
+	\end{array}\right.
+$$
 Recursion:
 $$
 	\Y{i,j}{m}{\alpha,\beta} = \left\{
   \begin{array}{ll}
   	 \displaystyle
-		 \Z{j+1,n-1}{-\Kron_{\beta,s[j]}}{\beta,s[n-1]} & \text{If }i = -1\\
-    \displaystyle
+	 	\sum_{\substack{a\in \B,\\ \Kron_{a,s[n-1]}\le m}}
+%		\sum_{m'=0}^{m-\Kron_{a,s[j]}}
+		 \Z{j+1,n-1}{m-\Kron_{a,s[j]}}{a,X} & \text{If }i = -1 \land j < n 
+		 \verb+ Leftover right+\\
+		\displaystyle
     \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}
     \Y{i-1,j}{m- \Kron_{a',s[i]}}{a',\beta} &
     \text{Elif }S[i]=-1\\
