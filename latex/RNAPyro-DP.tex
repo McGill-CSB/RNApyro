@@ -172,7 +172,7 @@ $$
 		\displaystyle
     \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}
     \Y{i-1,j}{m- \Kron_{a',s[i]}}{a',\beta} &
-    \text{Elif }S[i]=-1\\
+    \text{Elif }S[i]=-1 \lor i < S[i] < j \\
     \displaystyle
     \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}
 		 e^{\frac{-E_{ a' b' \to \alpha \beta }}{RT}}
@@ -181,9 +181,9 @@ $$
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[k]}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s[i]s[k]}}
-		 \Y{i-1,k+1}{m- \Kron_{a'b',s[i]s[k+1]} - m'}{a',b'}
+		 \Y{i-1,k+1}{m- \Kron_{a'b',s[i]s[k]} - m'}{a',b'}
      \Z{j+1,k-1}{m'}{\beta,b'} &
-		 \text{Elif }S{[i]}=k > i\\
+		 \text{Elif }S{[i]}=k \geq j\\
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[k]s[i]}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s[k]s[i]}}
@@ -197,7 +197,8 @@ $$
 We must have:
 $$
 	\Z{0,n-1}{m}{X,X} \equiv     
-	\sum_{\substack{a\in \B,\\ \Kron_{a,s[n-1]}\le m}}	
-	\Y{n-1,n-1}{m-\Kron_{a,s[n-1]}}{X,a}
+	\sum_{\substack{a\in \B,\\ \Kron_{a,s[k]}\le m}}	
+	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a};\qquad
+	\forall k \in \{0,\cdots,n-1\}
 $$
 \end{document}
