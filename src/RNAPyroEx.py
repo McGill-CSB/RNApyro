@@ -2,6 +2,8 @@ import os,sys
 import itertools
 import math
 
+sys.setrecursionlimit(10000)
+
 BASES = ['A','C','G','U']
 BOLTZMANN = 0.0019872041
 T = 310.15
@@ -11,6 +13,9 @@ STACKING_ENERGY = {k:sys.maxint for k in itertools.product(
                     BASES, repeat=4)}
 #Adjust with turner04
 #The order of the nucleotides is from 5' -> 3'
+STACKING_ENERGY.update({('C', 'C', 'G', 'G'):-1.0,
+                        ('C', 'G', 'C', 'G'):-1.0})
+
 STACKING_ENERGY.update({('A', 'A', 'U', 'U'):-0.9,
                         ('A', 'C', 'G', 'U'):-2.2,
                         ('A', 'G', 'C', 'U'):-2.1,
@@ -18,8 +23,6 @@ STACKING_ENERGY.update({('A', 'A', 'U', 'U'):-0.9,
                         ('A', 'U', 'A', 'U'):-1.1,
                         ('A', 'U', 'G', 'U'):-1.4,
                         ('C', 'A', 'U', 'G'):-2.1,
-                        ('C', 'C', 'G', 'G'):-3.3,
-                        ('C', 'G', 'C', 'G'):-2.4,
                         ('C', 'G', 'U', 'G'):-1.4,
                         ('C', 'U', 'A', 'G'):-2.1,
                         ('C', 'U', 'G', 'G'):-2.1,
@@ -55,6 +58,7 @@ ISO.update({(('A', 'U'), ('A', 'U')): 0.0,
             (('A', 'U'), ('G', 'C')): 0.21,
             (('A', 'U'), ('G', 'U')): 2.11,
             (('A', 'U'), ('U', 'A')): 0.31,
+            (('A', 'U'), ('U', 'G')): 2.4,
             (('C', 'G'), ('A', 'U')): 0.34,
             (('C', 'G'), ('C', 'G')): 0.0,
             (('C', 'G'), ('G', 'C')): 0.26,
@@ -113,14 +117,14 @@ def delta(seq,i,c):
   else:
     return 1
 
-def energy(seq,struct,(a,b),(a2,b2),(i,j),alpha=1.0):
-  #stacking energy, so if not stacked or i == 0 or j+1 out of len, return 1
-  return 1
-  if i == 0 or j == len(seq)-1 or struct[i-1] != j+1 :
-    return 1
+def energy((a,b),(a2,b2),alpha=1.0):
+  #stacking energy of base pair (a,b) around base pair (a2,b2)
   E = STACKING_ENERGY[a,a2,b2,b]
-  iso = ISO[(seq[i-1],seq[j+1]),(a,b)]+ISO[(seq[i],seq[j]),(a2,b2)]
-  return  math.exp(-((alpha*E)+(1-alpha)*iso)/(BOLTZMANN*T))
+  return  math.exp(-(alpha*E)/(BOLTZMANN*T))
+
+def isostericity(seq,(i,j),(a,b), alpha=1.0):
+  iso = ISO[(seq[i],seq[j]),(a,b)]
+  return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
 def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
@@ -146,8 +150,8 @@ def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
       for a2 in BASES:
         for b2 in BASES:
           d = delta(seq,i,a2)+delta(seq,k,b2)
-          #if 'k' in middle
-          if k < j:
+          #if not stacked outside (or border, then no stack possible)
+          if i==0 or j==len(seq)-1 or not (j==k and struct[i-1]==j+1):
             for m2 in range(m-d+1):
               result += forward(seq,struct,
                                   (i+1,k-1),
@@ -155,143 +159,87 @@ def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
                                   m2)*forward(seq,struct,
                                   (k+1,j),
                                   (b2,b),
-                                  m-m2-d)   
+                                  m-m2-d)*isostericity(seq,
+                                                       (i,k),
+                                                       (a2,b2),
+                                                       alpha)
+
           #if stack, we add energy
           else :
             result += forward(seq,struct,
                               (i+1,k-1),
                               (a2,b2),
-                              m-d)*energy(seq,struct,
-                                         (a,b),
-                                         (a2,b2),
-                                         (i,j),
-                                         alpha)
+                              m-d)*energy((a,b),
+                                          (a2,b2),
+                                          alpha)*isostericity(seq,
+                                                              (i,k),
+                                                              (a2,b2),
+                                                              alpha)
   return result
-
-def getNext(struct,j):
-  for s in range(j,len(struct)):
-    if struct[s]!=-1 and struct[s]<j:
-      return s
-  return len(struct)
-
-def getPrevious(struct,j):
-  for s in range(j,-1,-1):
-    if struct[s]!=-1 and struct[s]>j:
-      return s
-  return -1
-
-def getAlts(seq,i):
-  if i<0 or i>= len(seq):
-    return [BASES[0]]
-  else:
-    return BASES
-
-BP_CONTRIBS = {
-  }
-
-"""
-def backward(seq,struct,(i,j),(a,b),m):
-  result = 0.
-  if i<0:
-    if m==0:
-      result=1.
-    elif m>0:
-      result=0.
-  else:
-    k = struct[i]
-    if k==j:
-      ni = getPrevious(struct,i-1)
-      nj = getNext(struct,k+1)
-      for a2 in getAlts(seq,ni):
-        for b2 in getAlts(seq,nj):
-          d = delta(seq,ni,a2) + delta(seq,nj,b2)
-          for m2 in range(m-d+1):
-            for m3 in range(m-m2-d+1):
-              b = backward(seq,struct,
-                                  (ni,nj),
-                                  (a2,b2),
-                                  m-m2-m3-d)
-              t1 = forward(seq,struct,
-                                  (ni+1,i-1),
-                                  (a2,a),
-                                  m2)
-              t2 = forward(seq,struct,
-                                  (j+1,nj-1),
-                                  (b,b2),
-                                  m3)
-              BF = 1.0
-              if (i,j)==(ni+1,nj-1):
-                
-              result += b*t1*t2
-    else:
-      print "Error! i and j should be base-paired. (i,j,part(i))=",(i,j,k)
-      return -sys.maxint
-  #print "B",i,j,m, result
-  return result
-"""
 
 @memoize
-def backward(seq,struct,(i,j),(a,b),m):
+def backward(seq,struct,(i,j),(a,b),m,alpha=1.0):
   result = 0.
   if m<0: return 0
-  if i-1<0:
+  if i<0:
     result=forward(seq,struct,
-                        (j+1,len(seq)-1),
-                        (b,'X'),
+                        (j,len(seq)-1),
+                        ('X','X'),
                          m)
   else:
-    k = struct[i-1]
+    k = struct[i]
     if k==-1:
-      for a2 in getAlts(seq,i-1):
-        d = delta(seq,i-1,a2)
-        b = backward(seq,struct,
+      for a2 in BASES:
+        d = delta(seq,i,a2)
+        result += backward(seq,struct,
                         (i-1,j),
                         (a2,b),
                          m-d)
-        result += b
     #BP to the left
-    elif k<i-1:
-      for a2 in getAlts(seq,k):
-        for b2 in getAlts(seq,i-1):
-          d = delta(seq,i-1,b2) + delta(seq,k,a2)
+    elif k<i:
+      for a2 in BASES:
+        for b2 in BASES:
+          d = delta(seq,i,b2) + delta(seq,k,a2)
           for m2 in range(m-d+1):
-            b = backward(seq,struct,
-                                  (k,j),
+            result += backward(seq,struct,
+                                  (k-1,j),
                                   (a2,b),
-                                  m-m2-d)
-            f = forward(seq,struct,
-                                  (k+1,i-2),
-                                  (a2,b2),
-                                  m2)
-            result += b*f
+                                  m-m2-d)*forward(seq,struct,
+                                                  (k+1,i-1),
+                                                  (a2,b2),
+                                                  m2)*isostericity(seq,
+                                                                   (k,i),
+                                                                   (a2,b2),
+                                                                   alpha)
             #print "  L",i,j,m,"B:",m-m2-d,b,"F:(",(k+1,i-1),")",m2,f
     #BP to the right
-    else:
-      for a2 in getAlts(seq,i-1):
-        for b2 in getAlts(seq,k):
-          d = delta(seq,i-1,a2) + delta(seq,k,b2)
-          for m2 in range(m-d+1):
-              b = backward(seq,struct,
-                                  (i-1,k),
-                                  (a2,b2),
-                                  m-m2-d)
-              f = forward(seq,struct,
-                                  (j+1,k-1),
-                                  (b,b2),
-                                  m2)
-              result += b*f
-  #print "B",i,j,m, result
+    elif k>=j:
+      for a2 in BASES:
+        for b2 in BASES:
+          d = delta(seq,i,a2) + delta(seq,k,b2)
+          if not (j==k and struct[i+1]==j-1):
+            for m2 in range(m-d+1):
+              result += backward(seq,struct,
+                                 (i-1,k+1),
+                                 (a2,b2),
+                                 m-m2-d)*forward(seq,struct,
+                                                 (j,k-1),
+                                                 (b,b2),
+                                                 m2)*isostericity(seq,
+                                                                  (i,k),
+                                                                  (a2,b2),
+                                                                  alpha)
+          else:
+            result +=  backward(seq,struct,
+                                 (i-1,k+1),
+                                 (a2,b2),
+                                 m-d)*energy((a2,b2),
+                                             (a,b),
+                                             alpha)*isostericity(seq,
+                                                                 (i,k),
+                                                                 (a2,b2),
+                                                                 alpha)
   return result
-
-def validate_struct(seq,struct):
-  val_bp = (('A', 'U'), ('U', 'A'), ('G', 'C'), ('C', 'G'), ('G', 'U'), ('U', 'G'))
-  for i, first in enumerate(seq):
-    if struct[i] == -1 or struct[i] < i:
-      continue
-    if (first, seq[struct[i]]) not in val_bp:
-      return False
-  return True
-
 
 def parseStruct(dbn):
   p = []
@@ -306,89 +254,32 @@ def parseStruct(dbn):
       result[i] = j
   return result
 
-def expandStruct(struct):
-  result = ["." for c in struct]
-  for i in range(len(struct)):
-    if struct[i]>i:
-      result[i]="("
-      result[struct[i]]=")"
-  return "".join(result)
-
-def allSecStr(n):
-  if n==0:
-    return [""]
-  else:
-    result = []
-    s1 = allSecStr(n-1)
-    for a in s1:
-      result.append("."+a)
-    for i in range(0,n-2+1):
-      s1 = allSecStr(n-2-i)
-      s2 = allSecStr(i)
-      for a in s1:
-        for b in s2:
-          result.append("("+a+")"+b)
-    return result
 
 def testSingleSequence(seq,struct,m):
   forward.resetCache()
   backward.resetCache()
   n = len(seq)
   print "  Forward: \t",forward(seq,struct,(0,n-1),('A','G'),m)
-  """
-  print "  Backward: "
-  for x in range(n):
-    tot = 0.
-    if struct[x]>x:
-      (i,j) = (x,struct[x])
-      for a2 in getAlts(seq,i):
-        for b2 in getAlts(seq,j):
-          d = delta(seq,i,a2) + delta(seq,j,b2)
-          for m2 in range(0,m-d+1):
-                tot += backward(seq,struct,(i,j),(a2,b2),m-m2-d)*forward(
-                  seq,struct,(i+1,j-1),(a2,b2),m2)
-      print "    ",(i,j),"P->\t",tot
-      #if tot!= forward(seq,struct,(0,n-1),('A','G'),m):
-      #  sys.exit()
-    elif struct[x]==-1:
-      (i,j) = (x,x)
-      for a2 in getAlts(seq,i):
-        d = delta(seq,i,a2)
-        tot += backward(seq,struct,(i,j),(a2,a2),m-d)
-      print "    ",(i,j),"U->\t",tot
-      #if tot!= forward(seq,struct,(0,n-1),('A','G'),m):
-      #  sys.exit()
-      """
-  
-
-
-def test(n,m):
-  seq = "".join(["G" for i in range(n)])
-  secStrs = allSecStr(n)
-  for dbn in secStrs:
-    struct = parseStruct(dbn)
-    print dbn
-    testSingleSequence(seq,struct,m)
-      
+  for i in range(len(seq)):
+    res = 0
+    for j in BASES:
+      d = delta(seq,i,j)
+      res += backward(seq,struct,(i-1,i+1),(j,j),m-d)
+    print "  Backward of nuc %s:\t" % i, res
 
 
 if __name__ == "__main__":
-  #try:
-   # n = int(sys.argv[1])
-   # m = int(sys.argv[2])
-    #test(n,m)
-  #except ValueError, e:
-    #seq = sys.argv[1]
-    #dbn = sys.argv[2]
-    #m = int(sys.argv[3])
-  seq = "GCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACUGCUAGUCUGCGAUCGCAUCGACU"
-  dbn = "((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))((((...)))((...)))((.))"
+  
+  seq = "UAUAUAUGUAAUACAACAAACAAUAAAAGGUGAUGCGAAUGACAAAAAUUUGGUGUACAAGCUGAUUUUUUCUCAGCUUUGUCAUAUGCCGGCAAACGUCUGGUGAAGGAUUUUAGUGUCAAAGGACAGAUGGUUAGCUUACAGGAGGAAGGCGAGGAGUAUACGCCGCGUCAGGGACUAUAUGCUAACUUAAGUUCUAGGGAGACGGAAUUUCGUUACGUCGCUCAUUUAUCAAUAUUAUCAUCCUCACUACAUUGGUAAAUAAGCGAAUAAAGUAUCGUAUCAUUUAUGGCCACUAUUUAAACAAGUUACGGGCGCUCAUUUAUUCGCAAGUUUGAAUAUCUUGAGAAGUAAGUAGUAAGAUAAAUAAUUCGCCUACUUGUUUGAAAAUGCCUCACCGUUUUCCGAAUGUUGUAUGUUUAUUCAGAAACAUCCAGACAUGGUCCGGCCCAUCAGAUGAGUGGCAAGACAAGCUCAUCCGAAAAGAAAAACCUCGUGUGACGAAAUCG"
+  dbn = ".............................((.((((((..........(((((((....((((((.......))))))(((((...(((((.(...(((((((((..((((....(((((..(((((....(((((((.((.((......((((.((.(....).)).)))).....)).)).)))))))...))))).(((((((((.....((.(((.(((((.((((((((((.................)))))))))).))))).....))).))..........(((.....(((((((((((...(((((....((((..(....)..))))(((((((..(......)..))))))).......))))))))))))))))...)))...)))))))))......((.((((((......)))))).))))))).))))....))))))))).)))))).)))))...)).)))))..........)))))).))......."
+
+
   struct = parseStruct(dbn)
 
-  #print getBPs(seq,struct,m)
-  m =  15
-  testSingleSequence(seq,struct,m)
+  m = 2
+  print len(seq)
 
+  testSingleSequence(seq,struct,m)
 
 
 
