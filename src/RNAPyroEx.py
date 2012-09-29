@@ -105,9 +105,8 @@ ISO.update({(('A', 'U'), ('A', 'U')): 0.0,
             (('U', 'G'), ('U', 'G')): 0.0})
 
 
-class memoize(object):
+class memoize(dict):
     """Generically memoizes a function results."""
-    cache = {}
     fun = None
     
     def __init__(self, f):
@@ -115,14 +114,14 @@ class memoize(object):
     
     def __call__(self,seq,struct,*args):
         nargs = (args)
-        if nargs in self.cache:
-            return self.cache[nargs]
+        if nargs in self:
+            return self[nargs]
         else:
             val = mpf(self.fun(seq,struct,*args))
-            self.cache[nargs] = val
+            self[nargs] = val
             return val
     def resetCache(self):
-        self.cache = {}
+        self.clear()
 
 def delta(seq,i,c):
   if i<0 or i>=len(seq):
