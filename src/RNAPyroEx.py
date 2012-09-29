@@ -13,9 +13,6 @@ STACKING_ENERGY = {k:sys.maxint for k in itertools.product(
                     BASES, repeat=4)}
 #Adjust with turner04
 #The order of the nucleotides is from 5' -> 3'
-STACKING_ENERGY.update({('C', 'C', 'G', 'G'):-1.0,
-                        ('C', 'G', 'C', 'G'):-1.0})
-
 STACKING_ENERGY.update({('A', 'A', 'U', 'U'):-0.9,
                         ('A', 'C', 'G', 'U'):-2.2,
                         ('A', 'G', 'C', 'U'):-2.1,
@@ -49,7 +46,9 @@ STACKING_ENERGY.update({('A', 'A', 'U', 'U'):-0.9,
                         ('U', 'G', 'C', 'G'):-1.4,
                         ('U', 'G', 'U', 'G'):0.3,
                         ('U', 'U', 'A', 'G'):-0.6,
-                        ('U', 'U', 'G', 'G'):-0.5})
+                        ('U', 'U', 'G', 'G'):-0.5,
+                        ('C', 'C', 'G', 'G'):-3.3,
+                        ('C', 'G', 'C', 'G'):-2.4})
 
 ISO = {((k1,k2),(k3,k4)):sys.maxint for (k1,k2,k3,k4) in 
                              itertools.product(BASES, repeat=4)}
@@ -276,8 +275,7 @@ if __name__ == "__main__":
 
   struct = parseStruct(dbn)
 
-  m = 2
-  print len(seq)
+  m = 10
 
   testSingleSequence(seq,struct,m)
 
