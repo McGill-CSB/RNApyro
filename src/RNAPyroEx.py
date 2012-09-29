@@ -2,6 +2,21 @@ import os,sys
 import itertools
 import math
 
+def MPMATH_MISSING():
+  print """The module `mpmath` was not found. This might impeed the
+  processing of long RNAs.
+  More information can be found on http://code.google.com/p/mpmath/
+  We also recommand installation of `gmpy` (http://code.google.com/p/gmpy/),
+  automatically leveraged by `mpmath` to increase the speed of computations"""
+
+try: #For infinite precision
+  from mpmath import mpf
+except ImportError:
+  MPMATH_MISSING()
+  def mpf(n):
+    return n
+
+  
 sys.setrecursionlimit(10000)
 
 BASES = ['A','C','G','U']
@@ -89,6 +104,7 @@ ISO.update({(('A', 'U'), ('A', 'U')): 0.0,
             (('U', 'G'), ('U', 'A')): 2.11,
             (('U', 'G'), ('U', 'G')): 0.0})
 
+
 class memoize(object):
     """Generically memoizes a function results."""
     cache = {}
@@ -102,7 +118,7 @@ class memoize(object):
         if nargs in self.cache:
             return self.cache[nargs]
         else:
-            val = self.fun(seq,struct,*args)
+            val = mpf(self.fun(seq,struct,*args))
             self.cache[nargs] = val
             return val
     def resetCache(self):
@@ -259,21 +275,25 @@ def testSingleSequence(seq,struct,m):
   backward.resetCache()
   n = len(seq)
   print "  Forward: \t",forward(seq,struct,(0,n-1),('A','G'),m)
-  for i in range(len(seq)):
-    res = 0
-    for j in BASES:
-      d = delta(seq,i,j)
-      res += backward(seq,struct,(i-1,i+1),(j,j),m-d)
-    print "  Backward of nuc %s:\t" % i, res
+  i = n-1
+  res = 0
+  for j in BASES:
+    d = delta(seq,i,j)
+    res += backward(seq,struct,(i-1,i+1),(j,j),m-d)
+  print "  Backward of nuc %s:\t" % i, res
 
 
-if __name__ == "__main__":
+def test():
   
   seq = "UAUAUAUGUAAUACAACAAACAAUAAAAGGUGAUGCGAAUGACAAAAAUUUGGUGUACAAGCUGAUUUUUUCUCAGCUUUGUCAUAUGCCGGCAAACGUCUGGUGAAGGAUUUUAGUGUCAAAGGACAGAUGGUUAGCUUACAGGAGGAAGGCGAGGAGUAUACGCCGCGUCAGGGACUAUAUGCUAACUUAAGUUCUAGGGAGACGGAAUUUCGUUACGUCGCUCAUUUAUCAAUAUUAUCAUCCUCACUACAUUGGUAAAUAAGCGAAUAAAGUAUCGUAUCAUUUAUGGCCACUAUUUAAACAAGUUACGGGCGCUCAUUUAUUCGCAAGUUUGAAUAUCUUGAGAAGUAAGUAGUAAGAUAAAUAAUUCGCCUACUUGUUUGAAAAUGCCUCACCGUUUUCCGAAUGUUGUAUGUUUAUUCAGAAACAUCCAGACAUGGUCCGGCCCAUCAGAUGAGUGGCAAGACAAGCUCAUCCGAAAAGAAAAACCUCGUGUGACGAAAUCG"
   dbn = ".............................((.((((((..........(((((((....((((((.......))))))(((((...(((((.(...(((((((((..((((....(((((..(((((....(((((((.((.((......((((.((.(....).)).)))).....)).)).)))))))...))))).(((((((((.....((.(((.(((((.((((((((((.................)))))))))).))))).....))).))..........(((.....(((((((((((...(((((....((((..(....)..))))(((((((..(......)..))))))).......))))))))))))))))...)))...)))))))))......((.((((((......)))))).))))))).))))....))))))))).)))))).)))))...)).)))))..........)))))).))......."
 
+  
 
+  seq = seq*1
+  dbn = dbn*1
   struct = parseStruct(dbn)
+
 
   m = 10
 
@@ -281,4 +301,6 @@ if __name__ == "__main__":
 
 
 
+if __name__ == "__main__":
+  test()
 
