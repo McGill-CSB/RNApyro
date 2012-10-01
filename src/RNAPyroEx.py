@@ -590,7 +590,7 @@ def parse_fasta(file_name):
 def all_probabilities(seq, stuct, m, alpha):
   n = len(seq)
   results = []
-  for i in range(m):
+  for i in range(n):
     results.append([])
     for a in BASES:
       results[-1].append(
