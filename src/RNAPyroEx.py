@@ -521,6 +521,10 @@ def probability_given_i_m(seq,struct,i,a,m,alpha=1.0):
   n = len(seq)
   tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
   result = product_given_i_m(seq,struct,i,a,m,alpha)
+  if tot == 0:
+    print """The total partition function is 0, you might want to increase
+    the number of mutations allowed"""
+    sys.exit(1)
   return result/tot
 
 def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
@@ -533,6 +537,11 @@ def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
   for m2 in range(m+1):
     tot += forward(seq,struct,(0,n-1),('X', 'X'),m2,alpha)
     result += product_given_i_m(seq,struct,i,a,m2,alpha)
+  if tot == 0:
+    print """The total partition function is 0, you might want to increase
+    the number of mutations allowed"""
+    sys.exit(1)
+
   return result/tot
 
 
@@ -568,8 +577,41 @@ def test():
 
   testSingleSequence(seq,struct,m)
 
+def parse_fasta(file_name):
+  with open(file_name) as f:
+    for line in f:
+      line = line.strip()
+      if all(x in 'AUGC' for x in line):
+        seq = line
+      if all(x in '(.)' for x in line):
+        struct = line 
+  return seq, parseStruct(struct)
 
+def all_probabilities(seq, stuct, m, alpha):
+  n = len(seq)
+  results = []
+  for i in range(m):
+    results.append([])
+    for a in BASES:
+      results[-1].append(
+        probability_given_i_most_m(seq,struct,i,a,m,alpha))
+  return results
+
+def display_all_probabilities(results):
+  for i, x in enumerate(results):
+    print i, '\t'.join(str(y) for y in x)
 
 if __name__ == "__main__":
-  test()
+  opts = sys.argv
+  if len(opts) < 4:
+    print """You need at least three arguments, the file path,
+    the nb of mutants allowed and the value of alpha, between 0 and 1"""
+    sys.exit(1)
+  file_name = opts[1]
+  m = int(opts[2])
+  alpha = float(opts[3])
+  seq, struct = parse_fasta(file_name)
+  results = all_probabilities(seq,struct,m,alpha)
+  display_all_probabilities(results)
+  #test()
 
