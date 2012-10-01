@@ -355,6 +355,7 @@ def energy((a,b),(a2,b2),alpha=1.0):
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
 def isostericity(seq,(i,j),(a,b), alpha=1.0):
+  #isostericity of going from original base pair to (a,b)
   iso = ISO[(seq[i],seq[j]),(a,b)]
   return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
@@ -487,6 +488,9 @@ def parseStruct(dbn):
   return result
 
 def product_given_i_m(seq,struct,i,a,m,alpha=1.0):
+  """Will compute the sum of boltzmann weights of structures 
+  with 'm' mutations from 'seq' where the 'i-th' nucleotide is 'a'.
+  """
   n = len(seq)
   tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
   k = struct[i]
@@ -511,12 +515,18 @@ def product_given_i_m(seq,struct,i,a,m,alpha=1.0):
   return result
 
 def probability_given_i_m(seq,struct,i,a,m,alpha=1.0):
+  """Will compute the probability that the 'i-th' nucleotide
+  is 'a' over all sequences at 'm' mutations from seq
+  """
   n = len(seq)
   tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
   result = product_given_i_m(seq,struct,i,a,m,alpha)
   return result/tot
 
 def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
+  """Will compute the probability that the 'i-th' nucleotide
+  is 'a' over all sequences between 0 and 'm' mutations from seq
+  """
   n = len(seq)
   tot = 0
   result = 0
