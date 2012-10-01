@@ -112,7 +112,7 @@ Given:
 		\end{array}\right.
 		$\\
 		S[-1] = -1, special value allowing to compute $S[i-1]$ when $i\equiv 0$
-	\item $BASES:=\{A, U, G, C\}$
+	\item $B:=\{A, U, G, C\}$
 	\item $ \Kron_{a,a'}:=\left\{
 		\begin{array}{ll}
 			1 &\text{If }a \equiv a'\\
@@ -162,7 +162,6 @@ $$
 	\end{array}\right.
 $$
 
-\section{To Implement}
 \subsection{Backward}	
 Initial conditions:
 $$
@@ -208,4 +207,31 @@ $$
 	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a};\qquad
 	\forall k \in \{0,\cdots,n-1\}
 $$
+
+\subsection{Probability of a position being a given nucleotide}
+Given $x\in B$,
+$$
+	\mathbb{P}(s[i] = x\mid s, S,m):=\left\{
+	\begin{array}{ll}
+		\displaystyle
+		\frac{
+			\Y{i-1,i+1}{m-\Kron_{x,s[k]}}{x,x}
+			}{
+			\Z{0,n-1}{m}{X,X}
+			}
+		&\text{If }S[i] = -1\\
+		\displaystyle
+ 		\frac{
+			\displaystyle
+			\sum_{\substack{b\in Bases\\\Kron_{bx,s[k]s[i]\leq m}}}
+			\sum_{m'=0}^{m-\Kron_{bx,s[k]s[i]}}
+			}{
+			\Z{0,n-1}{m}{X,X}
+			}
+		&\text{Elif }S[i]=k<i
+	\end{array}\right.
+$$
+
+
+
 \end{document}
