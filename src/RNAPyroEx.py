@@ -601,15 +601,35 @@ def display_all_probabilities(results):
   for i, x in enumerate(results):
     print i, '\t'.join(str(y) for y in x)
 
+def help():
+    print """You need at least three arguments, the file path,
+    the nb of mutants allowed and the value of alpha, between 0 and 1"""
+
 if __name__ == "__main__":
   opts = sys.argv
   if len(opts) < 4:
-    print """You need at least three arguments, the file path,
-    the nb of mutants allowed and the value of alpha, between 0 and 1"""
+    help()
     sys.exit(1)
   file_name = opts[1]
-  m = int(opts[2])
-  alpha = float(opts[3])
+  if not os.path.isfile(file_name):
+    help()
+    sys.exit(1)
+  try:
+    m = int(opts[2])
+  except ValueError:
+    help()
+    sys.exit(1)
+  try:
+    alpha = float(opts[3])
+  except ValueError:
+    help()
+    sys.exit(1)
+  if not 0 <= alpha <= 1:
+    help()
+    sys.exit(1)
+
+
+
   seq, struct = parse_fasta(file_name)
   results = all_probabilities(seq,struct,m,alpha)
   display_all_probabilities(results)
