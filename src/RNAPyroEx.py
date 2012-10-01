@@ -486,11 +486,53 @@ def parseStruct(dbn):
       result[i] = j
   return result
 
+def product_given_i_m(seq,struct,i,a,m,alpha=1.0):
+  n = len(seq)
+  tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
+  k = struct[i]
+  result = mpf(0)
+  if k == -1:
+    d = delta(seq,i,a)
+    result += backward(seq,struct,(i-1,i+1),(a,a),m-d,alpha)
+  elif k < i:
+    for c in BASES:
+      d = delta(seq,i,a) + delta(seq,k,c)
+      for m2 in range(m-d+1):
+        f = forward(seq,struct,(k+1,i-1),(c,a),m-d-m2,alpha) 
+        b = backward(seq,struct,(k-1,i+1),(c,a),m2,alpha)
+        result += f*b
+  else:
+    for c in BASES:
+      d = delta(seq,i,a) + delta(seq,k,c)
+      for m2 in range(m-d+1):
+        f = forward(seq,struct,(i+1,k-1),(a,c),m-d-m2,alpha) 
+        b = backward(seq,struct,(i-1,k+1),(a,c),m2,alpha)
+        result += f*b
+  return result
+
+def probability_given_i_m(seq,struct,i,a,m,alpha=1.0):
+  n = len(seq)
+  tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
+  result = product_given_i_m(seq,struct,i,a,m,alpha)
+  return result/tot
+
+def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
+  n = len(seq)
+  tot = 0
+  result = 0
+  for m2 in range(m+1):
+    tot += forward(seq,struct,(0,n-1),('X', 'X'),m2,alpha)
+    result += product_given_i_m(seq,struct,i,a,m2,alpha)
+  return result/tot
+
 
 def testSingleSequence(seq,struct,m):
   forward.resetCache()
   backward.resetCache()
   n = len(seq)
+
+  print "Given i and m the probability of sequence is:"
+  print "\t", probability_given_i_most_m(seq,struct,29,'C',2,alpha=1.0)
   print "  Forward: \t",forward(seq,struct,(0,n-1),('A','G'),m)
   i = n-1
   res = 0
