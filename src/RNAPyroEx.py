@@ -588,7 +588,10 @@ def parse_fasta(file_name):
         seq.append(line)
       if all(x in '(.)' for x in line):
         struct = line 
-  return seq[0],seq[1], parseStruct(struct)
+  if len(seq) == 1:
+    return seq[0], seq[0], parseStruct(struct)
+  else:
+    return seq[0],seq[1], parseStruct(struct)
 
 def all_probabilities(seq,ref_seq, stuct, m, alpha):
   n = len(seq)
