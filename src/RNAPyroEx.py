@@ -607,9 +607,13 @@ def display_all_probabilities(results):
 
 def help():
     print """You need at least three arguments, the file path,
-    the nb of mutants allowed and the value of alpha, between 0 and 1"""
+    the nb of mutants allowed and the value of alpha, between 0 and 1
+    An optional 4th argument can be given if you want to change the max penality for an invalid 
+    base pair
+    """
 
 if __name__ == "__main__":
+  global STACKING_ENERGY
   opts = sys.argv
   if len(opts) < 4:
     help()
@@ -631,6 +635,14 @@ if __name__ == "__main__":
   if not 0 <= alpha <= 1:
     help()
     sys.exit(1)
+  if len(opts) == 4:
+    try:
+      z = float(opts[4])
+      for x in STACKING_ENERGY:
+        if STACKING_ENERGY[x] == sys.maxint:
+          STACKING_ENERGY[x] = z
+    except ValueError:
+      pass
 
 
 
