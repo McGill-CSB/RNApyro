@@ -216,19 +216,32 @@ $$
 		\displaystyle
 		\frac{
 			\Y{i-1,i+1}{m-\Kron_{x,s[k]}}{x,x}
-			}{
+		}{
 			\Z{0,n-1}{m}{X,X}
-			}
+		}
 		&\text{If }S[i] = -1\\
 		\displaystyle
  		\frac{
 			\displaystyle
 			\sum_{\substack{b\in Bases\\\Kron_{bx,s[k]s[i]\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{bx,s[k]s[i]}}
-			}{
+			\Y{k-1,i+1}{m-\Kron_{bx,s[k]s[i]-m'}}{b,x}
+			\Z{k+1,i-1}{m'}{b,x}
+		}{
 			\Z{0,n-1}{m}{X,X}
-			}
-		&\text{Elif }S[i]=k<i
+		}
+		&\text{If }S[i]=k<i\\
+		\displaystyle
+		\frac{
+			\displaystyle
+			\sum_{\substack{b\in Bases\\\Kron_{xb,s[i]s[k]\leq m}}}
+			\sum_{m'=0}^{m-\Kron_{xb,s[i]s[k]}}
+			\Y{i-1,k+1}{m-\Kron_{xb,s[i]s[k]-m'}}{x,b}
+			\Z{i+1,k-1}{m'}{x,b}
+		}{
+			\Z{0,n-1}{m}{X,X}
+		}
+		&\text{If }S[i]=k>i
 	\end{array}\right.
 $$
 
