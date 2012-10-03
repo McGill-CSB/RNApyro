@@ -330,12 +330,12 @@ class memoize(dict):
   def __init__(self, f):
       self.fun = f
   
-  def __call__(self,seq,struct,*args):
+  def __call__(self,seq,ref_seq,struct,*args):
       nargs = (args)
       if nargs in self:
           return self[nargs]
       else:
-          val = mpf(self.fun(seq,struct,*args))
+          val = mpf(self.fun(seq,ref_seq,struct,*args))
           self[nargs] = val
           return val
   def resetCache(self):
@@ -354,13 +354,14 @@ def energy((a,b),(a2,b2),alpha=1.0):
   E = STACKING_ENERGY[a,a2,b2,b]
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
-def isostericity(seq,(i,j),(a,b), alpha=1.0):
+def isostericity(seq,ref_seq,(i,j),(a,b), alpha=1.0):
   #isostericity of going from original base pair to (a,b)
-  iso = ISO[(seq[i],seq[j]),(a,b)]
-  return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
+  iso1 = ISO[(ref_seq[i],ref_seq[j]),(a,b)]
+  iso2 = ISO[(ref_seq[i],ref_seq[j]),(seq[i],seq[j])]
+  return  math.exp(-((1-alpha)*(iso1-iso2))/(BOLTZMANN*T))
 
 @memoize
-def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
+def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
   #alpha gives the weight energy vs isostericity
   result = 0.
   if m<0: return 0
@@ -375,7 +376,7 @@ def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
       for a2 in BASES:
         d = delta(seq,i,a2)
         if d <= m:
-          result += forward(seq,struct,
+          result += forward(seq,ref_seq,struct,
                             (i+1,j),
                             (a2,b),
                             m-d)
@@ -386,36 +387,36 @@ def forward(seq,struct,(i,j),(a,b),m, alpha=1.0):
           #if not stacked outside (or border, then no stack possible)
           if i==0 or j==len(seq)-1 or not (j==k and struct[i-1]==j+1):
             for m2 in range(m-d+1):
-              result += forward(seq,struct,
+              result += forward(seq,ref_seq,struct,
                                   (i+1,k-1),
                                   (a2,b2),
-                                  m2)*forward(seq,struct,
+                                  m2)*forward(seq,ref_seq,struct,
                                   (k+1,j),
                                   (b2,b),
-                                  m-m2-d)*isostericity(seq,
+                                  m-m2-d)*isostericity(seq,ref_seq,
                                                        (i,k),
                                                        (a2,b2),
                                                        alpha)
 
           #if stack, we add energy
           else :
-            result += forward(seq,struct,
+            result += forward(seq,ref_seq,struct,
                               (i+1,k-1),
                               (a2,b2),
                               m-d)*energy((a,b),
                                           (a2,b2),
-                                          alpha)*isostericity(seq,
+                                          alpha)*isostericity(seq,ref_seq,
                                                               (i,k),
                                                               (a2,b2),
                                                               alpha)
   return result
 
 @memoize
-def backward(seq,struct,(i,j),(a,b),m,alpha=1.0):
+def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha=1.0):
   result = 0.
   if m<0: return 0
   if i<0:
-    result=forward(seq,struct,
+    result=forward(seq,ref_seq,struct,
                         (j,len(seq)-1),
                         ('X','X'),
                          m)
@@ -424,7 +425,7 @@ def backward(seq,struct,(i,j),(a,b),m,alpha=1.0):
     if k==-1:
       for a2 in BASES:
         d = delta(seq,i,a2)
-        result += backward(seq,struct,
+        result += backward(seq,ref_seq,struct,
                         (i-1,j),
                         (a2,b),
                          m-d)
@@ -434,13 +435,13 @@ def backward(seq,struct,(i,j),(a,b),m,alpha=1.0):
         for b2 in BASES:
           d = delta(seq,i,b2) + delta(seq,k,a2)
           for m2 in range(m-d+1):
-            result += backward(seq,struct,
+            result += backward(seq,ref_seq,struct,
                                   (k-1,j),
                                   (a2,b),
-                                  m-m2-d)*forward(seq,struct,
+                                  m-m2-d)*forward(seq,ref_seq,struct,
                                                   (k+1,i-1),
                                                   (a2,b2),
-                                                  m2)*isostericity(seq,
+                                                  m2)*isostericity(seq,ref_seq,
                                                                    (k,i),
                                                                    (a2,b2),
                                                                    alpha)
@@ -452,23 +453,23 @@ def backward(seq,struct,(i,j),(a,b),m,alpha=1.0):
           d = delta(seq,i,a2) + delta(seq,k,b2)
           if not (j==k and struct[i+1]==j-1):
             for m2 in range(m-d+1):
-              result += backward(seq,struct,
+              result += backward(seq,ref_seq,struct,
                                  (i-1,k+1),
                                  (a2,b2),
-                                 m-m2-d)*forward(seq,struct,
+                                 m-m2-d)*forward(seq,ref_seq,struct,
                                                  (j,k-1),
                                                  (b,b2),
-                                                 m2)*isostericity(seq,
+                                                 m2)*isostericity(seq,ref_seq,
                                                                   (i,k),
                                                                   (a2,b2),
                                                                   alpha)
           else:
-            result +=  backward(seq,struct,
+            result +=  backward(seq,ref_seq,struct,
                                  (i-1,k+1),
                                  (a2,b2),
                                  m-d)*energy((a2,b2),
                                              (a,b),
-                                             alpha)*isostericity(seq,
+                                             alpha)*isostericity(seq,ref_seq,
                                                                  (i,k),
                                                                  (a2,b2),
                                                                  alpha)
@@ -487,47 +488,47 @@ def parseStruct(dbn):
       result[i] = j
   return result
 
-def product_given_i_m(seq,struct,i,a,m,alpha=1.0):
+def product_given_i_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
   """Will compute the sum of boltzmann weights of structures 
   with 'm' mutations from 'seq' where the 'i-th' nucleotide is 'a'.
   """
   n = len(seq)
-  tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
+  tot = forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
   k = struct[i]
   result = mpf(0)
   if k == -1:
     d = delta(seq,i,a)
-    result += backward(seq,struct,(i-1,i+1),(a,a),m-d,alpha)
+    result += backward(seq,ref_seq,struct,(i-1,i+1),(a,a),m-d,alpha)
   elif k < i:
     for c in BASES:
       d = delta(seq,i,a) + delta(seq,k,c)
       for m2 in range(m-d+1):
-        f = forward(seq,struct,(k+1,i-1),(c,a),m-d-m2,alpha) 
-        b = backward(seq,struct,(k-1,i+1),(c,a),m2,alpha)
+        f = forward(seq,ref_seq,struct,(k+1,i-1),(c,a),m-d-m2,alpha) 
+        b = backward(seq,ref_seq,struct,(k-1,i+1),(c,a),m2,alpha)
         result += f*b
   else:
     for c in BASES:
       d = delta(seq,i,a) + delta(seq,k,c)
       for m2 in range(m-d+1):
-        f = forward(seq,struct,(i+1,k-1),(a,c),m-d-m2,alpha) 
-        b = backward(seq,struct,(i-1,k+1),(a,c),m2,alpha)
+        f = forward(seq,ref_seq,struct,(i+1,k-1),(a,c),m-d-m2,alpha) 
+        b = backward(seq,ref_seq,struct,(i-1,k+1),(a,c),m2,alpha)
         result += f*b
   return result
 
-def probability_given_i_m(seq,struct,i,a,m,alpha=1.0):
+def probability_given_i_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
   """Will compute the probability that the 'i-th' nucleotide
   is 'a' over all sequences at 'm' mutations from seq
   """
   n = len(seq)
-  tot = forward(seq,struct,(0,n-1),('X', 'X'),m,alpha)
-  result = product_given_i_m(seq,struct,i,a,m,alpha)
+  tot = forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
+  result = product_given_i_m(seq,ref_seq,struct,i,a,m,alpha)
   if tot == 0:
     print """The total partition function is 0, you might want to increase
     the number of mutations allowed"""
     sys.exit(1)
   return result/tot
 
-def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
+def probability_given_i_most_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
   """Will compute the probability that the 'i-th' nucleotide
   is 'a' over all sequences between 0 and 'm' mutations from seq
   """
@@ -535,8 +536,8 @@ def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
   tot = 0
   result = 0
   for m2 in range(m+1):
-    tot += forward(seq,struct,(0,n-1),('X', 'X'),m2,alpha)
-    result += product_given_i_m(seq,struct,i,a,m2,alpha)
+    tot += forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m2,alpha)
+    result += product_given_i_m(seq,ref_seq,struct,i,a,m2,alpha)
   if tot == 0:
     print """The total partition function is 0, you might want to increase
     the number of mutations allowed"""
@@ -544,30 +545,30 @@ def probability_given_i_most_m(seq,struct,i,a,m,alpha=1.0):
 
   return result/tot
 
-
-def testSingleSequence(seq,struct,m):
+def testSingleSequence(seq,ref_seq,struct,m):
   forward.resetCache()
   backward.resetCache()
   n = len(seq)
 
-  print "Given i and m the probability of sequence is:"
-  print "\t", probability_given_i_most_m(seq,struct,29,'C',2,alpha=1.0)
-  print "  Forward: \t",forward(seq,struct,(0,n-1),('A','G'),m)
+  i = 29
+  print "Given i=%s and m=%s the probability of sequence is:" %(i,m)
+  print "\t", probability_given_i_most_m(seq,ref_seq,struct,i,'C',m,alpha=1.0)
+  print "  Forward: \t",forward(seq,ref_seq,struct,(0,n-1),('A','G'),m)
   i = n-1
   res = 0
   for j in BASES:
     d = delta(seq,i,j)
-    res += backward(seq,struct,(i-1,i+1),(j,j),m-d)
+    res += backward(seq,ref_seq,struct,(i-1,i+1),(j,j),m-d)
   print "  Backward of nuc %s:\t" % i, res
-
 
 def test():
   
   seq = "UAUAUAUGUAAUACAACAAACAAUAAAAGGUGAUGCGAAUGACAAAAAUUUGGUGUACAAGCUGAUUUUUUCUCAGCUUUGUCAUAUGCCGGCAAACGUCUGGUGAAGGAUUUUAGUGUCAAAGGACAGAUGGUUAGCUUACAGGAGGAAGGCGAGGAGUAUACGCCGCGUCAGGGACUAUAUGCUAACUUAAGUUCUAGGGAGACGGAAUUUCGUUACGUCGCUCAUUUAUCAAUAUUAUCAUCCUCACUACAUUGGUAAAUAAGCGAAUAAAGUAUCGUAUCAUUUAUGGCCACUAUUUAAACAAGUUACGGGCGCUCAUUUAUUCGCAAGUUUGAAUAUCUUGAGAAGUAAGUAGUAAGAUAAAUAAUUCGCCUACUUGUUUGAAAAUGCCUCACCGUUUUCCGAAUGUUGUAUGUUUAUUCAGAAACAUCCAGACAUGGUCCGGCCCAUCAGAUGAGUGGCAAGACAAGCUCAUCCGAAAAGAAAAACCUCGUGUGACGAAAUCG"
   dbn = ".............................((.((((((..........(((((((....((((((.......))))))(((((...(((((.(...(((((((((..((((....(((((..(((((....(((((((.((.((......((((.((.(....).)).)))).....)).)).)))))))...))))).(((((((((.....((.(((.(((((.((((((((((.................)))))))))).))))).....))).))..........(((.....(((((((((((...(((((....((((..(....)..))))(((((((..(......)..))))))).......))))))))))))))))...)))...)))))))))......((.((((((......)))))).))))))).))))....))))))))).)))))).)))))...)).)))))..........)))))).))......."
-
+  ref_seq = seq
   
 
+  ref_seq = ref_seq*1
   seq = seq*1
   dbn = dbn*1
   struct = parseStruct(dbn)
@@ -575,26 +576,28 @@ def test():
 
   m = 10
 
-  testSingleSequence(seq,struct,m)
+  testSingleSequence(seq,ref_seq,struct,m)
 
 def parse_fasta(file_name):
+  #first seq is reference, second seq in starting point, one struct only
+  seq = []
   with open(file_name) as f:
     for line in f:
       line = line.strip()
       if all(x in 'AUGC' for x in line):
-        seq = line
+        seq.append(line)
       if all(x in '(.)' for x in line):
         struct = line 
-  return seq, parseStruct(struct)
+  return seq[0],seq[1], parseStruct(struct)
 
-def all_probabilities(seq, stuct, m, alpha):
+def all_probabilities(seq,ref_seq, stuct, m, alpha):
   n = len(seq)
   results = []
   for i in range(n):
     results.append([])
     for a in BASES:
       results[-1].append(
-        probability_given_i_most_m(seq,struct,i,a,m,alpha))
+        probability_given_i_most_m(seq,ref_seq,struct,i,a,m,alpha))
   return results
 
 def display_all_probabilities(results):
@@ -606,6 +609,8 @@ def help():
     the nb of mutants allowed and the value of alpha, between 0 and 1"""
 
 if __name__ == "__main__":
+  test()
+  sys.exit(0)
   opts = sys.argv
   if len(opts) < 4:
     help()
@@ -630,8 +635,7 @@ if __name__ == "__main__":
 
 
 
-  seq, struct = parse_fasta(file_name)
-  results = all_probabilities(seq,struct,m,alpha)
+  seq,ref_seq,struct = parse_fasta(file_name)
+  results = all_probabilities(seq,ref_seq,struct,m,alpha)
   display_all_probabilities(results)
-  #test()
 
