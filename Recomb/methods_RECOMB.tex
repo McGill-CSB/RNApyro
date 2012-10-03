@@ -5,10 +5,10 @@ Let $\Omega$ be an un-gapped RNA alignment, $S$ its associate secondary structur
 sequence and $m\geq 0$. $S$ is considered as  one derivation of the SCFG generating  
 all possible secondary structures of the same length as $s$. We define a variant of the
  \emph{Inside-Outside algorithm}~\cite{Lari1990} with the two following functions,
-$\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former, ass the 
+$\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former, as the 
 equivalent of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing $m$ mutations. The latter computes the \emph{outside}, in particular, knowing 
-that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing, outside 
+that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing outside,
 including $i$ and $j$, $m$ mutations.
 The Boltzmann weights are a combination of the base pairs stacking energy, 
 using as values those of the NNDB~\cite{Turner2010}, and
@@ -33,51 +33,79 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 
 \subsection{Energy Model}
 The energy we will be composed of two function, $ES^{\beta}_{ab\to a'b'}$ and 
-$EI_{ab\to a'b'}$. $ES^\beta_{ab\to a'b'}$ is equal to the 
+$EI_{(i,j),ab}$. The former is equal to the 
 stacking energy of the base pair with nucleotides $ab$ on top of the base pair with nucleotides 
 $a'b'$, as set in the NNDB~\cite{Turner2010}. If one of the base pair is not valid (i.e. not in 
 $\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$, the value is a parameter 
 $\beta \in [1,\infty]$. This allows
 to completely forbid a sequence where a base pair is non valid, when $\beta = \infty$ or only 
 penalize it.
-$EI_{ab\to a'b'}$ is the isostericity between
- the base pair $ab$ and $a'b'$ as defined in~\cite{Stombaugh2009}. Let be $\alpha\in[0,1]$, it 
+$EI_{(i,j), a'b'}$ is the average of the sum of differences between the isostericity
+of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericity of base pairs
+ at positions $(i,j)$ in $\Omega$ and $ab$. If gives us an indication 
+ if the base pair $ab$ is more isosteric to the set $\Omega$ than the one on the sequence 
+ $\omega$. Where the isostericity values 
+ between any pair of canonical base pairs is  as defined in~\cite{Stombaugh2009}. 
+ Let be $\alpha\in[0,1]$, it 
  will be used to balance the weight given to the stacking energy or the isostericity.
 	
 \subsection{Inside}
-We define the \emph{Inside} function $\Z{i,j}{m}{a,b}$ as follows.
-\subsubsection{Initial conditions}
-$$
+To define the \emph{Inside} function $\Z{i,j}{m}{a,b}$ as a recurrence, we will use as initial conditions:
+
+\[
 	\forall i \in (0,\cdots,n-1):\, \Z{i+1,i}{m}{a,b}=\left\{
 	\begin{array}{ll}
 		1 &\text{If } m = 0\\
 		0 &\text{Else }
 	\end{array}\right.
-$$
-\subsubsection{Recursion}
+\]
+In other words, when we evaluate the function $\mathcal Z$  over only one nucleotide, there 
+is only one possible solution if there is $0$ mutations left, and none else. Since the 
+energetics term only consider base pairs, they are not involved in the initial conditions. 
+
+The recurrence is composed of four terms:
 $$
 	\Z{i,j}{m}{a,b}:=\left\{
   \begin{array}{ll}
   		\displaystyle
-      \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}  
-      \Z{i+1,j}{m-\Kron_{a',s[i]}}{a',b} & \text{If }S{[i]}=-1\\
+      \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
+      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} & \text{If }S_{i}=-1\\
       \displaystyle
-      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}  
-			 e^{\frac{-ES_{a b \to a' b'}}{RT}}
-			 \Z{i+1,j-1}{m-\Kron_{a'b',s[i]s[j]}}{a',b'}&
-			 \text{Elif }S{[i]}=j \land S{[i-1]}=j+1\\
+      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
+			 e^{\frac{-(\alpha ES_{a b \to a' b'}+(1-\alpha)EI_{(i,j),a'b'})}{RT}}
+			 \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
+			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
 			 \displaystyle
-      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s[i]s[k]}\le m}}
-      \sum_{m'=0}^{m-\Kron_{a'b',s[i]s[k]}}
-   		 e^{\frac{-EI_{s[i]s[k],a'b'}}{RT}}
-      \Z{i+1,k-1}{m-\Kron_{a'b',s[i]s[k]}-m'}{a',b'}
-      \Z{k+1,j}{m'}{b',b} & \text{Elif }S[i]=k \land i < k \leq j\\
+      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
+      \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
+   		 e^{\frac{-(1-\alpha)EI_{(i,k),a'b'}}{RT}}
+      \Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
+      \Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
       0 &\text{Else}
 	\end{array}\right.
 $$
+The cases can be breaked down as follows.
+\begin{description}
+\item[$S_{i}=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
+as if we increase the lower interval bound by $1$ (i.e. $i+1$), and consider all possible
+ nucleotides $a'$ at position $i$, taking into account the 
+\item[$S_i=j$ and $S_{i-1}=j+1$:] If nucleotide $i$ is paired with $j$ and nucleotide $i-1$ is
+paired with $j+1$, we are in the only case were stacked base pairs can occur. We thus add
+the energy of the stacking and of the isostericity of the base pair $(i,j)$. What is left
+to compute is the \emph{inside} value of the interval $[i+1,j-1]$ over all possible nucleotides 
+$a',b'\in B^2$ at positions $i$ and $j$ respectively.
+\item[$S_i=k$ and $i<k \leq j$:] If nucleotide $i$ is paired with position $k$ but is not stacked outside, the 
+only term contributing to the energy is the isostericity of the base pair $(i,k)$. This creates
+two different intervals for which we must compute the values, $[i+1,k-1]$ and $[k+1,j-1]$, for 
+all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $j$ respectively.
+\item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
+secondary structure $S$, and we return $0$.
+
+\end{description}
 
 \subsection{Outside}	
-\subsubsection{Initial conditions}
+The \emph{Outside} function, $\Y{i,j}{m}{a,b}$, will also be defined as a recurrence and have 
+as initial conditions the following.
 $$
 	\Y{-1,j}{m}{X,X}:=
 		\displaystyle
