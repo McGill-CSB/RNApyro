@@ -356,9 +356,10 @@ def energy((a,b),(a2,b2),alpha=1.0):
 
 def isostericity(seq,ref_seq,(i,j),(a,b), alpha=1.0):
   #isostericity of going from original base pair to (a,b)
-  iso1 = ISO[(ref_seq[i],ref_seq[j]),(a,b)]
-  iso2 = ISO[(ref_seq[i],ref_seq[j]),(seq[i],seq[j])]
-  return  math.exp(-((1-alpha)*(iso1-iso2))/(BOLTZMANN*T))
+  iso_mut = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)
+  iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
+  iso = (iso_mut-iso_start)/len(ref_seq)
+  return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
 def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
@@ -588,10 +589,7 @@ def parse_fasta(file_name):
         seq.append(line)
       if all(x in '(.)' for x in line):
         struct = line 
-  if len(seq) == 1:
-    return seq[0], seq[0], parseStruct(struct)
-  else:
-    return seq[0],seq[1], parseStruct(struct)
+  return seq[:-1],seq[-1], parseStruct(struct)
 
 def all_probabilities(seq,ref_seq, stuct, m, alpha):
   n = len(seq)
@@ -609,11 +607,13 @@ def display_all_probabilities(results):
 
 def help():
     print """You need at least three arguments, the file path,
-    the nb of mutants allowed and the value of alpha, between 0 and 1"""
+    the nb of mutants allowed and the value of alpha, between 0 and 1
+    An optional 4th argument can be given if you want to change the max penality for an invalid 
+    base pair
+    """
 
 if __name__ == "__main__":
-  test()
-  sys.exit(0)
+  global STACKING_ENERGY
   opts = sys.argv
   if len(opts) < 4:
     help()
@@ -635,10 +635,18 @@ if __name__ == "__main__":
   if not 0 <= alpha <= 1:
     help()
     sys.exit(1)
+  if len(opts) == 4:
+    try:
+      z = float(opts[4])
+      for x in STACKING_ENERGY:
+        if STACKING_ENERGY[x] == sys.maxint:
+          STACKING_ENERGY[x] = z
+    except ValueError:
+      pass
 
 
 
-  seq,ref_seq,struct = parse_fasta(file_name)
+  ref_seq,seq,struct = parse_fasta(file_name)
   results = all_probabilities(seq,ref_seq,struct,m,alpha)
   display_all_probabilities(results)
 
