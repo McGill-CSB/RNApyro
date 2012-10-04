@@ -33,14 +33,14 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 
 \subsection{Energy Model}
 The energy we will be composed of two function, $\text{ES}^{\beta}_{ab\to a'b'}$ and 
-$\text{EI}_{(i,j),ab}$. The former is equal to the 
+$\text{EI}^{\Omega}_{(i,j),ab}$. The former is equal to the 
 stacking energy of the base pair with nucleotides $ab$ on top of the base pair with nucleotides 
 $a'b'$, as set in the NNDB~\cite{Turner2010}. If one of the base pair is not valid (i.e. not in 
 $\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$, the value is a parameter 
 $\beta \in [1,\infty]$. This allows
 to completely forbid a sequence where a base pair is non valid, when $\beta = \infty$ or only 
 penalize it.
-$\text{EI}_{(i,j), a'b'}$ is the average of the sum of differences between the isostericity
+$\text{EI}^{\Omega}_{(i,j), a'b'}$ is the average of the sum of differences between the isostericity
 of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericity of base pairs
  at positions $(i,j)$ in $\Omega$ and $ab$. If gives us an indication 
  if the base pair $ab$ is more isosteric to the set $\Omega$ than the one on the sequence 
@@ -51,7 +51,7 @@ of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericit
 	
 \subsection{Inside}
 The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function considering only the 
-energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and who nucleotide at position $i-1$ is $a$ (resp. in position $j+1$ it is $b$).
+energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and whose nucleotide at position $i-1$ is $a$ (resp. in position $j+1$ it is $b$).
 We define function $\Z{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
 
 \[
@@ -74,19 +74,19 @@ $$
       \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} & \text{If }S_{i}=-1\\
       \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
-			 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}_{(i,j),a'b'})}{RT}}
+			 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}^{\Omega}_{(i,j),a'b'})}{RT}}
 			 \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
 			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
 			 \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
       \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-   		 e^{\frac{-(1-\alpha)\text{EI}_{(i,k),a'b'}}{RT}}
+   		 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(i,k),a'b'}}{RT}}
       \Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
       \Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
       0 &\text{Else}
 	\end{array}\right.
 $$
-The cases can be breaked down as follows.
+The cases can be broked down as follows.
 \begin{description}
 \item[$S_{i}=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
 as if we increase the lower interval bound by $1$ (i.e. $i+1$), and consider all possible
@@ -133,27 +133,27 @@ $$
     \text{Elif }S_i=-1 \\
     \displaystyle
     \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
-		 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}_{(i,j),a'b'})}{RT}}
+		 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}^{\Omega}_{(i,j),a'b'})}{RT}}
     \Y{i-1,j+1}{m- \Kron_{a'b',s_is_j}}{a',b'} &
    	 \text{Elif }S_{i}=j \land S_{i+1}=j-1\\
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-  		 e^{\frac{-(1-\alpha)\text{EI}_{(i,k),a'b'}}{RT}}
+  		 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(i,k),a'b'}}{RT}}
 		 \Y{i-1,k+1}{m- \Kron_{a'b',s_is_k} - m'}{a',b'}
      \Z{j,k-1}{m'}{b,b'} &
 		 \text{Elif }S_{i}=k \geq j\\
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_ks_i}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s_ks_i}}
-   	 e^{\frac{-(1-\alpha)\text{EI}_{(k,i),a'b'}}{RT}}
+   	 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(k,i),a'b'}}{RT}}
 		 \Y{k-1,j}{m- \Kron_{a'b',s_ks_i} - m'}{a',b}
      \Z{k+1,i-1}{m'}{a',b'} &
 		 \text{Elif }-1 < S_{i}=k < i\\
 		 0 & \text{Else}
   \end{array}\right.
 $$
-The five cases can be break down as follows.
+The five cases can be broked down as follows.
 \begin{description}
 \item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
 as if we decrease the lower interval bound by $1$ (i.e. $i-1$), and consider all possible
@@ -207,20 +207,6 @@ $$
 		}
 		&\text{If }S_i = -1\\
 		\displaystyle
- 		\frac{
-			\displaystyle
-			\sum_{m=0}^{M}
-			\sum_{\substack{b\in Bases\\\Kron_{bx,s_ks_i\leq m}}}
-			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
-			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
-			\Z{k+1,i-1}{m'}{b,x}
-		}{
-			\displaystyle
-			\sum_{m=0}^{M}
-			\Z{0,n-1}{m}{X,X}
-		}
-		&\text{If }S_i=k<i\\
-		\displaystyle
 		\frac{
 			\displaystyle
 			\sum_{m=0}^{M}
@@ -233,13 +219,32 @@ $$
 			\sum_{m=0}^{M}
 			\Z{0,n-1}{m}{X,X}
 		}
-		&\text{If }S[i]=k>i
+		&\text{If }S_i=k>i\\
+		\displaystyle
+ 		\frac{
+			\displaystyle
+			\sum_{m=0}^{M}
+			\sum_{\substack{b\in Bases\\\Kron_{bx,s_ks_i\leq m}}}
+			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
+			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
+			\Z{k+1,i-1}{m'}{b,x}
+		}{
+			\displaystyle
+			\sum_{m=0}^{M}
+			\Z{0,n-1}{m}{X,X}
+		}
+		&\text{If }S_i=k<i
 	\end{array}\right.
 $$
 
-In every case, the denominator is the sum of the partition function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
+In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
 \begin{description}
-\item[$S_i=-1$:]
-\item[$S_i=k>i$:]
-\item[$S_i=k<i$:]
+\item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, we are concerned by the weights
+over all sequences which have at position $i$ nucleotide $x$, which is exactly the sum
+of the values of $\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}$, for all $m$ between $0$ and $M$.
+\item[$S_i=k>i$:] Since we need to respect the derivation of the secondary structure $S$, if 
+position $i$ is paired, we must consider the two partition functions. The \emph{outside} of the 
+base pair, and the \emph{inside}, for all possible values for the nucleotide at position $k$, and
+all possible distribution of the mutant positions between the inside and outside of the base pair.
+\item[$S_i=k<i$:] Same as above, but with $i$ pairing with a lower position.
 \end{description}
