@@ -350,12 +350,12 @@ def delta(seq,i,c):
   else:
     return 1
 
-def energy((a,b),(a2,b2),alpha=1.0):
+def energy((a,b),(a2,b2),alpha):
   #stacking energy of base pair (a,b) around base pair (a2,b2)
   E = STACKING_ENERGY[a,a2,b2,b]
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
-def isostericity(seq,ref_seq,(i,j),(a,b), alpha=1.0):
+def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   #isostericity of going from original base pair to (a,b)
   iso_mut = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)
   iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
@@ -363,7 +363,7 @@ def isostericity(seq,ref_seq,(i,j),(a,b), alpha=1.0):
   return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
-def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
+def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
   #alpha gives the weight energy vs isostericity
   result = 0.
   if m<0: return 0
@@ -381,7 +381,7 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
           result += forward(seq,ref_seq,struct,
                             (i+1,j),
                             (a2,b),
-                            m-d)
+                            m-d,alpha)
     elif i < k <= j: #If k > j we return 0
       for a2 in BASES:
         for b2 in BASES:
@@ -392,10 +392,10 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
               result += forward(seq,ref_seq,struct,
                                   (i+1,k-1),
                                   (a2,b2),
-                                  m2)*forward(seq,ref_seq,struct,
+                                  m2,alpha)*forward(seq,ref_seq,struct,
                                   (k+1,j),
                                   (b2,b),
-                                  m-m2-d)*isostericity(seq,ref_seq,
+                                  m-m2-d,alpha)*isostericity(seq,ref_seq,
                                                        (i,k),
                                                        (a2,b2),
                                                        alpha)
@@ -405,7 +405,7 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
             result += forward(seq,ref_seq,struct,
                               (i+1,k-1),
                               (a2,b2),
-                              m-d)*energy((a,b),
+                              m-d,alpha)*energy((a,b),
                                           (a2,b2),
                                           alpha)*isostericity(seq,ref_seq,
                                                               (i,k),
@@ -414,14 +414,14 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha=1.0):
   return result
 
 @memoize
-def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha=1.0):
+def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha):
   result = 0.
   if m<0: return 0
   if i<0:
     result=forward(seq,ref_seq,struct,
                         (j,len(seq)-1),
                         ('X','X'),
-                         m)
+                         m,alpha)
   else:
     k = struct[i]
     if k==-1:
@@ -430,7 +430,7 @@ def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha=1.0):
         result += backward(seq,ref_seq,struct,
                         (i-1,j),
                         (a2,b),
-                         m-d)
+                         m-d,alpha)
     #BP to the left
     elif k<i:
       for a2 in BASES:
@@ -440,10 +440,10 @@ def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha=1.0):
             result += backward(seq,ref_seq,struct,
                                   (k-1,j),
                                   (a2,b),
-                                  m-m2-d)*forward(seq,ref_seq,struct,
+                                  m-m2-d,alpha)*forward(seq,ref_seq,struct,
                                                   (k+1,i-1),
                                                   (a2,b2),
-                                                  m2)*isostericity(seq,ref_seq,
+                                                  m2,alpha)*isostericity(seq,ref_seq,
                                                                    (k,i),
                                                                    (a2,b2),
                                                                    alpha)
@@ -458,10 +458,10 @@ def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha=1.0):
               result += backward(seq,ref_seq,struct,
                                  (i-1,k+1),
                                  (a2,b2),
-                                 m-m2-d)*forward(seq,ref_seq,struct,
+                                 m-m2-d,alpha)*forward(seq,ref_seq,struct,
                                                  (j,k-1),
                                                  (b,b2),
-                                                 m2)*isostericity(seq,ref_seq,
+                                                 m2,alpha)*isostericity(seq,ref_seq,
                                                                   (i,k),
                                                                   (a2,b2),
                                                                   alpha)
@@ -469,7 +469,7 @@ def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha=1.0):
             result +=  backward(seq,ref_seq,struct,
                                  (i-1,k+1),
                                  (a2,b2),
-                                 m-d)*energy((a2,b2),
+                                 m-d,alpha)*energy((a2,b2),
                                              (a,b),
                                              alpha)*isostericity(seq,ref_seq,
                                                                  (i,k),
@@ -490,7 +490,7 @@ def parseStruct(dbn):
       result[i] = j
   return result
 
-def product_given_i_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
+def product_given_i_m(seq,ref_seq,struct,i,a,m,alpha):
   """Will compute the sum of boltzmann weights of structures 
   with 'm' mutations from 'seq' where the 'i-th' nucleotide is 'a'.
   """
@@ -507,17 +507,19 @@ def product_given_i_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
       for m2 in range(m-d+1):
         f = forward(seq,ref_seq,struct,(k+1,i-1),(c,a),m-d-m2,alpha) 
         b = backward(seq,ref_seq,struct,(k-1,i+1),(c,a),m2,alpha)
-        result += f*b
+        iso = isostericity(seq,ref_seq,(k,i),(c,a), alpha)
+        result += f*b*iso
   else:
     for c in BASES:
       d = delta(seq,i,a) + delta(seq,k,c)
       for m2 in range(m-d+1):
         f = forward(seq,ref_seq,struct,(i+1,k-1),(a,c),m-d-m2,alpha) 
         b = backward(seq,ref_seq,struct,(i-1,k+1),(a,c),m2,alpha)
-        result += f*b
+        iso = isostericity(seq,ref_seq,(i,k),(a,c), alpha)
+        result += f*b*iso
   return result
 
-def probability_given_i_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
+def probability_given_i_m(seq,ref_seq,struct,i,a,m,alpha):
   """Will compute the probability that the 'i-th' nucleotide
   is 'a' over all sequences at 'm' mutations from seq
   """
@@ -530,7 +532,7 @@ def probability_given_i_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
     sys.exit(1)
   return result/tot
 
-def probability_given_i_most_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
+def probability_given_i_most_m(seq,ref_seq,struct,i,a,m,alpha):
   """Will compute the probability that the 'i-th' nucleotide
   is 'a' over all sequences between 0 and 'm' mutations from seq
   """
@@ -547,28 +549,28 @@ def probability_given_i_most_m(seq,ref_seq,struct,i,a,m,alpha=1.0):
 
   return result/tot
 
-def testSingleSequence(seq,ref_seq,struct,m):
+def testSingleSequence(seq,ref_seq,struct,m,alpha):
   forward.resetCache()
   backward.resetCache()
   n = len(seq)
 
   i = 29
-  print "Given i=%s and m=%s the probability of sequence is:" %(i,m)
-  print "\t", probability_given_i_most_m(seq,ref_seq,struct,i,'C',m,alpha=1.0)
-  print "  Forward: \t",forward(seq,ref_seq,struct,(0,n-1),('A','G'),m)
+  #print "Given i=%s and m=%s the probability of sequence is:" %(i,m)
+  #print "\t", probability_given_i_most_m(seq,ref_seq,struct,i,'C',m,alpha=1.0)
+  print "  Forward: \t",forward(seq,ref_seq,struct,(0,n-1),('A','G'),m,alpha)
   i = n-1
   res = 0
   for j in BASES:
     d = delta(seq,i,j)
-    res += backward(seq,ref_seq,struct,(i-1,i+1),(j,j),m-d)
+    res += backward(seq,ref_seq,struct,(i-1,i+1),(j,j),m-d,alpha)
   print "  Backward of nuc %s:\t" % i, res
 
 def test():
   
-  seq = "UAUAUAUGUAAUACAACAAACAAUAAAAGGUGAUGCGAAUGACAAAAAUUUGGUGUACAAGCUGAUUUUUUCUCAGCUUUGUCAUAUGCCGGCAAACGUCUGGUGAAGGAUUUUAGUGUCAAAGGACAGAUGGUUAGCUUACAGGAGGAAGGCGAGGAGUAUACGCCGCGUCAGGGACUAUAUGCUAACUUAAGUUCUAGGGAGACGGAAUUUCGUUACGUCGCUCAUUUAUCAAUAUUAUCAUCCUCACUACAUUGGUAAAUAAGCGAAUAAAGUAUCGUAUCAUUUAUGGCCACUAUUUAAACAAGUUACGGGCGCUCAUUUAUUCGCAAGUUUGAAUAUCUUGAGAAGUAAGUAGUAAGAUAAAUAAUUCGCCUACUUGUUUGAAAAUGCCUCACCGUUUUCCGAAUGUUGUAUGUUUAUUCAGAAACAUCCAGACAUGGUCCGGCCCAUCAGAUGAGUGGCAAGACAAGCUCAUCCGAAAAGAAAAACCUCGUGUGACGAAAUCG"
-  dbn = ".............................((.((((((..........(((((((....((((((.......))))))(((((...(((((.(...(((((((((..((((....(((((..(((((....(((((((.((.((......((((.((.(....).)).)))).....)).)).)))))))...))))).(((((((((.....((.(((.(((((.((((((((((.................)))))))))).))))).....))).))..........(((.....(((((((((((...(((((....((((..(....)..))))(((((((..(......)..))))))).......))))))))))))))))...)))...)))))))))......((.((((((......)))))).))))))).))))....))))))))).)))))).)))))...)).)))))..........)))))).))......."
+  seq = "UAUAUAUGUAAUACAACAAACAAUAAAAGGUG"
+  dbn = "................................"
   ref_seq = seq
-  
+  alpha = 0.2 
 
   ref_seq = ref_seq*1
   seq = seq*1
@@ -578,7 +580,7 @@ def test():
 
   m = 10
 
-  testSingleSequence(seq,ref_seq,struct,m)
+  testSingleSequence(seq,ref_seq,struct,m,alpha)
 
 def parse_fasta(file_name):
   #first seq is reference, second seq in starting point, one struct only
@@ -652,7 +654,6 @@ if __name__ == "__main__":
 
 
   ref_seq,seq,struct = parse_fasta(file_name)
-  print ref_seq,seq,struct
   results = all_probabilities(seq,ref_seq,struct,m,alpha)
   display_all_probabilities(results)
 
