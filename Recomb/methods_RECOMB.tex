@@ -5,10 +5,10 @@ Let $\Omega$ be an un-gapped RNA alignment, $S$ its associate secondary structur
 sequence and $m\geq 0$. $S$ is considered as  one derivation of the SCFG generating  
 all possible secondary structures of the same length as $s$. We define a variant of the
  \emph{Inside-Outside algorithm}~\cite{Lari1990} with the two following functions,
-$\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former, ass the 
+$\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former, as the 
 equivalent of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing $m$ mutations. The latter computes the \emph{outside}, in particular, knowing 
-that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing, outside 
+that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing outside,
 including $i$ and $j$, $m$ mutations.
 The Boltzmann weights are a combination of the base pairs stacking energy, 
 using as values those of the NNDB~\cite{Turner2010}, and
@@ -32,129 +32,214 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 														\end{array}\right.$
 
 \subsection{Energy Model}
-The energy we will be composed of two function, $ES^{\beta}_{ab\to a'b'}$ and 
-$EI_{ab\to a'b'}$. $ES^\beta_{ab\to a'b'}$ is equal to the 
+The energy we will be composed of two function, $\text{ES}^{\beta}_{ab\to a'b'}$ and 
+$\text{EI}_{(i,j),ab}$. The former is equal to the 
 stacking energy of the base pair with nucleotides $ab$ on top of the base pair with nucleotides 
 $a'b'$, as set in the NNDB~\cite{Turner2010}. If one of the base pair is not valid (i.e. not in 
 $\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$, the value is a parameter 
 $\beta \in [1,\infty]$. This allows
 to completely forbid a sequence where a base pair is non valid, when $\beta = \infty$ or only 
 penalize it.
-$EI_{ab\to a'b'}$ is the isostericity between
- the base pair $ab$ and $a'b'$ as defined in~\cite{Stombaugh2009}. Let be $\alpha\in[0,1]$, it 
+$\text{EI}_{(i,j), a'b'}$ is the average of the sum of differences between the isostericity
+of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericity of base pairs
+ at positions $(i,j)$ in $\Omega$ and $ab$. If gives us an indication 
+ if the base pair $ab$ is more isosteric to the set $\Omega$ than the one on the sequence 
+ $\omega$. Where the isostericity values 
+ between any pair of canonical base pairs is  as defined in~\cite{Stombaugh2009}. 
+ Let be $\alpha\in[0,1]$, it 
  will be used to balance the weight given to the stacking energy or the isostericity.
 	
 \subsection{Inside}
-We define the \emph{Inside} function $\Z{i,j}{m}{a,b}$ as follows.
-\subsubsection{Initial conditions}
-$$
+The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function considering only the 
+energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and who nucleotide at position $i-1$ is $a$ (resp. in position $j+1$ it is $b$).
+We define function $\Z{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
+
+\[
 	\forall i \in (0,\cdots,n-1):\, \Z{i+1,i}{m}{a,b}=\left\{
 	\begin{array}{ll}
 		1 &\text{If } m = 0\\
 		0 &\text{Else }
 	\end{array}\right.
-$$
-\subsubsection{Recursion}
+\]
+In other words, when we evaluate the function $\mathcal Z$, after exhausting all positions, there 
+is only one possible solution if there is $0$ mutations left, and none else. Since the 
+energetic terms only depend on base pairs, they are not involved in the initial conditions. 
+
+The recursion itself is composed of four terms:
 $$
 	\Z{i,j}{m}{a,b}:=\left\{
   \begin{array}{ll}
   		\displaystyle
-      \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}  
-      \Z{i+1,j}{m-\Kron_{a',s[i]}}{a',b} & \text{If }S{[i]}=-1\\
+      \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
+      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} & \text{If }S_{i}=-1\\
       \displaystyle
-      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}  
-			 e^{\frac{-ES_{a b \to a' b'}}{RT}}
-			 \Z{i+1,j-1}{m-\Kron_{a'b',s[i]s[j]}}{a',b'}&
-			 \text{Elif }S{[i]}=j \land S{[i-1]}=j+1\\
+      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
+			 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}_{(i,j),a'b'})}{RT}}
+			 \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
+			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
 			 \displaystyle
-      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s[i]s[k]}\le m}}
-      \sum_{m'=0}^{m-\Kron_{a'b',s[i]s[k]}}
-   		 e^{\frac{-EI_{s[i]s[k],a'b'}}{RT}}
-      \Z{i+1,k-1}{m-\Kron_{a'b',s[i]s[k]}-m'}{a',b'}
-      \Z{k+1,j}{m'}{b',b} & \text{Elif }S[i]=k \land i < k \leq j\\
+      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
+      \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
+   		 e^{\frac{-(1-\alpha)\text{EI}_{(i,k),a'b'}}{RT}}
+      \Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
+      \Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
       0 &\text{Else}
 	\end{array}\right.
 $$
+The cases can be breaked down as follows.
+\begin{description}
+\item[$S_{i}=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
+as if we increase the lower interval bound by $1$ (i.e. $i+1$), and consider all possible
+ nucleotides $a'$ at position $i$. 
+\item[$S_i=j$ and $S_{i-1}=j+1$:] If nucleotide $i$ is paired with $j$ and nucleotide $i-1$ is
+paired with $j+1$, we are in the only case were stacked base pairs can occur. We thus add
+the energy of the stacking and of the isostericity of the base pair $(i,j)$. What is left
+to compute is the \emph{inside} value of the interval $[i+1,j-1]$ over all possible nucleotides 
+$a',b'\in B^2$ at positions $i$ and $j$ respectively.
+\item[$S_i=k$ and $i<k \leq j$:] If nucleotide $i$ is paired with position $k$ 
+but is not stacked outside, the 
+only term contributing directly to the energy is the isostericity of the base pair $(i,k)$. This 
+creates
+two different intervals for which we must compute the values, $[i+1,k-1]$ and $[k+1,j-1]$, for 
+all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $j$ respectively.
+\item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
+secondary structure $S$, and we return $0$.
+
+\end{description}
 
 \subsection{Outside}	
-\subsubsection{Initial conditions}
+The \emph{Outside} function, $\mathcal Y$, is the partition function considering only the 
+energy in subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
+(resp. in position $j-1$ it is $b$).
+We define function $\Y{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
+
 $$
 	\Y{-1,j}{m}{X,X}:=
 		\displaystyle
 	  \Z{j,n-1}{m}{X,X}
 $$
-\subsubsection{Recursion}
+The recurrence, as shown below, will increase the interval $[i,j]$ by decreasing $i$ when
+it is not base paired. If it is with a position $k>j$, we increase $j$ to include it.
+ Thus, when we need
+to evaluate an interval as $(-1,j)$, all stems between $(0,j)$ are taken into account and the
+structure between $(j,n-1)$ must be a set of independent stems. Thus, all the outside energy is
+equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is the following:
 $$
 	\Y{i,j}{m}{a,b} = \left\{
   \begin{array}{ll}
 		\displaystyle
-    \sum_{\substack{a'\in \B,\\ \Kron_{a',s[i]}\le m}}
-    \Y{i-1,j}{m- \Kron_{a',s[i]}}{a',b} &
-    \text{Elif }S[i]=-1 \\
+    \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}
+    \Y{i-1,j}{m- \Kron_{a',s_i}}{a',b} &
+    \text{Elif }S_i=-1 \\
     \displaystyle
-    \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[j]}\le m}}
-		 e^{\frac{-ES_{ a' b' \to a b }}{RT}}
-    \Y{i-1,j+1}{m- \Kron_{a'b',s[i]s[j]}}{a',b'} &
-   	 \text{Elif }S{[i]}=j \land S{[i+1]}=j-1\\
+    \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
+		 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}_{(i,j),a'b'})}{RT}}
+    \Y{i-1,j+1}{m- \Kron_{a'b',s_is_j}}{a',b'} &
+   	 \text{Elif }S_{i}=j \land S_{i+1}=j-1\\
 		 \displaystyle
-		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[i]s[k]}\le m}}
-		 \sum_{m'=0}^{m-\Kron_{a'b',s[i]s[k]}}
-  		 e^{\frac{-EI_{s[i]s[k],a'b'}}{RT}}
-		 \Y{i-1,k+1}{m- \Kron_{a'b',s[i]s[k]} - m'}{a',b'}
+		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
+		 \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
+  		 e^{\frac{-(1-\alpha)\text{EI}_{(i,k),a'b'}}{RT}}
+		 \Y{i-1,k+1}{m- \Kron_{a'b',s_is_k} - m'}{a',b'}
      \Z{j,k-1}{m'}{b,b'} &
-		 \text{Elif }S{[i]}=k \geq j\\
+		 \text{Elif }S_{i}=k \geq j\\
 		 \displaystyle
-		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s[k]s[i]}\le m}}
-		 \sum_{m'=0}^{m-\Kron_{a'b',s[k]s[i]}}
-  		 e^{\frac{-EI_{s[i]s[k],a'b'}}{RT}}
-		 \Y{k-1,j}{m- \Kron_{a'b',s[k]s[i]} - m'}{a',b}
+		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_ks_i}\le m}}
+		 \sum_{m'=0}^{m-\Kron_{a'b',s_ks_i}}
+   	 e^{\frac{-(1-\alpha)\text{EI}_{(k,i),a'b'}}{RT}}
+		 \Y{k-1,j}{m- \Kron_{a'b',s_ks_i} - m'}{a',b}
      \Z{k+1,i-1}{m'}{a',b'} &
-		 \text{Elif }-1 < S{[i]}=k < i\\
+		 \text{Elif }-1 < S_{i}=k < i\\
 		 0 & \text{Else}
   \end{array}\right.
 $$
-\subsection*{}
-We must have (if $S[k] = -1)$:
+The five cases can be break down as follows.
+\begin{description}
+\item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
+as if we decrease the lower interval bound by $1$ (i.e. $i-1$), and consider all possible
+nucleotides $a'$ at position $i$.
+\item[$S_{i}=j$ and $S_{i+1}=j-1$:] If nucleotide $i$ is paired with $j$ and nucleotide $i+1$ is
+paired with $j-11$, we are in the only case were stacked base pairs can occur. We thus add
+the energy of the stacking and of the isostericity of the base pair $(i,j)$. What is left
+to compute is the \emph{outside} value for the interval $[i-1,j+1]$ over all possible nucleotides 
+$a',b'\in B^2$ at positions $i$ and $j$ respectively.
+\item[$S_{i}=k \geq j$:]If nucleotide $i$ is paired with position $k\geq j$, 
+and is not stacked inside, the 
+only term contributing directly to the energy is the isostericity of the base pair $(i,k)$. 
+We can then consider the outside interval $[i-1,k+1]$ by multiplying it by the the \emph{forward}
+value of the newly included interval (i.e. $[j,k-1]$), for 
+all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $k$ respectively.
+\item[$-1<S_{i}<i$:]As above but if the pairing is to the left.
+\item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
+secondary structure $S$, and we return $0$.
+
+
+\end{description}
+
+\section{Inside-Outside}
+By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
+be described in function of the \emph{forward} term as $\Z{0,n-1}{m}{X,X}$,
+ for any nucleotide $X\in B$ or
+in function of the \emph{backward} term, for any position $k$ such that $S_k=-1$:
 $$
-	\Z{0,n-1}{m}{X,X} \equiv     
+	\Z{0,n-1}{m}{X,X}
+	\equiv
 	\sum_{\substack{a\in \B,\\ \Kron_{a,s[k]}\le m}}	
-	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a};\qquad
-	\forall k \in \{0,\cdots,n-1\}
+	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a}
 $$
 
-\subsection{Probability of a position being a given nucleotide}
-Given $x\in B$,
+We are now interested in knowing, under our model, 
+ the probability that a given position is a given nucleotide.
+We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
+Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of mutations allowed. 
 $$
-	\mathbb{P}(s[i] = x\mid s, S,m):=\left\{
+	\mathbb{P}(s_i = x\mid s,\Omega, S,M):=\left\{
 	\begin{array}{ll}
 		\displaystyle
 		\frac{
-			\Y{i-1,i+1}{m-\Kron_{x,s[k]}}{x,x}
+			\displaystyle
+			\sum_{m=0}^{M}
+			\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}
 		}{
+			\displaystyle
+			\sum_{m=0}^{M}
 			\Z{0,n-1}{m}{X,X}
 		}
-		&\text{If }S[i] = -1\\
+		&\text{If }S_i = -1\\
 		\displaystyle
  		\frac{
 			\displaystyle
-			\sum_{\substack{b\in Bases\\\Kron_{bx,s[k]s[i]\leq m}}}
-			\sum_{m'=0}^{m-\Kron_{bx,s[k]s[i]}}
-			\Y{k-1,i+1}{m-\Kron_{bx,s[k]s[i]-m'}}{b,x}
+			\sum_{m=0}^{M}
+			\sum_{\substack{b\in Bases\\\Kron_{bx,s_ks_i\leq m}}}
+			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
+			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
 			\Z{k+1,i-1}{m'}{b,x}
 		}{
+			\displaystyle
+			\sum_{m=0}^{M}
 			\Z{0,n-1}{m}{X,X}
 		}
-		&\text{If }S[i]=k<i\\
+		&\text{If }S_i=k<i\\
 		\displaystyle
 		\frac{
 			\displaystyle
-			\sum_{\substack{b\in Bases\\\Kron_{xb,s[i]s[k]\leq m}}}
-			\sum_{m'=0}^{m-\Kron_{xb,s[i]s[k]}}
-			\Y{i-1,k+1}{m-\Kron_{xb,s[i]s[k]-m'}}{x,b}
+			\sum_{m=0}^{M}
+			\sum_{\substack{b\in Bases\\\Kron_{xb,s_is_k\leq m}}}
+			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
+			\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
 			\Z{i+1,k-1}{m'}{x,b}
 		}{
+			\displaystyle
+			\sum_{m=0}^{M}
 			\Z{0,n-1}{m}{X,X}
 		}
 		&\text{If }S[i]=k>i
 	\end{array}\right.
 $$
+
+In every case, the denominator is the sum of the partition function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
+\begin{description}
+\item[$S_i=-1$:]
+\item[$S_i=k>i$:]
+\item[$S_i=k<i$:]
+\end{description}
