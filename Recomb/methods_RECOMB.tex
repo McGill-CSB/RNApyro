@@ -237,9 +237,14 @@ $$
 	\end{array}\right.
 $$
 
-In every case, the denominator is the sum of the partition function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
+In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
 \begin{description}
-\item[$S_i=-1$:]
-\item[$S_i=k>i$:]
-\item[$S_i=k<i$:]
+\item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, we are concerned by the weights
+over all sequences which have at position $i$ nucleotide $x$, which is exactly the sum
+of the values of $\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}$, for all $m$ between $0$ and $M$.
+\item[$S_i=k>i$:] Since we need to respect the derivation of the secondary structure $S$, if 
+position $i$ is paired, we must consider the two partition functions. The \emph{outside} of the 
+base pair, and the \emph{inside}, for all possible values for the nucleotide at position $k$, and
+all possible distribution of the mutant positions between the inside and outside of the base pair.
+\item[$S_i=k<i$:] Same as above, but with $i$ pairing with a lower position.
 \end{description}
