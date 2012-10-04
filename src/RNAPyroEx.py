@@ -23,6 +23,7 @@ BOLTZMANN = 0.0019872041
 T = 310.15
 
 #Just generate all possible combination with maxint
+global STACKING_ENERGY
 STACKING_ENERGY = {k:sys.maxint for k in itertools.product(
                   BASES, repeat=4)}
 #Adjust with turner04
@@ -613,7 +614,6 @@ def help():
     """
 
 if __name__ == "__main__":
-  global STACKING_ENERGY
   opts = sys.argv
   if len(opts) < 4:
     help()
