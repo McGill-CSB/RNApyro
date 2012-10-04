@@ -141,7 +141,7 @@ def hammingdistance(data):
 
 def readoutput(filename):
 
-    data_re = re.compile("(?P<index>\d+)(\s+)(?P<probA>[0-9\.]+)(\s+)(?P<probC>[0-9\.]+)(\s+)(?P<probG>[0-9\.]+)(\s+)(?P<probU>[0-9\.]+)\n")
+    data_re = re.compile("(?P<index>\d+)(\s+)(?P<probA>[0-9\.e\-\+]+)(\s+)(?P<probC>[0-9\.e\-\+]+)(\s+)(?P<probG>[0-9\.e\-\+]+)(\s+)(?P<probU>[0-9\.e\-\+]+)\n")
     
     f=open(filename,'r')
     data={} 
@@ -157,7 +157,11 @@ def readoutput(filename):
             data[index]['C'] = float(cell.group('probC'))
             data[index]['G'] = float(cell.group('probG'))
             data[index]['U'] = float(cell.group('probU'))
-
+        else:
+            print 'skip'
+            print buffer
+            sys.exit(1)
+                
     f.close()
 
     return data
@@ -272,7 +276,7 @@ def fullcorrelation(mutlist,indata,outdata):
                     goodscore+=outdata[i][nt]
                     cmptgood+=1
 
-    print goodscore+badscore
+    print '# sum scores',goodscore+badscore
     return goodscore/cmptgood,badscore/cmptgood
 
 

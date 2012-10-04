@@ -249,7 +249,7 @@ def main(filename,nmut,idc,listflag):
         prevssa=''
         idout=''
         cmpt=0
-        print '>>> cluster',idc,'size =',len(cleandata[hcode])
+        #print '>>> cluster',idc,'size =',len(cleandata[hcode])
         for myid,myseq in cleandata[hcode].iteritems():
             cleanseq,cleanssa = fitstruct2seq(myseq,info['consensus'],False)
             if cmpt!=iseqout:
@@ -261,16 +261,18 @@ def main(filename,nmut,idc,listflag):
             cmpt+=1
             if prevssa != '' and prevssa != cleanssa:
                 ssamatch=False
-        print '> consensus'
+        print '> structure'
         print prevssa
         if not ssamatch:
             print 'WARNING: Structure do not match'
 
-        print '>',idout,'(' + str(nmut) + '-mutant)'
+        print '>',idout,'(' + str(nmut) + '-mutant) read'
         cleanseq = cleandata[hcode][idout].replace('.','')
         mutant = mutate(cleanseq,nmut)
         print mutant
-    
+
+        print '>',idout,'target'
+        print cleanseq
     
     sys.exit(1)
 
