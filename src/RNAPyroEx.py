@@ -635,7 +635,7 @@ if __name__ == "__main__":
   if not 0 <= alpha <= 1:
     help()
     sys.exit(1)
-  if len(opts) == 4:
+  if len(opts) == 5:
     try:
       z = float(opts[4])
       for x in STACKING_ENERGY:
