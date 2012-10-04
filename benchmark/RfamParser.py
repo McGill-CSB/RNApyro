@@ -182,7 +182,7 @@ def clusterUnGapped(data):
 
 #################################################################################
 
-def main(filename):
+def main(filename,nmut,idc,listflag):
 
     seqline_re = re.compile("(\S+)(\s+)(\S+)");
 
@@ -235,13 +235,12 @@ def main(filename):
 
     cleandata,idMap = clusterUnGapped(info)
 
-    if False:
+    if listflag:
         for hcode in cleandata.keys():
             if len(cleandata[hcode])>1:
                 print '>>>',idMap['code2num'][hcode],', size=' + str(len(cleandata[hcode]))
+        sys.exit(1)
             
-    idc=60
-    nmut=10
     hcode=idMap['num2code'][idc]
     listout = []
     listout.append(random.randint(0,len(cleandata[hcode])-1))
@@ -267,7 +266,7 @@ def main(filename):
         if not ssamatch:
             print 'WARNING: Structure do not match'
 
-        print '>',idout,'(mutant)'
+        print '>',idout,'(' + str(nmut) + '-mutant)'
         cleanseq = cleandata[hcode][idout].replace('.','')
         mutant = mutate(cleanseq,nmut)
         print mutant
@@ -280,11 +279,14 @@ def main(filename):
 if __name__ == '__main__':
 
   try:
-      opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "file="]);
+      opts, args = getopt.getopt(sys.argv[1:], "hf:m:n:l", ["help", "file=", "mut=", "id=", "list"]);
   except getopt.GetoptError:
       usage(sys.argv[0]);
 
   filename='';
+  nmut=0;
+  id=0;
+  listflag=False;
 
   argStart=len(sys.argv);
   for o,a in opts:
@@ -293,8 +295,17 @@ if __name__ == '__main__':
     if o in ("-f", "--file"):
       filename = a;
       argStart-=2;  
+    if o in ("-m", "--file"):
+      nmut = int(a);
+      argStart -=2;  
+    if o in ("-n", "--file"):
+      id = int(a);
+      argStart-=2;  
+    if o in ("-l", "--list"):
+      listflag = True;
+      argStart-=1;  
 
-  main(filename);
+  main(filename,nmut,id,listflag);
 
 
 
