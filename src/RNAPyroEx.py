@@ -583,14 +583,19 @@ def test():
 def parse_fasta(file_name):
   #first seq is reference, second seq in starting point, one struct only
   seq = []
+  struct = []
   with open(file_name) as f:
     for line in f:
       line = line.strip()
+      if not line:
+        continue
       if all(x in 'AUGC' for x in line):
         seq.append(line)
+        continue
       if all(x in '(.)' for x in line):
-        struct = line 
-  return seq[:-1],seq[-1], parseStruct(struct)
+        struct.append(line)
+        continue
+  return seq[:-1],seq[-1], parseStruct(struct[0])
 
 def all_probabilities(seq,ref_seq, stuct, m, alpha):
   n = len(seq)
@@ -647,6 +652,7 @@ if __name__ == "__main__":
 
 
   ref_seq,seq,struct = parse_fasta(file_name)
+  print ref_seq,seq,struct
   results = all_probabilities(seq,ref_seq,struct,m,alpha)
   display_all_probabilities(results)
 
