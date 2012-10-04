@@ -212,6 +212,7 @@ $$
 			\sum_{m=0}^{M}
 			\sum_{\substack{b\in Bases\\\Kron_{xb,s_is_k\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
+     	 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(i,k),xb}}{RT}}
 			\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
 			\Z{i+1,k-1}{m'}{x,b}
 		}{
@@ -226,6 +227,7 @@ $$
 			\sum_{m=0}^{M}
 			\sum_{\substack{b\in Bases\\\Kron_{bx,s_ks_i\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
+     	 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(k,i),bx}}{RT}}
 			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
 			\Z{k+1,i-1}{m'}{b,x}
 		}{
@@ -245,6 +247,6 @@ of the values of $\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}$, for all $m$ between $0$ an
 \item[$S_i=k>i$:] Since we need to respect the derivation of the secondary structure $S$, if 
 position $i$ is paired, we must consider the two partition functions. The \emph{outside} of the 
 base pair, and the \emph{inside}, for all possible values for the nucleotide at position $k$, and
-all possible distribution of the mutant positions between the inside and outside of the base pair.
+all possible distribution of the mutant positions between the inside and outside of the base pair. We also add the term of isostericity for this specific base pair.
 \item[$S_i=k<i$:] Same as above, but with $i$ pairing with a lower position.
 \end{description}
