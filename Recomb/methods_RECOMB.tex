@@ -44,8 +44,25 @@ $\text{EI}^{\Omega}_{(i,j), a'b'}$ is the average of the sum of differences betw
 of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericity of base pairs
  at positions $(i,j)$ in $\Omega$ and $ab$. If gives us an indication 
  if the base pair $ab$ is more isosteric to the set $\Omega$ than the one on the sequence 
- $\omega$. Where the isostericity values 
- between any pair of canonical base pairs is  as defined in~\cite{Stombaugh2009}. 
+ $\omega$. Formally, given $s$, $\Omega$, two positions $(i,S_i)$ and two nucleotides $a,b\in B$:
+ $$
+ 	\text{EI}^{\Omega}_{(i,j),ab}:=
+	\frac{
+		\displaystyle
+		\sum_{s'\in\Omega}
+		\left(
+			\text{ISO}((s_i',s_j'),(a,b))
+		\right)-
+		\left(
+			\text{ISO}((s_i',s_j'),(s_i,s_j))		
+		\right)
+	}{
+		\displaystyle
+		|\Omega|
+	}
+ $$
+  Where $\text{ISO}((a',b'),(a,b))$ is the isostericity values 
+ between a the canonical base pairs $(a',b')$ and $(a,b)$  as defined in~\cite{Stombaugh2009}. 
  Let be $\alpha\in[0,1]$, it 
  will be used to balance the weight given to the stacking energy or the isostericity.
 	
