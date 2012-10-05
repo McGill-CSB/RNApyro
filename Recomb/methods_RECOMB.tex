@@ -84,7 +84,7 @@ $(1-\alpha)\text{EI}^{\Omega}_{(i,j),ab}$.
 	
 \subsection{Inside}
 The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function considering only the 
-energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and whose nucleotide at position $i-1$ is $a$ (resp. in position $j+1$ it is $b$).
+energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and whose nucleotide at position $i-1$ is $a$ (resp. $b$ in position $j+1$).
 We define function $\Z{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
 
 \[
@@ -123,7 +123,7 @@ The cases can be broked down as follows.
 \begin{description}
 \item[$S_{i}=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
 as if we increase the lower interval bound by $1$ (i.e. $i+1$), and consider all possible
- nucleotides $a'$ at position $i$. 
+ nucleotides $a'$ at position $i$, updating the number of mutants in function of $\Kron_{a',s_i}$. 
 \item[$S_i=j$ and $S_{i-1}=j+1$:] If nucleotide $i$ is paired with $j$ and nucleotide $i-1$ is
 paired with $j+1$, we are in the only case were stacked base pairs can occur. We thus add
 the energy of the stacking and of the isostericity of the base pair $(i,j)$. What is left
@@ -153,8 +153,9 @@ The recurrence, as shown below, will increase the interval $[i,j]$ by decreasing
 it is not base paired. If it is with a position $k>j$, we increase $j$ to include it.
  Thus, when we need
 to evaluate an interval as $(-1,j)$, all stems between $(0,j)$ are taken into account and the
-structure between $(j,n-1)$ must be a set of independent stems. Thus, all the outside energy is
-equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is the following:
+structure between $(j,n-1)$ must be a set of independent stems. Therefore,
+ all the outside energy between $[j,n-1]$ is
+equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follows.
 $$
 	\Y{i,j}{m}{a,b} = \left\{
   \begin{array}{ll}
@@ -188,7 +189,8 @@ The five cases can be broked down as follows.
 \begin{description}
 \item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
 as if we decrease the lower interval bound by $1$ (i.e. $i-1$), and consider all possible
-nucleotides $a'$ at position $i$.
+nucleotides $a'$ at position $i$, correcting the number of mutants
+in function of $\Kron_{a',s_i}$.
 \item[$S_{i}=j$ and $S_{i+1}=j-1$:] If nucleotide $i$ is paired with $j$ and nucleotide $i+1$ is
 paired with $j-11$, we are in the only case were stacked base pairs can occur. We thus add
 the energy of the stacking and of the isostericity of the base pair $(i,j)$. What is left
@@ -200,7 +202,7 @@ only term contributing directly to the energy is the isostericity of the base pa
 We can then consider the outside interval $[i-1,k+1]$ by multiplying it by the the \emph{forward}
 value of the newly included interval (i.e. $[j,k-1]$), for 
 all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $k$ respectively.
-\item[$-1<S_{i}<i$:]As above but if the pairing is to the left.
+\item[$-1<S_{i}<i$:]As above but if position $i$ is to pairing with a lower value.
 \item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
 secondary structure $S$, and we return $0$.
 
@@ -279,5 +281,5 @@ of the values of $\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}$, for all $m$ between $0$ an
 position $i$ is paired, we must consider the two partition functions. The \emph{outside} of the 
 base pair, and the \emph{inside}, for all possible values for the nucleotide at position $k$, and
 all possible distribution of the mutant positions between the inside and outside of the base pair. We also add the term of isostericity for this specific base pair.
-\item[$S_i=k<i$:] Same as above, but with $i$ pairing with a lower position.
+\item[$S_i=k<i$:] Same as above, but with position $i$ pairing with a lower position.
 \end{description}
