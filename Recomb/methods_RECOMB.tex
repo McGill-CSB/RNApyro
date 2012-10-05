@@ -44,7 +44,7 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 														\end{array}\right.$
 
 \subsection{Energy Model}
-The energy we will be composed of two function, $\text{ES}^{\beta}_{ab\to a'b'}$ and 
+The energy used is composed of two function, $\text{ES}^{\beta}_{ab\to a'b'}$ and 
 $\text{EI}^{\Omega}_{(i,j),ab}$. The former is equal to the 
 stacking energy of the base pair with nucleotides $ab$ on top of the base pair with nucleotides 
 $a'b'$, as set in the NNDB~\cite{Turner2010}. If one of the base pair is not valid (i.e. not in 
@@ -52,11 +52,13 @@ $\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$, the value is a p
 $\beta \in [1,\infty]$. This allows
 to completely forbid a sequence where a base pair is non valid, when $\beta = \infty$ or only 
 penalize it.
-$\text{EI}^{\Omega}_{(i,j), a'b'}$ is the average of the sum of differences between the isostericity
-of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericity of base pairs
- at positions $(i,j)$ in $\Omega$ and $ab$. If gives us an indication 
- if the base pair $ab$ is more isosteric to the set $\Omega$ than the one on the sequence 
- $\omega$. Formally, given $s$, $\Omega$, two positions $(i,S_i)$ and two nucleotides $a,b\in B$:
+$\text{EI}^{\Omega}_{(i,j), a'b'}$ is the average of the sum of differences between 
+the isostericity of base pairs
+ at positions $(i,j)$ in $\Omega$ and $ab$, and the isostericity
+of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$. 
+It gives us an estimation of which  base pair, between $ab$ in the mutant sequence
+ and $s_is_j$, is in average more isosteric to $\Omega$.
+Formally, given $s$, $\Omega$, two positions $(i,S_i)$ and two nucleotides $a,b\in B$:
  $$
  	\text{EI}^{\Omega}_{(i,j),ab}:=
 	\frac{
@@ -76,7 +78,9 @@ of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$, and the isostericit
   Where $\text{ISO}((a',b'),(a,b))$ is the isostericity value 
  between  the canonical base pairs $(a',b')$ and $(a,b)$  as defined in~\cite{Stombaugh2009}. 
  Let be $\alpha\in[0,1]$, it 
- will be used to balance the weight given to the stacking energy and the isostericity.
+ will be used to balance the weight given to the stacking energy and the isostericity, 
+ by considering from now on $\alpha\text{ES}^{\beta}_{ab\to a'b'}$ and 
+$(1-\alpha)\text{EI}^{\Omega}_{(i,j),ab}$.
 	
 \subsection{Inside}
 The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function considering only the 
