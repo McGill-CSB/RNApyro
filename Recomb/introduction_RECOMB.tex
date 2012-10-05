@@ -11,10 +11,10 @@ Those functions  require specific structures,
 encoded in their nucleotide sequence. Although the functions
 need to be preserved through various organisms, and therefore
 their structure must be similar,  the sequences
-can greatly differ from one another.
+can greatly differ from one organism to another.
 For half a century, biological molecules have been studied as a proxy to understand
 evolution~\cite{Zuckerkandl1965}, and with all their characteristics, rRNAs have
-become a prime candidate to study phylogeny~\cite{Olsen1986, Olsen1993}.
+become a prime candidate for phylogenetic studies~\cite{Olsen1986, Olsen1993}.
 
 In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007}, 
 leveraging the NGS techniques to sequence as many new organisms 
@@ -29,4 +29,6 @@ assemblies are available, but in studies of new or not well known organisms, the
  information the conserved secondary structure, and we want to use it to identify
 highly probable sequencing errors.
  
- 
+The first challenge is to efficiently explore the mutant space, which grows exponentially. 
+Leveraging the techniques  in \texttt{RNAmutants}~\cite{Waldispuhl2008}, we develop 
+here 
