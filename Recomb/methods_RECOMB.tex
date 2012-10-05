@@ -11,9 +11,12 @@ $\mathbb{P}(s_i = x\mid s,\Omega, S,m)$).
 We define as a variant of the
  \emph{Inside-Outside algorithm}~\cite{Lari1990}, allowing us to obtain the
  desired probability,  the two  functions
-$\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former, as the 
-equivalent of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
-knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing $m$ mutations. The latter computes the \emph{outside}, in particular,  
+$\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former presented in 
+Eq.~\ref{eq:Z_in} and Eq.~\ref{eq:Z_rec}, our 
+version of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
+knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing 
+$m$ mutations. The latter in Eq.~\ref{eq:Y_in} and Eq.\ref{eq:Y_rec},
+ computes the \emph{outside}, in particular,  
 the partition function considering only between $[0,i]\cup[j,n-1]$
 knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing 
  $m$ mutations outside.
@@ -87,19 +90,20 @@ The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function consideri
 energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and whose nucleotide at position $i-1$ is $a$ (resp. $b$ in position $j+1$).
 We define function $\Z{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
 
-\[
+\begin{equation}
 	\forall i \in (0,\cdots,n-1):\, \Z{i+1,i}{m}{a,b}=\left\{
 	\begin{array}{ll}
 		1 &\text{If } m = 0\\
 		0 &\text{Else }
 	\end{array}\right.
-\]
+\label{eq:Z_in}
+\end{equation}
 In other words, when we evaluate the function $\mathcal Z$, after exhausting all positions, there 
 is only one possible solution if there is $0$ mutations left, and none else. Since the 
 energetic terms only depend on base pairs, they are not involved in the initial conditions. 
 
 The recursion itself is composed of four terms:
-$$
+\begin{equation}
 	\Z{i,j}{m}{a,b}:=\left\{
   \begin{array}{ll}
   		\displaystyle
@@ -118,7 +122,8 @@ $$
       \Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
       0 &\text{Else}
 	\end{array}\right.
-$$
+\label{eq:Z_rec}
+\end{equation}
 The cases can be broked down as follows.
 \begin{description}
 \item[$S_{i}=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
@@ -144,11 +149,12 @@ The \emph{Outside} function, $\mathcal Y$, is the partition function considering
 energy in subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
 (resp. in position $j-1$ it is $b$).
 We define function $\Y{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
-$$
+\begin{equation}
 	\Y{-1,j}{m}{X,X}:=
 		\displaystyle
 	  \Z{j,n-1}{m}{X,X}
-$$
+\label{eq:Y_in}
+\end{equation}
 The recurrence, as shown below, will increase the interval $[i,j]$ by decreasing $i$ when
 it is not base paired. If it is with a position $k>j$, we increase $j$ to include it.
  Thus, when we need
@@ -156,7 +162,7 @@ to evaluate an interval as $(-1,j)$, all stems between $(0,j)$ are taken into ac
 structure between $(j,n-1)$ must be a set of independent stems. Therefore,
  all the outside energy between $[j,n-1]$ is
 equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follows.
-$$
+\begin{equation}
 	\Y{i,j}{m}{a,b} = \left\{
   \begin{array}{ll}
 		\displaystyle
@@ -184,7 +190,8 @@ $$
 		 \text{Elif }-1 < S_{i}=k < i\\
 		 0 & \text{Else}
   \end{array}\right.
-$$
+\label{eq:Y_rec}
+\end{equation}
 The five cases can be broked down as follows.
 \begin{description}
 \item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
@@ -225,7 +232,7 @@ We are now interested in knowing, under our model,
  the probability that a given position is a given nucleotide.
 We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
 Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of mutations allowed. 
-$$
+\begin{equation}
 	\mathbb{P}(s_i = x\mid s,\Omega, S,M):=\left\{
 	\begin{array}{ll}
 		\displaystyle
@@ -270,7 +277,7 @@ $$
 		}
 		&\text{If }S_i=k<i
 	\end{array}\right.
-$$
+\end{equation}
 
 In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
 \begin{description}
