@@ -182,7 +182,7 @@ def clusterUnGapped(data):
 
 #################################################################################
 
-def main(filename,nmut,idc,listflag):
+def main(filename,nmut,idc,listflag,out):
 
     seqline_re = re.compile("(\S+)(\s+)(\S+)");
 
@@ -242,37 +242,53 @@ def main(filename,nmut,idc,listflag):
         sys.exit(1)
             
     hcode=idMap['num2code'][idc]
-    listout = []
-    listout.append(random.randint(0,len(cleandata[hcode])-1))
+    if out=="":
+        listout = []
+        listout.append(random.randint(0,len(cleandata[hcode])-1))
+    else:
+        listout = range(len(cleandata[hcode]))
+
     for iseqout in listout:
         ssamatch=True
         prevssa=''
         idout=''
         cmpt=0
-        #print '>>> cluster',idc,'size =',len(cleandata[hcode])
+
+        if out=="":
+            fout_in = sys.stdout
+            fout_ref = sys.stdout
+        else:
+            fout_in = open(out + "_" + str(iseqout) + ".in","w")
+            fout_ref = open(out + "_" + str(iseqout) + ".ref","w")
+        
         for myid,myseq in cleandata[hcode].iteritems():
             cleanseq,cleanssa = fitstruct2seq(myseq,info['consensus'],False)
             if cmpt!=iseqout:
-                print '>',myid
-                print cleanseq
+                print >>fout_in, '> ' + str(myid)
+                print >>fout_in, cleanseq
             else:
                 idout=myid
             prevssa=cleanssa
             cmpt+=1
             if prevssa != '' and prevssa != cleanssa:
                 ssamatch=False
-        print '> structure'
-        print prevssa
+        print >>fout_in, '> structure'
+        print >>fout_in, prevssa
+        if out!="":
+            print >>fout_ref, '> structure'
+            print >>fout_ref, prevssa
         if not ssamatch:
             print 'WARNING: Structure do not match'
 
-        print '>',idout,'(' + str(nmut) + '-mutant) read'
         cleanseq = cleandata[hcode][idout].replace('.','')
         mutant = mutate(cleanseq,nmut)
-        print mutant
-
-        print '>',idout,'target'
-        print cleanseq
+        print >>fout_in, '> ' + str(idout) + ' (' + str(nmut) + '-mutant) read'
+        print >>fout_in, mutant
+        if out!="":
+            print >>fout_ref, '> ' + str(idout) + ' (' + str(nmut) + '-mutant) read'
+            print >>fout_ref, mutant
+        print >>fout_ref, '> ' + str(idout) + ' target'
+        print >>fout_ref, cleanseq
     
     sys.exit(1)
 
@@ -281,7 +297,7 @@ def main(filename,nmut,idc,listflag):
 if __name__ == '__main__':
 
   try:
-      opts, args = getopt.getopt(sys.argv[1:], "hf:m:n:l", ["help", "file=", "mut=", "id=", "list"]);
+      opts, args = getopt.getopt(sys.argv[1:], "hf:m:n:lo:", ["help", "file=", "mut=", "id=", "list", "out="]);
   except getopt.GetoptError:
       usage(sys.argv[0]);
 
@@ -289,6 +305,7 @@ if __name__ == '__main__':
   nmut=0;
   id=0;
   listflag=False;
+  out="";
 
   argStart=len(sys.argv);
   for o,a in opts:
@@ -306,8 +323,11 @@ if __name__ == '__main__':
     if o in ("-l", "--list"):
       listflag = True;
       argStart-=1;  
+    if o in ("-o", "--out"):
+        out = a;
+        argStart-=2;  
 
-  main(filename,nmut,id,listflag);
+  main(filename,nmut,id,listflag,out);
 
 
 

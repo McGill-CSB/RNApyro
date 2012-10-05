@@ -253,7 +253,7 @@ def basiccorrelation(mutlist,data):
 
 ## read infile
 
-def fullcorrelation(mutlist,indata,outdata):
+def fullcorrelation(indata,outdata,withread):
     
     read=indata['read'].replace('.','').replace('-','').upper()
     original=indata['target'].replace('.','').replace('-','').upper()
@@ -266,19 +266,32 @@ def fullcorrelation(mutlist,indata,outdata):
     badscore=0.
     cmptgood=0
     cmptbad=0
+    scores={'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
+    counter={'TP':0,'TN':0,'FP':0,'FN':0}
     for i in range(len(read)):
+        #print i,(outdata[i]['A']+outdata[i]['C']+outdata[i]['G']+outdata[i]['U'])
         for nt in ['A','C','G','U']:
-            if nt!=original[i]:
-                if nt!=read[i]:
-                    badscore+=outdata[i][nt]
-                    cmptbad+=1
+            if nt!=read[i] or withread:
+                if nt==original[i]:
+                    # nt is the good one (T)
+                    if original[i]!=read[i]: # this is a mutation site
+                        scores['TP']+=outdata[i][nt]
+                        counter['TP']+=1
+                    else: # nt is NOT a mutation site (N)
+                        scores['TN']+=outdata[i][nt]
+                        counter['TN']+=1
                 else:
-                    goodscore+=outdata[i][nt]
-                    cmptgood+=1
+                    # nt is not correct (F)
+                    if original[i]!=read[i]: # nt is a mutation site(P)
+                        scores['FP']+=outdata[i][nt]
+                        counter['FP']+=1
+                    else:
+                        # nt is NOT a mutation site (N)
+                        scores['FN']+=outdata[i][nt]
+                        counter['FN']+=1
 
-    print '# sum scores',goodscore+badscore
-    return goodscore/cmptgood,badscore/cmptgood
-
+    return scores,counter
+    
 
 ## read infile
 
@@ -304,7 +317,6 @@ def checkconsistency(mutlist,indata,outdata):
                 else:
                     goodscore+=outdata[i][nt]
                     cmptgood+=1
-    
     print goodscore,badscore,goodscore+badscore
 
 
@@ -343,19 +355,20 @@ def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps):
         FN=0
         threshold=float(myvalue)/myrange
         for i in range(len(read)):
-            for nt in ['A','C','G','U']:
-                if nt!=original[i]: # nt is a mutation
-                    if myssa[i]!='.' or onlybpregion: # mutation in a base pair
-                        if outdata[i][nt]>=threshold: # predicted mutation
-                            if nt==read[i]: # nt is a real mutation
-                                TP+=1
-                            else:
-                                FP+=1
-                        else:
-                            if nt==read[i]: # nt is a real mutation
-                                FN+=1
-                            else:
-                                TN+=1
+            if myssa[i]!='.' or onlybpregion: # mutation in a base pair
+                for nt in ['A','C','G','U']:
+                    if outdata[i][nt]>=threshold: # predicted (P)
+                        if nt==original[i]: # nt is correct (T)
+                            TP+=1
+                        else: # nt is wrong (F)
+                            FP+=1
+                    else: # not predicted (N)
+                        if nt!=original[i]: # nt is NOT the good nt (T)
+                            TN+=1
+                        else: # nt is the good one (F)
+                            FN+=1
+                    
+                    
         #print TP,TN,FP,FN
         if TP+FN>0:
             mysensitivity=float(TP)/(TP+FN)
@@ -424,10 +437,20 @@ def main(infilename,outfilename,onlybpregion,verbose,mysteps):
     mutationlist = hammingdistance(indata)
 
     print 'number of mutations: ', len(mutationlist)
-    mycorrelation,myerror = fullcorrelation(mutationlist,indata,outdata)
+    
+    ## Correlation
+    ## last argument means that proba of nucleotide in read is considered as well
+    withread=True
+    scores,counter = fullcorrelation(indata,outdata,withread)
+    val = {'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
+    for mkey in val.keys():
+        if counter[mkey]>0:
+            val[mkey] = scores[mkey]/counter[mkey]
+    print 'Correlation: TP=%.2f; TN=%.2f; FP=%.2f; FN=%.2f' % (val['TP'],val['TN'],val['FP'],val['FN'])
+    
+    ## Accuracy of prediction using threshold
     myFM,myroc = fullprediction(mutationlist,indata,outdata,onlybpregion,verbose,mysteps)
-    print 'Correlation: %.2f; Error: %.2f' % (mycorrelation,myerror)
-    print 'F-measure: %.2f; ROC: %.2f' %(myFM,myroc)
+    print 'Best F-measure: %.2f; ROC: %.2f' %(myFM,myroc)
 
 
 ###############################################################################
