@@ -1,10 +1,15 @@
 %!TEX root = main_RECOMB.tex
 \section{Methods}
 \label{sec:methods}
-Let $\Omega$ be an un-gapped RNA alignment, $S$ its associate secondary structure, $s$ an RNA 
+Let $\Omega$ be an un-gapped RNA alignment, $S$ its associated secondary structure, $s$ an RNA 
 sequence and $m\geq 0$. $S$ is considered as  one derivation of the SCFG generating  
-all possible secondary structures of the same length as $s$. We define a variant of the
- \emph{Inside-Outside algorithm}~\cite{Lari1990} with the two following functions,
+all possible secondary structures of length  $s$. We are interested in  
+the probability of a given position being a specific nucleotides,
+over all sequences having at most $m$ mutations from $s$, under the SCFG derivation $S$ (i.e.
+$\mathbb{P}(s_i = x\mid s,\Omega, S,m)$). 
+We define a variant of the
+ \emph{Inside-Outside algorithm}~\cite{Lari1990}, allowing us to obtain the
+ desired probability, with the two following functions,
 $\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former, as the 
 equivalent of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing $m$ mutations. The latter computes the \emph{outside}, in particular, knowing 
@@ -14,8 +19,6 @@ The Boltzmann weights are a combination of the base pairs stacking energy,
 using as values those of the NNDB~\cite{Turner2010}, and
 the average isostericity with $\Omega$, as defined in~\cite{Stombaugh2009}. 
 
-This allows us to compute the probability of any position being a specific nucleotides,
-over all sequences having at most $m$ mutations from $s$, under the SCFG derivation $S$.
 
 \subsection{Definitions}
 Let be $B:=\left\{\text{A},\text{C},\text{G},\text{U}\right\}$, the set of nucleotides.
@@ -121,7 +124,6 @@ two different intervals for which we must compute the values, $[i+1,k-1]$ and $[
 all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $j$ respectively.
 \item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
 secondary structure $S$, and we return $0$.
-
 \end{description}
 
 \subsection{Outside}	
@@ -129,7 +131,6 @@ The \emph{Outside} function, $\mathcal Y$, is the partition function considering
 energy in subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
 (resp. in position $j-1$ it is $b$).
 We define function $\Y{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
-
 $$
 	\Y{-1,j}{m}{X,X}:=
 		\displaystyle
