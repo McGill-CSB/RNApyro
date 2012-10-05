@@ -2,29 +2,52 @@
 \section{Methods}
 \label{sec:methods}
 
-\subsection{Model}
+\newcommand{\PE}[1]{E(#1)}
+\newcommand{\EI}{\text{EI}}
+\newcommand{\ES}{\text{ES}}
+\newcommand{\ISO}{\text{ISO}}
+
+\subsection{Probabilistic model}
 Our probabilistic model aims at capturing both the stability of the folded RNA and its ability to adopt a predefined 3D conformation.
-To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function which combines free-energy and isostericity contributions.
+To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both 
+the free-energy and the isostericity. 
+More precisely, let $\Omega$ be an gapless RNA alignment, $S$ its associated secondary structure, 
+then each sequence $s$ has probability proportional to its Boltzmann factor
+\begin{align*}
+  \mathcal{B}(s) &= e^\frac{-\PE{s}}{RT} &&\text{with}&\PE{s}&:=\alpha\cdot\ES(s,S)+(1-\alpha)\cdot\EI(s,S,\Omega),
+\end{align*}
+where $R$ is the Boltzmann constant, $T$ the temperature in Kelvin, $\ES(s)$ and $\EI(s,S,\Omega)$ are the free-energy and isostericity contributiuons, further described below, and $\alpha\in[0,1]$ is an arbitrary parameter that sets the relative weight for both contributions.
 
+\subsubsection{Energy contribution}
+The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, taking values from the Turner \todo[fancyline]{which version of the Turner model?}XXXXX model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
+\begin{align*}
+  \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
+\end{align*}
+where $\ES^{\beta}_{ab\to a'b'}$ is the tabulated free-energy of a stacking pair in the Turner model if available, $0$ if $ab=\varnothing$ (no base-pair to stack onto), and using default value $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$). This latter parameter allows to choose whether to completely forbid a sequence inducing invalid base pairs ($\beta = \infty$), or to simply penalize it.
+The imprecision introduced by this simplification of the Turner model remains reasonable, since the targeted secondary structure is fixed 
+(e.g. multiloops do not account for base-specific contributions). Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
+\subsection{isostericity contribution}
+The concept of isostericity captures the geometric superimposability of two base-pairs, using individual scores given by Stombaugh~\emph{et al}~\cite{Stombaugh2009} based on a probabilistic model. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gapless RNA alignment $\Omega$,  the contribution of the isostericity to the pseudo-energy is given by
+\begin{align*}
+  \ES(s,S,\Omega) &= \sum_{\substack{(i,j)\in S\\ \text{pairs}}}\EI^{\Omega}_{(i,j),s_i s_j}, & \text{where}&& 	\EI^{\Omega}_{(i,j),ab}:=
+	\frac{
+		\sum_{s'\in\Omega}
+			\text{\ISO}((s_i',s_j'),(a,b))}
+%-		\left(			\text{\ISO}((s_i',s_j'),(s_i,s_j))				\right)	
+{		
+		|\Omega|
+	}
+\end{align*}
+is the average isostericity of a base-pair in the candidate sequence in comparison with the reference alignment.
+The $\ISO$ function uses the \todo[fancyline, inline]{\relsize{-1}Is this true? If so, we might want to try taking the most likely edge/orientation combination for each couple instead.}{Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, with $0$ being assigned to a perfect isostericity, and a penalty of $10$ is used for missing entries.
+The isostericity contribution will favor exponentially sequences that are likely to adopt a similar local conformation as the alignment sequences.
 
-The free-energy contribution corresponds to the stacking base-pairs free-erngies of the Turner XXXXX model, as retrieved from the NNDB~\cite{Turner2010}.
-This simplification of the Turner energy .
-The imprecision introduced by our simplification of the Turner model not only
-greatly eases the design of dynamic-programming equations but  also causes 
-a limited imprecision since the targeted secondary structure is fixed 
-(e.g. multiloops do not account for base-specific contributions).
+\subsection{Mutational profiles of sequences}
 
-The isostericity term captures the superimposability of corresponding base-pairs in the initial and mutated structures,
-%$\Omega$, and $s$ with $\Omega$, 
-using isostericity values defined in~\cite{Stombaugh2009}. 
-The range of values is $[0,9.7]$, with $0$ standing for a perfect isostericity, 
-and $10$ being used for missing values in Stombaugh~\emph{et al}~\cite{Stombaugh2009} tables.
-The relative contribution of these terms in the pseudo-energy function is then adjusted using a parameter $\alpha\in[0,1]$.
-
-Let $\Omega$ be an un-gapped RNA alignment, $S$ its associated secondary structure, $s$ an RNA 
-sequence and $m\geq 0$. $S$ is considered as  one derivation of the SCFG generating  
+Let $s$ an RNA 
+sequence and $m\geq 0$. $S$ is considered as  one derivation of the \todo[fancyline]{A bit tough: SCFG's were never mentioned before. Maybe introduce this with a sentence relating problem to parsing}{SCFG} generating  
 all  secondary structures of length  $|s|$. We are interested in  
-the probability of a given position being a specific nucleotides,
+the probability of a given position being a specific nucleotide,
 over all sequences having at most $m$ mutations from $s$, under the SCFG derivation $S$ 
 (formally 
 $\mathbb{P}(s_i = x\mid s,\Omega, S,m)$). 
@@ -32,10 +55,10 @@ We define as a variant of the
  \emph{Inside-Outside algorithm}~\cite{Lari1990}, allowing us to obtain the
  desired probability,  the two  functions
 $\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former presented in 
-Eq.~\ref{eq:Z_in} and Eq.~\ref{eq:Z_rec}, our 
+Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec}, our 
 version of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing 
-$m$ mutations. The latter in Eq.~\ref{eq:Y_in} and Eq.\ref{eq:Y_rec},
+$m$ mutations. The latter in Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec},
  computes the \emph{outside}, in particular,  
 the partition function considering only between $[0,i]\cup[j,n-1]$
 knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing 
@@ -43,7 +66,7 @@ knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and contain
 
 
 
-\subsection{Definitions}
+\subsubsection{Definitions}
 Let be $B:=\left\{\text{A},\text{C},\text{G},\text{U}\right\}$, the set of nucleotides.
 Given $s\in B^n$ an RNA sequence, let $s_i$ be the nucleotide at position $i$. Let $\Omega$ be a set of un-gapped RNA sequences of
 length $n$, and $S$ a secondary structure without pseudoknots. 
@@ -54,58 +77,24 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
   the function $\delta$ such that: 
  $\forall a,a' \in B, \delta_{a,a'}:=\left\{\begin{array}{ll}
 															1 & \text{If } a\equiv a'\\
-															0 & \text{Else}
+															0 & \text{Otherwise.}
 														\end{array}\right.$
+ Let us finally denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contribution of a base-pair $(i,j)$ to the pseudo-energy, such that
+\begin{equation}
+  E_{(i,j),ab \to a'b'}^{\Omega,\beta}  = \alpha \cdot\ES^\beta_{a b \to a' b'}+(1-\alpha)\cdot\EI^{\Omega}_{(i,j),a'b'}.
+\end{equation}
 
-\subsection{Energy Model}
-The energy used is composed of two function, $\text{ES}^{\beta}_{ab\to a'b'}$ and 
-$\text{EI}^{\Omega}_{(i,j),ab}$. The former is equal to the 
-stacking energy of the base pair with nucleotides $ab$ on top of the base pair with nucleotides 
-$a'b'$, as set in the NNDB~\cite{Turner2010}. If one of the base pair is not valid (i.e. not in 
-$\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$, the value is a parameter 
-$\beta \in [1,\infty]$. This allows
-to completely forbid a sequence where a base pair is non valid, when $\beta = \infty$ or only 
-penalize it.
-$\text{EI}^{\Omega}_{(i,j), a'b'}$ is the average of the sum of differences between 
-the isostericity of base pairs
- at positions $(i,j)$ in $\Omega$ and $ab$, and the isostericity
-of base pairs at positions $(i,j)$ in $\Omega$ and $s_is_j$. 
-It gives us an estimation of which  base pair, between $ab$ in the mutant sequence
- and $s_is_j$, is in average more isosteric to $\Omega$.
-Formally, given $s$, $\Omega$, two positions $(i,S_i)$ and two nucleotides $a,b\in B$:
- $$
- 	\text{EI}^{\Omega}_{(i,j),ab}:=
-	\frac{
-		\displaystyle
-		\sum_{s'\in\Omega}
-		\left(
-			\text{ISO}((s_i',s_j'),(a,b))
-		\right)-
-		\left(
-			\text{ISO}((s_i',s_j'),(s_i,s_j))		
-		\right)
-	}{
-		\displaystyle
-		|\Omega|
-	}
- $$
-  Where $\text{ISO}((a',b'),(a,b))$ is the isostericity value 
- between  the canonical base pairs $(a',b')$ and $(a,b)$  as defined in~\cite{Stombaugh2009}. 
- Let be $\alpha\in[0,1]$, it 
- will be used to balance the weight given to the stacking energy and the isostericity, 
- by considering from now on $\alpha\text{ES}^{\beta}_{ab\to a'b'}$ and 
-$(1-\alpha)\text{EI}^{\Omega}_{(i,j),ab}$.
-	
-\subsection{Inside}
+
+\subsubsection{Inside}
 The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function considering only the 
 energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and whose nucleotide at position $i-1$ is $a$ (resp. $b$ in position $j+1$).
 We define function $\Z{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
 
 \begin{equation}
-	\forall i \in (0,\cdots,n-1):\, \Z{i+1,i}{m}{a,b}=\left\{
+	\forall i \in [0,n-1]:\, \Z{i+1,i}{m}{a,b}=\left\{
 	\begin{array}{ll}
 		1 &\text{If } m = 0\\
-		0 &\text{Else }
+		0 &\text{Otherwise.}
 	\end{array}\right.
 \label{eq:Z_in}
 \end{equation}
@@ -122,20 +111,20 @@ The recursion itself is composed of four terms:
       \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} & \text{If }S_{i}=-1\\
       \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
-			 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}^{\Omega}_{(i,j),a'b'})}{RT}}
-			 \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
+			 e^{\frac{-E_{(i,j),ab \to a'b'}^{\Omega,\beta}}{RT}}
+			 \cdot \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
 			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
 			 \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
       \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-   		 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(i,k),a'b'}}{RT}}
-      \Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
-      \Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
-      0 &\text{Else}
+   		 e^{\frac{-E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
+      \cdot\Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
+      \cdot\Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
+      0 &\text{Otherwise}
 	\end{array}\right.
 \label{eq:Z_rec}
 \end{equation}
-The cases can be broked down as follows.
+The cases can be broken down as follows:
 \begin{description}
 \item[$S_{i}=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
 as if we increase the lower interval bound by $1$ (i.e. $i+1$), and consider all possible
@@ -151,11 +140,11 @@ only term contributing directly to the energy is the isostericity of the base pa
 creates
 two different intervals for which we must compute the values, $[i+1,k-1]$ and $[k+1,j-1]$, for 
 all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $j$ respectively.
-\item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
+\item[Else:] In any other case, we are in a derivation of the SCFG that does not correspond to the 
 secondary structure $S$, and we return $0$.
 \end{description}
 
-\subsection{Outside}	
+\subsubsection{Outside}	
 The \emph{Outside} function, $\mathcal Y$, is the partition function considering only the 
 energy in subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
 (resp. in position $j-1$ it is $b$).
@@ -182,22 +171,22 @@ equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follo
     \text{Elif }S_i=-1 \\
     \displaystyle
     \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
-		 e^{\frac{-(\alpha \text{ES}^\beta_{a b \to a' b'}+(1-\alpha)\text{EI}^{\Omega}_{(i,j),a'b'})}{RT}}
+		 e^{\frac{-E_{(i,j),ab \to a'b'}^{\Omega,\beta}}{RT}}\cdot
     \Y{i-1,j+1}{m- \Kron_{a'b',s_is_j}}{a',b'} &
    	 \text{Elif }S_{i}=j \land S_{i+1}=j-1\\
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-  		 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(i,k),a'b'}}{RT}}
-		 \Y{i-1,k+1}{m- \Kron_{a'b',s_is_k} - m'}{a',b'}
-     \Z{j,k-1}{m'}{b,b'} &
+  		 e^{\frac{E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
+		 \cdot\Y{i-1,k+1}{m- \Kron_{a'b',s_is_k} - m'}{a',b'}
+     \cdot\Z{j,k-1}{m'}{b,b'} &
 		 \text{Elif }S_{i}=k \geq j\\
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_ks_i}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s_ks_i}}
-   	 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(k,i),a'b'}}{RT}}
-		 \Y{k-1,j}{m- \Kron_{a'b',s_ks_i} - m'}{a',b}
-     \Z{k+1,i-1}{m'}{a',b'} &
+   	 e^{\frac{E_{(k,i),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
+		 \cdot\Y{k-1,j}{m- \Kron_{a'b',s_ks_i} - m'}{a',b}
+     \cdot\Z{k+1,i-1}{m'}{a',b'} &
 		 \text{Elif }-1 < S_{i}=k < i\\
 		 0 & \text{Else}
   \end{array}\right.
@@ -227,11 +216,11 @@ secondary structure $S$, and we return $0$.
 
 \end{description}
 
-\section{Inside-Outside}
+\subsubsection{Inside-Outside}
 By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
 be described in function of the \emph{forward} term as $\Z{0,n-1}{m}{X,X}$,
  for any nucleotide $X\in B$ or
-in function of the \emph{backward} term, for any position $k$ such that $S_k=-1$:
+in function of the \emph{backward} term, for any unpaired position $k$:
 $$
 	\Z{0,n-1}{m}{X,X}
 	\equiv
@@ -239,58 +228,35 @@ $$
 	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a}
 $$
 
-We are now interested in knowing, under our model, 
- the probability that a given position is a given nucleotide.
+We are now left to compute the probability that a \todo[fancyline]{Maybe worth doing it for base-pairs? maybe not\ldots}{given position is a given nucleotide}.
 We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
-Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of mutations allowed. 
-\begin{equation}
-	\mathbb{P}(s_i = x\mid s,\Omega, S,M):=\left\{
+Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutations. 
+\begin{align*}
+	\mathbb{P}(s_i = x\mid s,\Omega, S,M) &:= \frac{\mathcal{B}(i,x,s,\Omega,S,M)}{\sum_{m=0}^{M}\Z{0,n-1}{m}{X,X}}\\ 
+\mathcal{B}(i,x,s,\Omega,S,M)&=
+ \left\{
 	\begin{array}{ll}
-		\displaystyle
-		\frac{
-			\displaystyle
 			\sum_{m=0}^{M}
 			\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}
-		}{
-			\displaystyle
-			\sum_{m=0}^{M}
-			\Z{0,n-1}{m}{X,X}
-		}
 		&\text{If }S_i = -1\\
-		\displaystyle
-		\frac{
-			\displaystyle
 			\sum_{m=0}^{M}
-			\sum_{\substack{b\in Bases\\\Kron_{xb,s_is_k\leq m}}}
+			\sum_{\substack{b\in B\\\Kron_{xb,s_is_k\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
-     	 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(i,k),xb}}{RT}}
+     	 e^{\frac{E_{(i,k),\varnothing\to xb}^{\Omega,\beta} }{RT}}
 			\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
 			\Z{i+1,k-1}{m'}{x,b}
-		}{
-			\displaystyle
-			\sum_{m=0}^{M}
-			\Z{0,n-1}{m}{X,X}
-		}
 		&\text{If }S_i=k>i\\
-		\displaystyle
- 		\frac{
-			\displaystyle
 			\sum_{m=0}^{M}
-			\sum_{\substack{b\in Bases\\\Kron_{bx,s_ks_i\leq m}}}
+			\sum_{\substack{b\in B\\\Kron_{bx,s_ks_i\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
-     	 e^{\frac{-(1-\alpha)\text{EI}^{\Omega}_{(k,i),bx}}{RT}}
+     	 e^{E_{(k,i),\varnothing\to bx}{RT}}
 			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
 			\Z{k+1,i-1}{m'}{b,x}
-		}{
-			\displaystyle
-			\sum_{m=0}^{M}
-			\Z{0,n-1}{m}{X,X}
-		}
 		&\text{If }S_i=k<i
 	\end{array}\right.
-\end{equation}
+\end{align*}
 
-In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
+In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, \todo[fancyline,inline]{\relsize{-1}Seems weird to do this for a given upper bound $M$ (as opposed to exact $m$), and it makes the equations a bit more complicated. Anyway, there is roughly $3n$ times more sequences with $m+1$ mutations than with $m$ muts, so I expect the $m+1$ guys are so dominating in the final probabilities that it may not be worth the trouble of combining them with the \emph{little guys} ($\#muts < m$)}{for $m$ smaller or equal to our target $M$}. The numerators are divided in the following three cases.
 \begin{description}
 \item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, we are concerned by the weights
 over all sequences which have at position $i$ nucleotide $x$, which is exactly the sum
