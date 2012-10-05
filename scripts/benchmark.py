@@ -9,7 +9,7 @@ from pylab import *;
 ## usage
 
 def usage(softname):
-    print "%s [-cvs] -i <RNApyro infile> -o <RNApyro outfile>" % (softname)
+    print "%s [-cvsw] -i <RNApyro infile> -o <RNApyro outfile>" % (softname)
     sys.exit(1)
 
 ## compute bp set
@@ -322,7 +322,7 @@ def checkconsistency(mutlist,indata,outdata):
 
 ## read infile
 
-def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps):
+def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps,withread):
     
     read=indata['read'].replace('.','').replace('-','').upper()
     original=indata['target'].replace('.','').replace('-','').upper()
@@ -357,16 +357,17 @@ def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps):
         for i in range(len(read)):
             if myssa[i]!='.' or onlybpregion: # mutation in a base pair
                 for nt in ['A','C','G','U']:
-                    if outdata[i][nt]>=threshold: # predicted (P)
-                        if nt==original[i]: # nt is correct (T)
-                            TP+=1
-                        else: # nt is wrong (F)
-                            FP+=1
-                    else: # not predicted (N)
-                        if nt!=original[i]: # nt is NOT the good nt (T)
-                            TN+=1
-                        else: # nt is the good one (F)
-                            FN+=1
+                    if withread or nt!=read[i]:
+                        if outdata[i][nt]>=threshold: # predicted (P)
+                            if nt==original[i]: # nt is correct (T)
+                                TP+=1
+                            else: # nt is wrong (F)
+                                FP+=1
+                        else: # not predicted (N)
+                            if nt!=original[i]: # nt is NOT the good nt (T)
+                                TN+=1
+                            else: # nt is the good one (F)
+                                FN+=1
                     
                     
         #print TP,TN,FP,FN
@@ -429,7 +430,7 @@ def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps):
 
 ## main
 
-def main(infilename,outfilename,onlybpregion,verbose,mysteps):
+def main(infilename,outfilename,onlybpregion,verbose,mysteps,withread):
     
     indata=readinput(infilename)
     outdata=readoutput(outfilename)
@@ -437,10 +438,10 @@ def main(infilename,outfilename,onlybpregion,verbose,mysteps):
     mutationlist = hammingdistance(indata)
 
     print 'number of mutations: ', len(mutationlist)
+
+    ## withreads means that proba of nucleotide in read is considered as well
     
     ## Correlation
-    ## last argument means that proba of nucleotide in read is considered as well
-    withread=True
     scores,counter = fullcorrelation(indata,outdata,withread)
     val = {'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
     for mkey in val.keys():
@@ -449,7 +450,7 @@ def main(infilename,outfilename,onlybpregion,verbose,mysteps):
     print 'Correlation: TP=%.2f; TN=%.2f; FP=%.2f; FN=%.2f' % (val['TP'],val['TN'],val['FP'],val['FN'])
     
     ## Accuracy of prediction using threshold
-    myFM,myroc = fullprediction(mutationlist,indata,outdata,onlybpregion,verbose,mysteps)
+    myFM,myroc = fullprediction(mutationlist,indata,outdata,onlybpregion,verbose,mysteps,withread)
     print 'Best F-measure: %.2f; ROC: %.2f' %(myFM,myroc)
 
 
@@ -460,6 +461,7 @@ if __name__ == '__main__':
     onlybpregion=True
     verbose=False
     mysteps=100
+    withread=True
     
     if len(sys.argv)==1:
         usage(sys.argv[0])
@@ -478,9 +480,10 @@ if __name__ == '__main__':
             outputfile=sys.argv[i+1]
         if myarg=='-s':
             mysteps=int(sys.argv[i+1])
+        if myarg=='-w':
+            withread=False
 
-
-    main(inputfile,outputfile,onlybpregion,verbose,mysteps)
+    main(inputfile,outputfile,onlybpregion,verbose,mysteps,withread)
     
 
 
