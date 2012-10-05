@@ -177,14 +177,14 @@ equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follo
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-  		 e^{\frac{E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
+  		 e^{\frac{-E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
 		 \cdot\Y{i-1,k+1}{m- \Kron_{a'b',s_is_k} - m'}{a',b'}
      \cdot\Z{j,k-1}{m'}{b,b'} &
 		 \text{Elif }S_{i}=k \geq j\\
 		 \displaystyle
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_ks_i}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{a'b',s_ks_i}}
-   	 e^{\frac{E_{(k,i),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
+   	 e^{\frac{-E_{(k,i),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
 		 \cdot\Y{k-1,j}{m- \Kron_{a'b',s_ks_i} - m'}{a',b}
      \cdot\Z{k+1,i-1}{m'}{a',b'} &
 		 \text{Elif }-1 < S_{i}=k < i\\
@@ -242,14 +242,14 @@ Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutat
 			\sum_{m=0}^{M}
 			\sum_{\substack{b\in B\\\Kron_{xb,s_is_k\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
-     	 e^{\frac{E_{(i,k),\varnothing\to xb}^{\Omega,\beta} }{RT}}
+     	 e^{\frac{-E_{(i,k),\varnothing\to xb}^{\Omega,\beta} }{RT}}
 			\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
 			\Z{i+1,k-1}{m'}{x,b}
 		&\text{If }S_i=k>i\\
 			\sum_{m=0}^{M}
 			\sum_{\substack{b\in B\\\Kron_{bx,s_ks_i\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
-     	 e^{E_{(k,i),\varnothing\to bx}{RT}}
+     	 e^{-E_{(k,i),\varnothing\to bx}{RT}}
 			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
 			\Z{k+1,i-1}{m'}{b,x}
 		&\text{If }S_i=k<i
