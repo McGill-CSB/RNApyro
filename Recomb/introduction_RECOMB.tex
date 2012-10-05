@@ -2,12 +2,11 @@
 \section{Introduction}
 \label{sec:introduction}
 
-A particular class of molecules,
-ribonucleic acids (RNAs) are  now  an ubiquitous class of molecules, being
+Ribonucleic acids (RNAs) are  now  an ubiquitous class of molecules, being
 found in every living organisms and having a broad range of functions, from catalyzing
 chemical reactions as the RNase P or the group II introns,
 hybridizing  messenger RNA to regulate gene expression,
-to ribosomal RNA (rRNA) synthesizing protein.
+to ribosomal RNA (rRNA) synthesizing proteins.
 Those functions  require specific structures, 
 encoded in their nucleotide sequence. Although the functions
 need to be preserved through various organisms, and therefore
@@ -19,4 +18,15 @@ become a prime candidate to study phylogeny~\cite{Olsen1986, Olsen1993}.
 
 In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007}, 
 leveraging the NGS techniques to sequence as many new organisms 
-as possible, are producing a wealth of new information.
+as possible, are producing a wealth of new information. Although
+those techniques have a huge throughput, they yield a sequencing error rate of around
+$4\%$~\cite{Huse2007}. This error can be highly reduced in genome projects when highly 
+redundant consensus 
+assemblies are available, but in studies of new or not well known organisms, there is not
+ enough  similarity to differentiate between the sequencing errors and the natural 
+ polymorphisms that we want to observe, often inflating the diversity estimates~\cite{Kunin2010}.
+  In rRNAs, we have as additional 
+ information the conserved secondary structure, and we want to use it to identify
+highly probable sequencing errors.
+ 
+ 
