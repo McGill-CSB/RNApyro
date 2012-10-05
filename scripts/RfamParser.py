@@ -182,7 +182,7 @@ def clusterUnGapped(data):
 
 #################################################################################
 
-def main(filename,nmut,idc,listflag,out):
+def main(filename,nmut,idc,listflag,out,select,cluster):
 
     seqline_re = re.compile("(\S+)(\s+)(\S+)");
 
@@ -242,11 +242,42 @@ def main(filename,nmut,idc,listflag,out):
         sys.exit(1)
             
     hcode=idMap['num2code'][idc]
-    if out=="":
-        listout = []
-        listout.append(random.randint(0,len(cleandata[hcode])-1))
+    myRawCluster=cleandata[hcode]
+
+    if cluster:
+        # cluster 80% of seq similarity using cd-hit
+        f = open('all.fasta','w')
+        for myid,myseq in myRawCluster.iteritems():
+            cleanseq,cleanssa = fitstruct2seq(myseq,info['consensus'],False)
+            print >>f, '> ' + str(myid)
+            print >>f, cleanseq
+        f.close()
+        commandline = ' ~/local/cd-hit/cd-hit-est -i all.fasta -o filter.fasta -c 0.8 -n 4 > /dev/null'
+        os.system(commandline)
+        myCleanCluster = {}
+        f = open('filter.fasta','r')
+        for line in f:
+            selected_ids = []
+            if line.startswith('>'):
+                id = line[1:].strip()
+                myCleanCluster[id] = myRawCluster[id]
+        f.close()
+        print len(myCleanCluster),'sequences selected'
     else:
-        listout = range(len(cleandata[hcode]))
+        myCleanCluster = myRawCluster
+
+            
+            
+    if select==-1:
+        listout = range(len(myCleanCluster))
+    elif select==0:
+        listout = [-1]
+    else:
+        listout = []
+        while (len(listout)<select):
+            index = random.randint(0,len(myCleanCluster)-1)
+            if not index in listout:
+                listout.append(index)
 
     for iseqout in listout:
         ssamatch=True
@@ -258,10 +289,14 @@ def main(filename,nmut,idc,listflag,out):
             fout_in = sys.stdout
             fout_ref = sys.stdout
         else:
-            fout_in = open(out + "_" + str(iseqout) + ".in","w")
-            fout_ref = open(out + "_" + str(iseqout) + ".ref","w")
-        
-        for myid,myseq in cleandata[hcode].iteritems():
+            if select!=0:
+                fout_in = open(out + "_" + str(iseqout) + ".in","w")
+                fout_ref = open(out + "_" + str(iseqout) + ".ref","w")
+            else:
+                fout_in = open(out + "_all.fasta","w")
+                fout_ref = open(out + "_all.ref","w")
+
+        for myid,myseq in myCleanCluster.iteritems():
             cleanseq,cleanssa = fitstruct2seq(myseq,info['consensus'],False)
             if cmpt!=iseqout:
                 print >>fout_in, '> ' + str(myid)
@@ -272,23 +307,24 @@ def main(filename,nmut,idc,listflag,out):
             cmpt+=1
             if prevssa != '' and prevssa != cleanssa:
                 ssamatch=False
-        print >>fout_in, '> structure'
-        print >>fout_in, prevssa
-        if out!="":
+        if select!=0:
+            print >>fout_in, '> structure'
+            print >>fout_in, prevssa
             print >>fout_ref, '> structure'
             print >>fout_ref, prevssa
+
+            cleanseq = myCleanCluster[idout].replace('.','')
+            mutant = mutate(cleanseq,nmut)
+            print >>fout_in, '> ' + str(idout) + ' (' + str(nmut) + '-mutant) read'
+            print >>fout_in, mutant
+            if out!="":
+                print >>fout_ref, '> ' + str(idout) + ' (' + str(nmut) + '-mutant) read'
+                print >>fout_ref, mutant
+            print >>fout_ref, '> ' + str(idout) + ' target'
+            print >>fout_ref, cleanseq
+
         if not ssamatch:
             print 'WARNING: Structure do not match'
-
-        cleanseq = cleandata[hcode][idout].replace('.','')
-        mutant = mutate(cleanseq,nmut)
-        print >>fout_in, '> ' + str(idout) + ' (' + str(nmut) + '-mutant) read'
-        print >>fout_in, mutant
-        if out!="":
-            print >>fout_ref, '> ' + str(idout) + ' (' + str(nmut) + '-mutant) read'
-            print >>fout_ref, mutant
-        print >>fout_ref, '> ' + str(idout) + ' target'
-        print >>fout_ref, cleanseq
     
     sys.exit(1)
 
@@ -297,7 +333,7 @@ def main(filename,nmut,idc,listflag,out):
 if __name__ == '__main__':
 
   try:
-      opts, args = getopt.getopt(sys.argv[1:], "hf:m:n:lo:", ["help", "file=", "mut=", "id=", "list", "out="]);
+      opts, args = getopt.getopt(sys.argv[1:], "hf:m:n:lo:s:c", ["help", "file=", "mut=", "id=", "list", "out=","select=","cluster"]);
   except getopt.GetoptError:
       usage(sys.argv[0]);
 
@@ -306,6 +342,8 @@ if __name__ == '__main__':
   id=0;
   listflag=False;
   out="";
+  select=-1;
+  cluster=False;
 
   argStart=len(sys.argv);
   for o,a in opts:
@@ -314,20 +352,26 @@ if __name__ == '__main__':
     if o in ("-f", "--file"):
       filename = a;
       argStart-=2;  
-    if o in ("-m", "--file"):
+    if o in ("-m", "--mut"):
       nmut = int(a);
       argStart -=2;  
-    if o in ("-n", "--file"):
+    if o in ("-n", "--num"):
       id = int(a);
       argStart-=2;  
     if o in ("-l", "--list"):
       listflag = True;
       argStart-=1;  
     if o in ("-o", "--out"):
-        out = a;
-        argStart-=2;  
+      out = a;
+      argStart-=2;  
+    if o in ("-s", "--select"):
+      select = int(a);
+      argStart-=2;  
+    if o in ("-c", "--cluster"):
+      cluster = True;
+      argStart-=1;  
 
-  main(filename,nmut,id,listflag,out);
+  main(filename,nmut,id,listflag,out,select,cluster);
 
 
 

@@ -6,11 +6,12 @@ def main(nmut,alpha,prefix):
         infile = "RF00001_%d.in" % numex
         if os.path.exists(infile):
             alphanorm = int (alpha * 100)
-            commandline1="python ../src/RNAPyroEx.py RF00001_%d.in %d %.1f > RF00001_%d_alpha_%d.out" % (numex,nmut,alpha,numex,alphanorm)
+            commandline1="python ../src/RNAPyroEx.py RF00001_%d.in %d %.1f > RF00001_%d_nmut_%d_alpha_%d.out" % (numex,nmut,alpha,numex,nmut,alphanorm)
+            print commandline1
             os.system(commandline1)
-            commandline1="python ../scripts/benchmark.py -i RF00001_%d.ref -o RF00001_%d_alpha_%d.out" % (numex,numex,alphanorm)
-            os.system(commandline1)
-
+            commandline2="python ../scripts/benchmark.py -i RF00001_%d.ref -o RF00001_%d_nmut_%d_alpha_%d.out" % (numex,numex,nmut,alphanorm)
+            print commandline2
+            os.system(commandline2)
 
 
 ###############################################################################
