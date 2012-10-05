@@ -1,6 +1,26 @@
 %!TEX root = main_RECOMB.tex
 \section{Methods}
 \label{sec:methods}
+
+\subsection{Model}
+Our probabilistic model aims at capturing both the stability of the folded RNA and its ability to adopt a predefined 3D conformation.
+To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function which combines free-energy and isostericity contributions.
+
+
+The free-energy contribution corresponds to the stacking base-pairs free-erngies of the Turner XXXXX model, as retrieved from the NNDB~\cite{Turner2010}.
+This simplification of the Turner energy .
+The imprecision introduced by our simplification of the Turner model not only
+greatly eases the design of dynamic-programming equations but  also causes 
+a limited imprecision since the targeted secondary structure is fixed 
+(e.g. multiloops do not account for base-specific contributions).
+
+The isostericity term captures the superimposability of corresponding base-pairs in the initial and mutated structures,
+%$\Omega$, and $s$ with $\Omega$, 
+using isostericity values defined in~\cite{Stombaugh2009}. 
+The range of values is $[0,9.7]$, with $0$ standing for a perfect isostericity, 
+and $10$ being used for missing values in Stombaugh~\emph{et al}~\cite{Stombaugh2009} tables.
+The relative contribution of these terms in the pseudo-energy function is then adjusted using a parameter $\alpha\in[0,1]$.
+
 Let $\Omega$ be an un-gapped RNA alignment, $S$ its associated secondary structure, $s$ an RNA 
 sequence and $m\geq 0$. $S$ is considered as  one derivation of the SCFG generating  
 all  secondary structures of length  $|s|$. We are interested in  
@@ -21,15 +41,6 @@ the partition function considering only between $[0,i]\cup[j,n-1]$
 knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$) and containing 
  $m$ mutations outside.
 
-The Boltzmann weights are a combination of the base pairs stacking energy, 
-using as values those of the NNDB~\cite{Turner2010}, and
-the average isostericity difference
-between the mutant and $\Omega$, and $s$ with $\Omega$, using the isostericity values
- as defined in~\cite{Stombaugh2009}. The value of $10$ was used for the isostericity
- of any base pair 
- compared with $GG$ given that the latter base pair was not
-  found in the~\cite{Stombaugh2009} tables,
- and the range of values is $[0,9.7]$, $0$ for a perfect isostericity.
 
 
 \subsection{Definitions}
