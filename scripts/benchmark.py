@@ -9,7 +9,7 @@ from pylab import *;
 ## usage
 
 def usage(softname):
-    print "%s [-cvsw] -i <RNApyro infile> -o <RNApyro outfile>" % (softname)
+    print "%s [-cvswx] -i <RNApyro infile> -o <RNApyro outfile>" % (softname)
     sys.exit(1)
 
 ## compute bp set
@@ -322,7 +322,7 @@ def checkconsistency(mutlist,indata,outdata):
 
 ## read infile
 
-def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps,withread):
+def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps,withread,withfigs):
     
     read=indata['read'].replace('.','').replace('-','').upper()
     original=indata['target'].replace('.','').replace('-','').upper()
@@ -417,12 +417,13 @@ def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps,withr
     myroc+=(1.0-prevspec)*(1.0+prevsens)/2.0
     #print xcoord,ycoord
     # make figure
-    fig = plt.figure();
-    ax = fig.add_subplot(111)
-    ax.plot(xcoord,ycoord,'ro-')
-    ax.plot([0.0,1.0],[0.0,1.0],'b--')
-    fig.savefig('roccurve.pdf',transparent=True)
-    print 'ROC curve saved in file roccurve.pdf'
+    if withfigs:
+        fig = plt.figure();
+        ax = fig.add_subplot(111)
+        ax.plot(xcoord,ycoord,'ro-')
+        ax.plot([0.0,1.0],[0.0,1.0],'b--')
+        fig.savefig('roccurve.pdf',transparent=True)
+        print 'ROC curve saved in file roccurve.pdf'
 
     return bestFM,myroc
 
@@ -430,11 +431,14 @@ def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps,withr
 
 ## main
 
-def main(infilename,outfilename,onlybpregion,verbose,mysteps,withread):
+def main(infilename,outfilename,onlybpregion,verbose,mysteps,withread,withfigs,printfile):
     
     indata=readinput(infilename)
     outdata=readoutput(outfilename)
 
+    if printfile!='':
+        f = open(printfile,'a')
+    
     mutationlist = hammingdistance(indata)
 
     print 'number of mutations: ', len(mutationlist)
@@ -450,8 +454,14 @@ def main(infilename,outfilename,onlybpregion,verbose,mysteps,withread):
     print 'Correlation: TP=%.2f; TN=%.2f; FP=%.2f; FN=%.2f' % (val['TP'],val['TN'],val['FP'],val['FN'])
     
     ## Accuracy of prediction using threshold
-    myFM,myroc = fullprediction(mutationlist,indata,outdata,onlybpregion,verbose,mysteps,withread)
+    myFM,myroc = fullprediction(mutationlist,indata,outdata,onlybpregion,verbose,mysteps,withread,withfigs)
     print 'Best F-measure: %.2f; ROC: %.2f' %(myFM,myroc)
+    
+    if printfile!='':
+        print >>f,val['TP'],val['TN'],val['FP'],val['FN'],myFM,myroc
+                
+    if printfile!='':
+        f.close()
 
 
 ###############################################################################
@@ -462,6 +472,8 @@ if __name__ == '__main__':
     verbose=False
     mysteps=100
     withread=True
+    withfigs=False
+    printfile=''
     
     if len(sys.argv)==1:
         usage(sys.argv[0])
@@ -482,8 +494,12 @@ if __name__ == '__main__':
             mysteps=int(sys.argv[i+1])
         if myarg=='-w':
             withread=False
+        if myarg=='-x':
+            withfigs=True
+        if myarg=='-p':
+            printfile=sys.argv[i+1]
 
-    main(inputfile,outputfile,onlybpregion,verbose,mysteps,withread)
+    main(inputfile,outputfile,onlybpregion,verbose,mysteps,withread,withfigs,printfile)
     
 
 
