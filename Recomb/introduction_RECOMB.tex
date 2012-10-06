@@ -27,13 +27,14 @@ For half a century, biological molecules have been studied as a proxy to underst
 evolution~\cite{Zuckerkandl1965}, and with all their characteristics, rRNAs have
 become a prime candidate for phylogenetic studies~\cite{Olsen1986, Olsen1993}.
 
-In this paper, we tackle the problem of exploring an rRNA sequence mutant space, to
-identify positions which are probably sequencing error, given the  rRNA family sequences
-and its consensus structure.
+In this paper, we tackle the problem of, given an rRNA sequence its family and 
+consensus secondary structure, 
+identifing the positions which are probably sequencing error.
 
 Leveraging the techniques  in \texttt{RNAmutants}~\cite{Waldispuhl2008}, and building on top 
 of the \emph{Inside-Outside algorithm}, we define here a new method called \texttt{RNApyro}
-efficiently computing for large RNAs those probabilities.
+efficiently computing for large RNAs those probabilities under a new 
+pseudo-energetic model.
  Classical techniques define a probabilistic model using a Boltzmann distribution 
 whose weights are based on the free energy of the structure, using as energy parameter
 the values of Turner found in the NNDB~\cite{Turner2010}  for stacked, 
@@ -44,4 +45,7 @@ by experimental techniques. To quantify geometrical differences, they
  define an isostericity distance, increasing as two base pairs differ 
  more from one another in space. We incorporate this second measure in the Boltzmann weights.
  
-To benchmark 
+
+
+To benchmark our technique we use the 5S ribosomal RNA family,
+ which is around $120$ nucleotides longs. We show 
