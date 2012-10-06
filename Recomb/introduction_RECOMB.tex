@@ -2,18 +2,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-
-In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007}, 
-leveraging the NGS techniques to sequence as many new organisms 
-as possible, are producing a wealth of new information. Although
-those techniques have a huge throughput, they yield a sequencing error rate of around
-$4\%$~\cite{Huse2007}. This error can be highly reduced  when highly 
-redundant multiple sequence alignments 
- are available, but in studies of new or not well known organisms, there is not
- enough  similarity to differentiate between the sequencing errors and the natural 
- polymorphisms that we want to observe, often inflating the diversity estimates~\cite{Kunin2010}.
- 
- Ribonucleic acids (RNAs) are  now  an ubiquitous class of molecules, being
+Ribonucleic acids (RNAs) are  now  an ubiquitous class of molecules, being
 found in every living organisms and having a broad range of functions, from catalyzing
 chemical reactions as the RNase P or the group II introns,
 hybridizing  messenger RNA to regulate gene expression,
@@ -25,11 +14,21 @@ their structure must be similar,  the sequences
 can greatly differ from one organism to another.
 For half a century, biological molecules have been studied as a proxy to understand
 evolution~\cite{Zuckerkandl1965}, and with all their characteristics, rRNAs have
-become a prime candidate for phylogenetic studies~\cite{Olsen1986, Olsen1993}.
+always been a prime candidate for phylogenetic studies~\cite{Olsen1986, Olsen1993}.
 
-In this paper, we tackle the problem of, given an rRNA sequence its family and 
-consensus secondary structure, 
-identifing the positions which are probably sequencing error.
+In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007}, 
+leveraging NGS techniques to sequence as many new organisms 
+as possible, are producing a wealth of new information. Although
+those techniques have a huge throughput, they yield a sequencing error rate of around
+$4\%$~\cite{Huse2007}. This error can be highly reduced  when highly 
+redundant multiple sequence alignments 
+ are available, but in studies of new or not well known organisms, there is not
+ enough  similarity to differentiate between the sequencing errors and the natural 
+ polymorphisms that we want to observe, often inflating the diversity estimates~\cite{Kunin2010}.
+ 
+ 
+In this paper, we hypothesize that the family and consensus secondary structure hold 
+information allowing to identify the positions most probable to be sequencing errors.
 
 Leveraging the techniques  in \texttt{RNAmutants}~\cite{Waldispuhl2008}, and building on top 
 of the \emph{Inside-Outside algorithm}, we define here a new method called \texttt{RNApyro}
