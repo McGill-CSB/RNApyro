@@ -24,32 +24,28 @@ into account all the available information. It is therefore essential to develop
 
 In this paper, we introduce \RNApyro, a novel algorithm to that enable us to calculate precisely mutational probabilities in RNA sequences with a
 conserved consensus secondary structure. We show how our techniques can exploit the structural information embedded in physics-based energy models, 
-covariance models and isostericity scales to identify and correct errors in RNA molecules with conserved secondary structure. In particular, we hypothesize that 
-conserved consensus secondary structures combined with sequence profiles and provide an information that allow us to identify and fix sequencing errors.
+covariance models and isostericity scales to identify and correct point-wise errors in RNA molecules with conserved secondary structure. In particular, we 
+hypothesize that  conserved consensus secondary structures combined with sequence profiles and provide an information that allow us to identify and fix sequencing errors.
 
 Here, we expand the range of algorithmic techniques previously introduced with \RNAmutants~\cite{Waldispuhl2008}.
 Instead of exploring the full conformational landscape and sample mutants, we develop an inside-outside algorithm that enables us
 to explore the complete mutational landscape with a \emph{fixed} secondary structure and to calculate exactly mutational probability values. In addition
 to a gain into the numerical precision, this strategy allows us to drastically reduce the computational complexity ($\mathcal{O}(n^3 \cdot k^2)$ for the
 original version of  \RNAmutants to $\mathcal{O}(n \cdot k^2)$ for \RNApyro, where $n$ is the size of the sequence and $k$ the number of mutations).
+
 We design a new scoring scheme combining nearest-neighbor models \cite{Turner2010} to isostericity metrics \cite{Stombaugh2009}.
-
-Classical techniques define a probabilistic model using a Boltzmann distribution 
-whose weights are based on the free energy of the structure, using as energy parameter
-the values of Turner found in the NNDB~\cite{Turner2010}  for stacked, 
-canonical and wobble, base pairs. As shown by Leontis and Westhof~\cite{Leontis2001},
-this  does not encapsulated the large diversity of base pairs that any nucleotide
-can form with any other, although with an energy too small to be yet determined
-by experimental techniques. To quantify geometrical differences, they
- define an isostericity distance, increasing as two base pairs differ 
- more from one another in space. We incorporate this second measure in the Boltzmann weights.
+Classical approaches use a Boltzmann distribution whose weights are estimated using a nearest-neighbour energy model~\cite{Turner2010}. However, the
+latter only accounts for  canonical and wobble, base pairs. As was shown by Leontis and Westhof~\cite{Leontis2001},
+the diversity of base pairs observed in tertiary structures is much larger, albeit their energetic contribution remains unknown. To quantify geometrical differences, 
+an isostericity distance has been designed \cite{Stombaugh2009}, increasing as two base pairs geometrically differ from each other in space. Therefore, we 
+incorporate these scores in the Boltzmann weights used by \RNApyro.
  
-We benchmark our method on the 5S ribosomal RNA. It is a prime example since it has been extensively used for phylogenetic
-reconstructions~\cite{Hori1987} and its sequence has been recovered for over 8000 species
- (RFAM Id: \texttt{RF00001}).
- Using a leave one out strategy, we perform random distributed mutations on a sequence. We show that
-\texttt{RNApyro} can reconstruct the original sequence with an excellent accuracy.
+We illustrate and benchmark our techniques for point-wise error corrections on the 5S ribosomal RNA. We choose the latter since it has been extensively
+used for phylogenetic reconstructions~\cite{Hori1987} and its sequence has been recovered for over 712 species (in the Rfam seed alignment with id
+\texttt{RF00001}). Using a leave one out strategy, we perform random distributed mutations on a sequence. While our methodology is restricted to the correction of 
+point-wise error in structured regions (i.e. with base pairs), we show that \texttt{RNApyro} can successfully extract a signal that can be used to reconstruct the 
+original sequence with an excellent accuracy. This suggests that \RNApyro is a promising algorithm to complement existing tools in the NGS error-correction 
+pipeline.
 
-The scoring scheme and the algorithm are presented in Sec.~\ref{sec:methods}.
-Details of the implementation and benchmarks are in Sec.~\ref{sec:results}. 
+The algorithm and the scoring scheme are presented in Sec.~\ref{sec:methods}. Details of the implementation and benchmarks are in Sec.~\ref{sec:results}. 
 Finally, we discuss future developments and applications in Sec.~\ref{sec:conclusion}.
