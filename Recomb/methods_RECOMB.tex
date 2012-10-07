@@ -39,13 +39,14 @@ The concept of isostericity captures the geometric superimposability of two base
 	}
 \end{align*}
 is the average isostericity of a base-pair in the candidate sequence in comparison with the reference alignment.
-The $\ISO$ function uses the \todo[fancyline, inline]{\relsize{-1}Is this true? If so, we might want to try taking the most likely edge/orientation combination for each couple instead.}{Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, with $0$ being assigned to a perfect isostericity, and a penalty of $10$ is used for missing entries.
+The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, with $0$ being assigned to a perfect isostericity, and a penalty of $10$ is used for missing entries.
 The isostericity contribution will favor exponentially sequences that are likely to adopt a similar local conformation as the alignment sequences.
 
 \subsection{Mutational profiles of sequences}
 
 Let $s$ an RNA 
-sequence and $m\geq 0$. $S$ is considered as  one derivation of the \todo[fancyline]{A bit tough: SCFG's were never mentioned before. Maybe introduce this with a sentence relating problem to parsing}{SCFG} generating  
+sequence and $m\geq 0$. $S$ is considered as  one derivation of the 
+{SCFG} generating  
 all  secondary structures of length  $|s|$. We are interested in  
 the probability of a given position being a specific nucleotide,
 over all sequences having at most $m$ mutations from $s$, under the SCFG derivation $S$ 
@@ -242,7 +243,7 @@ $$
 	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a}
 $$
 
-We are now left to compute the probability that a \todo[fancyline]{Maybe worth doing it for base-pairs? maybe not\ldots}{given position is a given nucleotide}.
+We are now left to compute the probability that a given position is a given nucleotide.
 We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
 Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutations. 
 \begin{align*}
@@ -270,7 +271,8 @@ Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutat
 	\end{array}\right.
 \end{align*}
 
-In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, \todo[fancyline,inline]{\relsize{-1}Seems weird to do this for a given upper bound $M$ (as opposed to exact $m$), and it makes the equations a bit more complicated. Anyway, there is roughly $3n$ times more sequences with $m+1$ mutations than with $m$ muts, so I expect the $m+1$ guys are so dominating in the final probabilities that it may not be worth the trouble of combining them with the \emph{little guys} ($\#muts < m$)}{for $m$ smaller or equal to our target $M$}. The numerators are divided in the following three cases.
+In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, 
+for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
 \begin{description}
 \item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, we are concerned by the weights
 over all sequences which have at position $i$ nucleotide $x$, which is exactly the sum
