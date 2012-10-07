@@ -75,23 +75,23 @@ values over the 10 experiments.}
 The applications for this algorithms implies a need for efficiency
 and scalability. In Table~\ref{tab:time} we
 present different times needed to compute the probabilities for
- every nucleotide at every positions for a vast set of parameters.
+ every nucleotide at every positions for a vast set of parameters. For those test
+ all the sequences were generated randomly, as the target secondary structure.
 
 \begin{table}
 \begin{center}
-\begin{tabular}{llccc}
-$|s|$&$|\Omega|$&\multicolumn{3}{c}{Number of mutations}\\\cline{3-5}
-		 & 				  & 6   &  12  & 24\\\cline{3-5}
-100  & 44				& 35s  & 238s & 1023s\\
-300  & 44				& 135s & 594s &2460s\\\cline{3-5}
-		 &						& 25   & 30   &			\\\cline{3-5}
-300  & 44       &      &  3950s&     \\
-500  & 44       & 5400s&       &      \\
+\begin{tabular}{lccc}
+$|s|$&\multicolumn{3}{c}{Number of mutations}\\\cline{2-4}
+		 			  & 6   &  12  & 24\\\cline{2-4}
+100  				& 35s  & 238s & 1023s\\
+300  			& 135s & 594s &2460s\\\cline{2-4}
+		 						& 25   & 30   &			\\\cline{2-4}
+300       &      &  3950s&     \\
+500         & 5400s&       &      \\
 \end{tabular}
 \end{center}
-\caption{Time to compute all probabilities. The first column indicates the length, the second
- the size of $\Omega$ and  the column indexes indicate the number
+\caption{Time to compute all probabilities. The first column indicates the length and  the column indexes indicate the number
  of mutations. $\alpha$ is
-set at $0.5$, and $\beta=1.5$ and All sequences are generated randomly.}
+set at $0.5$, and $\beta=1.5$ and $|\Omega|=44$.}
 \label{tab:time}
 \end{table}
