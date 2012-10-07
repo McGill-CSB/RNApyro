@@ -5,13 +5,13 @@
 In this article we presented a new and efficient way of
 exploring the mutational landscape of an RNA, benefiting from the
  conserved consensus secondary structures  information,
-to identify and fix sequencing errors. We also showed a new
- pseudo energy model, taking into account the nearest-neighbour energy model 
-and, to quantify geometrical differences,  the isostericity of all base pairs. 
+to identify and fix sequencing errors. We introduced a new
+ pseudo energy model, both taking into account the nearest-neighbour energy model 
+and, to account for geometrical discrepancies,  the isostericity of all base pairs. 
 
-By combining those two approaches,  the 
+By combining these two approaches,  the 
 mutational landscape exploration and the pseudo energy model,
- into \texttt{RNApyro}, we show that we can
+ into \texttt{RNApyro}, we obtained a tool to predict the position and 
 correct randomly mutated 5s rRNA sequences. 
 As presented in Sec.~\ref{sec:results},
 we observe that the models
@@ -21,6 +21,6 @@ Importantly, the implementation is fast enough for practical applications.
 
 We must recall that our approach is restricted to
  the correction of point-wise error in structured regions (i.e. base paired nucleotides).
- Nonetheless it supplements well existing tools by using previously discarded
+ Nonetheless it should supplement well existing tools, by using previously discarded
 information holding, as shown, a strong signal.
 
