@@ -18,15 +18,14 @@ genomics) studies challenging. For instance, pyrosequencing as implemented by Ro
 Because there is no cloning step, resequencing to increase accuracy is not possible and it is therefore vital to disentangle noise from true sequence
 diversity in this type of data \cite{Quince:2009uq}. Errors can be significantly reduced  when large multiple sequence alignments with close homologs
 are available, but in studies of new or not well known organisms, such information is rather sparse. In particular, it is common to is not enough  similarity to 
-differentiate between the sequencing errors and the natural polymorphisms that we want to observe, often inflating the diversity estimates~\cite{Kunin2010}. A few techniques have been
-developed to remedy to this problem~\cite{Quinlan2008,Medvedev2011} but they do not take
-into account all the available information.
-It is therefore essential to develop methods that can exploit any type of signal available to correct errors.  
+differentiate between the sequencing errors and the natural polymorphisms that we want to observe, often inflating the diversity estimates~\cite{Kunin2010}.
+A few techniques have been developed to remedy to this problem~\cite{Quinlan2010,Medvedev2011} but they do not take
+into account all the available information. It is therefore essential to develop methods that can exploit any type of signal available to correct errors.  
 
 In this paper, we introduce \RNApyro, a novel algorithm to that enable us to calculate precisely mutational probabilities in RNA sequences with a
-conserved consensus secondary structure. We propose to use the structural information included in physics-based energy models and covariance models to 
-identify and correct errors in RNA molecules with conserved secondary structure. In particular, we hypothesize that conserved consensus secondary structures 
-combined with sequence profiles provide an information that will allow us to identify and fix sequencing errors.
+conserved consensus secondary structure. We show how our techniques can exploit the structural information embedded in physics-based energy models, 
+covariance models and isostericity scales to identify and correct errors in RNA molecules with conserved secondary structure. In particular, we hypothesize that 
+conserved consensus secondary structures combined with sequence profiles and provide an information that allow us to identify and fix sequencing errors.
 
 Here, we expand the range of algorithmic techniques previously introduced with \RNAmutants~\cite{Waldispuhl2008}.
 Instead of exploring the full conformational landscape and sample mutants, we develop an inside-outside algorithm that enables us
