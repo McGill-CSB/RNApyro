@@ -7,28 +7,30 @@ chemical reactions as the RNase P or the group II introns, hybridizing  messenge
 to ribosomal RNA (rRNA) synthesizing proteins. Those functions  require specific structures,  encoded in their nucleotide
 sequence. Although the functions, and thus the structures, need to be preserved through various organisms, the sequences
 can greatly differ from one organism to another. This sequence diversity coupled with the structural conservation is a fundamental
-asset for evolutionary studies.
+asset for evolutionary studies. To this end, algorithms to analyze the relationship between RNA mutants and structures are required.
 
 For half a century, biological molecules have been studied as a proxy to understand evolution~\cite{Zuckerkandl1965}, and due
-to their fundamental functions, rRNAs have always been a prime candidate for phylogenetic studies~\cite{Olsen1986, Olsen1993}.
-In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007} benefited of new technologies such as the
-NGS techniques to sequence as many new organisms as possible and extract a unprecedented flow of new information. 
+to their fundamental functions and remarkably conserved structures, rRNAs have always been a prime candidate for phylogenetic
+studies~\cite{Olsen1986, Olsen1993}. In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007} benefited
+of new technologies such as the NGS techniques to sequence as many new organisms as possible and extract a unprecedented flow of new information. 
 Nonetheless, these high-throughput techniques typically have high error rates that make their applications to metagenomics (a.k.a. environmental
 genomics) studies challenging. For instance, pyrosequencing as implemented by Roche's 454 produces may have a error rate raising up to 10\%.
 Because there is no cloning step, resequencing to increase accuracy is not possible and it is therefore vital to disentangle noise from true sequence
-diversity in this type of data \cite{Quince:2009uq}. This error can be highly reduced  when large multiple sequence alignments with close homologs
+diversity in this type of data \cite{Quince:2009uq}. Errors can be significantly reduced  when large multiple sequence alignments with close homologs
 are available, but in studies of new or not well known organisms, such information is rather sparse. In particular, it is common to is not enough  similarity to 
 differentiate between the sequencing errors and the natural polymorphisms that we want to observe, often inflating the diversity estimates~\cite{Kunin2010}.
 It is therefore essential to develop methods that can exploit any type of signal available to correct errors.  
 
-In this paper, we propose to use the structural information included in physics-based energy models and covariance models to identify and correct errors
-in RNA molecules with conserved secondary structure. In particular, we hypothesize that sequence profiles combined with conserved consensus secondary structures provide an information that will allow us to identify and fix sequencing errors.
+In this paper, we introduce \RNApyro, a novel algorithm to that enable us to calculate precisely mutational probabilities in RNA sequences with a
+conserved consensus secondary structure. We propose to use the structural information included in physics-based energy models and covariance models to 
+identify and correct errors in RNA molecules with conserved secondary structure. In particular, we hypothesize that conserved consensus secondary structures 
+combined with sequence profiles provide an information that will allow us to identify and fix sequencing errors.
 
-Here, we introduce \RNApyro and expand the range of algorithmic techniques previously introduced with \RNAmutants~\cite{Waldispuhl2008}.
+Here, we expand the range of algorithmic techniques previously introduced with \RNAmutants~\cite{Waldispuhl2008}.
 Instead of exploring the full conformational landscape and sample mutants, we develop an inside-outside algorithm that enables us
-to explore the complete mutational landscape with a \emph{fixed} secondary structure and calculate exact probability values. In addition to a gain into the
-numerical precision, this strategy allows us to drastically reduce the computational complexity ($\mathcal{O}(n^3 \cdot k^2)$ for the original version of 
-\RNAmutants to $\mathcal{O}(n \cdot k^2)$ for \RNApyro, where $n$ is the size of the sequence and $k$ the number of mutations).
+to explore the complete mutational landscape with a \emph{fixed} secondary structure and to calculate exactly mutational probability values. In addition
+to a gain into the numerical precision, this strategy allows us to drastically reduce the computational complexity ($\mathcal{O}(n^3 \cdot k^2)$ for the
+original version of  \RNAmutants to $\mathcal{O}(n \cdot k^2)$ for \RNApyro, where $n$ is the size of the sequence and $k$ the number of mutations).
 We design a new scoring scheme combining nearest-neighbor models \cite{Turner2010} to isostericity metrics \cite{Stombaugh2009}.
 
 Classical techniques define a probabilistic model using a Boltzmann distribution 
