@@ -16,7 +16,8 @@ then each sequence $s$ has probability proportional to its Boltzmann factor
 \begin{align*}
   \mathcal{B}(s) &= e^\frac{-\PE{s}}{RT} &&\text{with}&\PE{s}&:=\alpha\cdot\ES(s,S)+(1-\alpha)\cdot\EI(s,S,\Omega),
 \end{align*}
-where $R$ is the Boltzmann constant, $T$ the temperature in Kelvin, $\ES(s)$ and $\EI(s,S,\Omega)$ are the free-energy and isostericity contributiuons, further described below, and $\alpha\in[0,1]$ is an arbitrary parameter that sets the relative weight for both contributions.
+where $R$ is the Boltzmann constant, $T$ the temperature in Kelvin, $\ES(s)$ and $\EI(s,S,\Omega)$ 
+are the free-energy and isostericity contributions respectively, further described below, and $\alpha\in[0,1]$ is an arbitrary parameter that sets the relative weight for both contributions.
 
 \subsubsection{Energy contribution}
 The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, taking values from the Turner 2004 model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
@@ -26,7 +27,7 @@ The free-energy contribution in our pseudo-energy model corresponds to an additi
 where $\ES^{\beta}_{ab\to a'b'}$ is the tabulated free-energy of a stacking pair in the Turner model if available, $0$ if $ab=\varnothing$ (no base-pair to stack onto), and using default value $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\text{GU},\text{UG},\text{CG},\text{GC}, \text{AU or UA}\}$). This latter parameter allows to choose whether to completely forbid a sequence inducing invalid base pairs ($\beta = \infty$), or to simply penalize it.
 The imprecision introduced by this simplification of the Turner model remains reasonable, since the targeted secondary structure is fixed 
 (e.g. multiloops do not account for base-specific contributions). Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
-\subsection{isostericity contribution}
+\subsubsection{Isostericity contribution}
 The concept of isostericity captures the geometric superimposability of two base-pairs, using individual scores given by Stombaugh~\emph{et al}~\cite{Stombaugh2009} based on a probabilistic model. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gapless RNA alignment $\Omega$,  the contribution of the isostericity to the pseudo-energy is given by
 \begin{align*}
   \ES(s,S,\Omega) &= \sum_{\substack{(i,j)\in S\\ \text{pairs}}}\EI^{\Omega}_{(i,j),s_i s_j}, & \text{where}&& 	\EI^{\Omega}_{(i,j),ab}:=
@@ -42,7 +43,7 @@ is the average isostericity of a base-pair in the candidate sequence in comparis
 The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, with $0$ being assigned to a perfect isostericity, and a penalty of $10$ is used for missing entries.
 The isostericity contribution will favor exponentially sequences that are likely to adopt a similar local conformation as the alignment sequences.
 
-\subsection{Mutational profiles of sequences}
+\subsection{Mutational profile of sequences}
 
 Let $s$ an RNA 
 sequence and $m\geq 0$. $S$ is considered as  one derivation of the 
@@ -57,7 +58,7 @@ We define as a variant of the
  desired probability,  the two  functions
 $\Z{i,j}{m}{a,b}$ and $\Y{i,j}{m}{a,b}$. The former presented in 
 Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec}, our 
-version of the \emph{inside}, computes the partition function between $i$ and $j$ included, 
+version of the \emph{inside} algorithm, computes the partition function between $i$ and $j$ included, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$) and containing 
 $m$ mutations. The latter in Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec},
  computes the \emph{outside}, in particular,  
@@ -80,7 +81,8 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 															1 & \text{If } a\equiv a'\\
 															0 & \text{Otherwise.}
 														\end{array}\right.$
- Let us finally denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contribution of a base-pair $(i,j)$ to the pseudo-energy, such that
+
+Finally, we denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contribution of a base-pair $(i,j)$ to the pseudo-energy, such that
 \begin{equation}
   E_{(i,j),ab \to a'b'}^{\Omega,\beta}  = \alpha \cdot\ES^\beta_{a b \to a' b'}+(1-\alpha)\cdot\EI^{\Omega}_{(i,j),a'b'}.
 \end{equation}
@@ -89,7 +91,7 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 \subsubsection{Inside}
 \begin{figure}
 \resizebox{\textwidth}{!}{\input{FigDPInside.pgf}}
-\caption{Illustration of the principle underlying the inside computation (aka partition function). Any sequence with $m$ mutations over an interval $[i,j]$ 
+\caption{Illustration of the inside computation (aka partition function). Any sequence with $m$ mutations over an interval $[i,j]$ 
 can be decomposed as a sequence over $[i+1,j]$ preceded by a, possibly mutated, base at $i$ 
 (Unpaired case), a sequence over $[i+1,j-1]$ surrounded by some base-pair (Stacking-pair case), 
 or as two sequences over $[i+1,k-1]$ and $[k+1,j]$, completed by some base-pair (General base-pairing case). 
@@ -231,7 +233,7 @@ secondary structure $S$, and we return $0$.
 
 \end{description}
 
-\subsubsection{Inside-Outside}
+\subsubsection{Combining Inside and Outside value into base content probabilities}
 By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
 be described in function of the \emph{forward} term as $\Z{0,n-1}{m}{X,X}$,
  for any nucleotide $X\in B$ or
