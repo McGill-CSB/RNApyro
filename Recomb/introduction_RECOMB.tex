@@ -30,8 +30,8 @@ hypothesize that  conserved consensus secondary structures combined with sequenc
 Here, we expand the range of algorithmic techniques previously introduced with \RNAmutants~\cite{Waldispuhl2008}.
 Instead of exploring the full conformational landscape and sample mutants, we develop an inside-outside algorithm that enables us
 to explore the complete mutational landscape with a \emph{fixed} secondary structure and to calculate exactly mutational probability values. In addition
-to a gain into the numerical precision, this strategy allows us to drastically reduce the computational complexity ($\mathcal{O}(n^3 \cdot k^2)$ for the
-original version of  \RNAmutants to $\mathcal{O}(n \cdot k^2)$ for \RNApyro, where $n$ is the size of the sequence and $k$ the number of mutations).
+to a gain into the numerical precision, this strategy allows us to drastically reduce the computational complexity ($\mathcal{O}(n^3 \cdot m^2)$ for the
+original version of  \RNAmutants to $\mathcal{O}(n \cdot m^2)$ for \RNApyro, where $n$ is the size of the sequence and $m$ the number of mutations).
 
 We design a new scoring scheme combining nearest-neighbor models \cite{Turner2010} to isostericity metrics \cite{Stombaugh2009}.
 Classical approaches use a Boltzmann distribution whose weights are estimated using a nearest-neighbour energy model~\cite{Turner2010}. However, the
