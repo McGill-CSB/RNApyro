@@ -91,7 +91,7 @@ Finally, we denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contributi
 \subsubsection{Inside}
 \begin{figure}
 \resizebox{\textwidth}{!}{\input{FigDPInside.pgf}}
-\caption{Illustration of the inside computation (aka partition function). Any sequence with $m$ mutations over an interval $[i,j]$ 
+\caption{Principle of the inside computation (aka partition function). Any sequence with $m$ mutations over an interval $[i,j]$ 
 can be decomposed as a sequence over $[i+1,j]$ preceded by a, possibly mutated, base at $i$ 
 (Unpaired case), a sequence over $[i+1,j-1]$ surrounded by some base-pair (Stacking-pair case), 
 or as two sequences over $[i+1,k-1]$ and $[k+1,j]$, completed by some base-pair (General base-pairing case). 
@@ -160,7 +160,8 @@ secondary structure $S$, and we return $0$.
 \subsubsection{Outside}	
 \begin{figure}
 \resizebox{\textwidth}{!}{\input{FigDPOutside.pgf}}
-\caption{Principle of the outside computation.}
+\caption{Principle of the outside computation. Note that the outside algorithm uses intermediate results from the inside algorithm, 
+therefore its efficient implementation requires an implementation of the inside computation.}
 \end{figure}
 The \emph{Outside} function, $\mathcal Y$, is the partition function considering only the 
 contributions of subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
@@ -223,7 +224,7 @@ $a',b'\in B^2$ at positions $i$ and $j$ respectively.
 \item[$S_{i}=k \geq j$:]If nucleotide $i$ is paired with position $k\geq j$, 
 and is not stacked inside, the 
 only term contributing directly to the energy is the isostericity of the base pair $(i,k)$. 
-We can then consider the outside interval $[i-1,k+1]$ by multiplying it by the the \emph{forward}
+We can then consider the outside interval $[i-1,k+1]$ by multiplying it by the the \emph{inside}
 value of the newly included interval (i.e. $[j,k-1]$), for 
 all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $k$ respectively.
 \item[$-1<S_{i}<i$:]As above but if position $i$ is to pairing with a lower value.
@@ -235,9 +236,9 @@ secondary structure $S$, and we return $0$.
 
 \subsubsection{Combining Inside and Outside values into point-wise mutations probabilities}
 By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
-be described in function of the \emph{forward} term as $\Z{0,n-1}{m}{X,X}$,
+be described in function of the \emph{inside} term as $\Z{0,n-1}{m}{X,X}$,
  for any nucleotide $X\in B$ or
-in function of the \emph{backward} term, for any unpaired position $k$:
+in function of the \emph{outside} term, for any unpaired position $k$:
 $$
 	\Z{0,n-1}{m}{X,X}
 	\equiv
@@ -291,6 +292,6 @@ all possible distribution of the mutant positions between the inside and outside
 \subsection{Complexity}
 Equations~\eqref{eq:Z_rec} and~\eqref{eq:Y_rec} can be computed using dynamic programming, i.e. $\mathcal{Z}^{*}_{*}$ or $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and interval lengths, memorizing the results such that they become available in constant time during future stages of the computation. Furthermore, energy terms $E(\cdot)$ can be accessed in constant time (after a precomputation in $\Theta(n\cdot|\Omega|)$ for the isostericity part). Computing any given term therefore requires $\Theta(m)$ operations.
 
-In principle, this action should be performed $\Theta(m\cdot n^2)$ times to investigate any triplet $(m,i,j)$.
+In principle, this computation should be performed $\Theta(m\cdot n^2)$ times to investigate any triplet $(m,i,j)$.
 However, a close inspection of the recurrences reveal that the computation can be safely restricted to a subset of all intervals.
-For instance, in the forward computation, such intervals $[i,j]$ do not break any base-pair, and their next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation. Such constraints drastically limit the combinatorics of required computations, dropping from $\Theta(n^2)$ to $\Theta(n)$ the number of terms that need to be computed and stored. Consequently the overall complexity of the algorithm is $\Theta(n\cdot(|\Omega|+m^2))$ aritmetic operations and $\Theta(n\cdot(|\Omega|+m))$ memory.
+For instance, in the inside computation, such intervals $[i,j]$ do not break any base-pair, and their next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation. Such constraints drastically limit the combinatorics of required computations, dropping from $\Theta(n^2)$ to $\Theta(n)$ the number of terms that need to be computed and stored. Consequently the overall complexity of the algorithm is $\Theta(n\cdot(|\Omega|+m^2))$ aritmetic operations and $\Theta(n\cdot(|\Omega|+m))$ memory.
