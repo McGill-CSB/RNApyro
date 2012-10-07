@@ -232,237 +232,227 @@ def randommutants(data,nmut):
 
     return mutationlist
 
-## read infile
-
-def basiccorrelation(mutlist,data):
-
-    score=0
-    for nt1,index,nt2 in mutlist:
-        score += data[index][nt1]
-
-    if False:
-        sumscore=0
-        for index,probs in data.iteritems():
-            subtotal = probs['A']+probs['C']+probs['G']+probs['U']
-            if False and subtotal!=1:
-                print index,probs
-            sumscore+=subtotal
-        print sumscore
     
-    return score/len(mutlist)
+## correlation 2
 
-## read infile
+def probprofile(indatafull,outdatafull,withread):
+    
+    scores={}
+    counter={}
+    
+    for alpha in indatafull.keys():
 
-def fullcorrelation(indata,outdata,withread):
-    
-    read=indata['read'].replace('.','').replace('-','').upper()
-    original=indata['target'].replace('.','').replace('-','').upper()
-    
-    if len(read)!=len(original):
-        print 'ERROR'
-        sys.exit(1)
-    
-    goodscore=0.
-    badscore=0.
-    cmptgood=0
-    cmptbad=0
-    scores={'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
-    counter={'TP':0,'TN':0,'FP':0,'FN':0}
-    for i in range(len(read)):
-        #print i,(outdata[i]['A']+outdata[i]['C']+outdata[i]['G']+outdata[i]['U'])
-        for nt in ['A','C','G','U']:
-            if nt!=read[i] or withread:
-                if nt==original[i]:
-                    # nt is the good one (T)
-                    if original[i]!=read[i]: # this is a mutation site
-                        scores['TP']+=outdata[i][nt]
-                        counter['TP']+=1
-                    else: # nt is NOT a mutation site (N)
-                        scores['TN']+=outdata[i][nt]
-                        counter['TN']+=1
-                else:
-                    # nt is not correct (F)
-                    if original[i]!=read[i]: # nt is a mutation site(P)
-                        scores['FP']+=outdata[i][nt]
-                        counter['FP']+=1
-                    else:
-                        # nt is NOT a mutation site (N)
-                        scores['FN']+=outdata[i][nt]
-                        counter['FN']+=1
+        indata = indatafull[alpha]
+        outdata = outdatafull[alpha]
+        scores[alpha]={'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
+        counter[alpha]={'TP':0,'TN':0,'FP':0,'FN':0}
 
-    return scores,counter
-    
-
-## read infile
-
-def checkconsistency(mutlist,indata,outdata):
-    
-    read=indata['read'].replace('.','').replace('-','').upper()
-    original=indata['target'].replace('.','').replace('-','').upper()
-    
-    if len(read)!=len(original):
-        print 'ERROR'
-        sys.exit(1)
-    
-    goodscore=0.
-    badscore=0.
-    cmptgood=0
-    cmptbad=0
-    for i in range(len(read)):
-        for nt in ['A','C','G','U']:
-            if nt!=original[i]:
-                if nt!=read[i]:
-                    badscore+=outdata[i][nt]
-                    cmptbad+=1
-                else:
-                    goodscore+=outdata[i][nt]
-                    cmptgood+=1
-    print goodscore,badscore,goodscore+badscore
-
-
-## read infile
-
-def fullprediction(mutlist,indata,outdata,onlybpregion,verbose,customsteps,withread,withfigs):
-    
-    read=indata['read'].replace('.','').replace('-','').upper()
-    original=indata['target'].replace('.','').replace('-','').upper()
-    myseq,myssa=fitssa2seq(indata['ssa'],indata['target'],False)
-
-    ## FIXME: filter mutations in bp regions
-    
-    if len(read)!=len(original):
-        print 'ERROR'
-        sys.exit(1)
-    
-    
-    sensitivity={}
-    specificity={}
-    PPV={}
-
-    bestFM=0
-    bestsens=0
-    bestspec=0
-    bestT=0
-    startrange=0
-    endrange=customsteps
-    mystep=1
-    myrange=float(customsteps)
-
-    for myvalue in range(startrange,endrange+1,mystep):
-        TP=0
-        TN=0
-        FP=0
-        FN=0
-        threshold=float(myvalue)/myrange
-        for i in range(len(read)):
-            if myssa[i]!='.' or onlybpregion: # mutation in a base pair
+        for mkey in indatafull[alpha].keys():
+            read=indata[mkey]['read'].replace('.','').replace('-','').upper()
+            original=indata[mkey]['target'].replace('.','').replace('-','').upper()
+            
+            if len(read)!=len(original):
+                print 'ERROR'
+                sys.exit(1)
+            
+            for i in range(len(read)):
+                #print i,(outdata[i]['A']+outdata[i]['C']+outdata[i]['G']+outdata[i]['U'])
                 for nt in ['A','C','G','U']:
-                    if withread or nt!=read[i]:
-                        if outdata[i][nt]>=threshold: # predicted (P)
-                            if nt==original[i]: # nt is correct (T)
-                                TP+=1
-                            else: # nt is wrong (F)
-                                FP+=1
-                        else: # not predicted (N)
-                            if nt!=original[i]: # nt is NOT the good nt (T)
-                                TN+=1
-                            else: # nt is the good one (F)
-                                FN+=1
-                    
-                    
-        #print TP,TN,FP,FN
-        if TP+FN>0:
-            mysensitivity=float(TP)/(TP+FN)
-        else:
-            mysensitivity=0
-        if TN+FP>0:
-            myspecificity=float(TN)/(TN+FP)
-        else:
-            myspecificity=0
-        if TP+FP>0:
-            myPPV=float(TP)/(TP+FP)
-        else:
-            myPPV=1.0
-        if mysensitivity+myPPV>0:
-            Fmeasure= 2.0 * (mysensitivity*myPPV)/(mysensitivity+myPPV)
-        else:
-            Fmeasure=0
-        if verbose:
-            print "%.2f: %.2f (%.2f,%.2f,%.2f)" % (threshold,Fmeasure,mysensitivity,myPPV,myspecificity)
-        if Fmeasure>bestFM:
-            bestFM=Fmeasure
-            bestsens=mysensitivity
-            bestspec=myspecificity
-            bestT=threshold
-        sensitivity[myvalue]=mysensitivity
-        specificity[myvalue]=myspecificity
-        PPV[myvalue]=myPPV
+                    if nt!=read[i] or withread:
+                        if nt==original[i]:
+                            # nt is the good one (T)
+                            if original[i]!=read[i]: # this is a mutation site
+                                scores[alpha]['TP']+=outdata[mkey][i][nt]
+                                counter[alpha]['TP']+=1
+                            else: # nt is NOT a mutation site (N)
+                                scores[alpha]['TN']+=outdata[mkey][i][nt]
+                                counter[alpha]['TN']+=1
+                        else:
+                            # nt is not correct (F)
+                            if original[i]!=read[i]: # nt is a mutation site(P)
+                                scores[alpha]['FP']+=outdata[mkey][i][nt]
+                                counter[alpha]['FP']+=1
+                            else:
+                                # nt is NOT a mutation site (N)
+                                scores[alpha]['FN']+=outdata[mkey][i][nt]
+                                counter[alpha]['FN']+=1
+    
+    return scores,counter
 
-    # compute ROC
-    prevsens=0
-    prevspec=0
-    myroc=0.0
-    xcoord=[0.0]
-    ycoord=[0.0]
-    for myvalue in range(endrange,startrange-1,-mystep):
-    #for myvalue in range(startrange,endrange+1,mystep):
-        mysens=sensitivity[myvalue]
-        myspec=1.0 - specificity[myvalue]
-        myarea=(myspec-prevspec)*(mysens+prevsens)/2.0
-        myroc+=myarea
-        prevsens=mysens
-        prevspec=myspec
-        xcoord.append(myspec)
-        ycoord.append(mysens)
-    myroc+=(1.0-prevspec)*(1.0+prevsens)/2.0
+
+
+## compute ROC curve and AUC
+
+def makeROC(indatafull,outdatafull,onlybpregion,verbose,customsteps,withread,withfigs,rocfile):
+    
+    output={}
+    xcoord={}
+    ycoord={}
+    
+    for alpha in indatafull.keys():
+    
+        indata = indatafull[alpha]
+        outdata = outdatafull[alpha]
+    
+        sensitivity={}
+        specificity={}
+        PPV={}
+        
+        bestFM=0
+        bestsens=0
+        bestspec=0
+        bestT=0
+        startrange=0
+        endrange=customsteps
+        mystep=1
+        myrange=float(customsteps)
+            
+        for myvalue in range(startrange,endrange+1,mystep):
+            TP=0
+            TN=0
+            FP=0
+            FN=0
+            threshold=float(myvalue)/myrange
+            for mkey in indata.keys():
+                read=indata[mkey]['read'].replace('.','').replace('-','').upper()
+                original=indata[mkey]['target'].replace('.','').replace('-','').upper()
+                myseq,myssa=fitssa2seq(indata[mkey]['ssa'],indata[mkey]['target'],False)
+
+                ## FIXME: filter mutations in bp regions
+                
+                if len(read)!=len(original):
+                    print 'ERROR: length do not match.'
+                    sys.exit(1)
+                
+                for i in range(len(read)):
+                    if myssa[i]!='.' or onlybpregion: # mutation in a base pair
+                        for nt in ['A','C','G','U']:
+                            if withread or nt!=read[i]:
+                                if outdata[mkey][i][nt]>=threshold: # predicted (P)
+                                    if nt==original[i]: # nt is correct (T)
+                                        TP+=1
+                                    else: # nt is wrong (F)
+                                        FP+=1
+                                else: # not predicted (N)
+                                    if nt!=original[i]: # nt is NOT the good nt (T)
+                                        TN+=1
+                                    else: # nt is the good one (F)
+                                        FN+=1
+                        
+                        
+            #print TP,TN,FP,FN
+            if TP+FN>0:
+                mysensitivity=float(TP)/(TP+FN)
+            else:
+                mysensitivity=0
+            if TN+FP>0:
+                myspecificity=float(TN)/(TN+FP)
+            else:
+                myspecificity=0
+            if TP+FP>0:
+                myPPV=float(TP)/(TP+FP)
+            else:
+                myPPV=1.0
+            if mysensitivity+myPPV>0:
+                Fmeasure= 2.0 * (mysensitivity*myPPV)/(mysensitivity+myPPV)
+            else:
+                Fmeasure=0
+            if verbose:
+                print "%.2f: %.2f (%.2f,%.2f,%.2f)" % (threshold,Fmeasure,mysensitivity,myPPV,myspecificity)
+            if Fmeasure>bestFM:
+                bestFM=Fmeasure
+                bestsens=mysensitivity
+                bestspec=myspecificity
+                bestT=threshold
+            sensitivity[myvalue]=mysensitivity
+            specificity[myvalue]=myspecificity
+            PPV[myvalue]=myPPV
+
+        # compute ROC
+        prevsens=0
+        prevspec=0
+        myroc=0.0
+        xcoord[alpha]=[0.0]
+        ycoord[alpha]=[0.0]
+        for myvalue in range(endrange,startrange-1,-mystep):
+        #for myvalue in range(startrange,endrange+1,mystep):
+            mysens=sensitivity[myvalue]
+            myspec=1.0 - specificity[myvalue]
+            myarea=(myspec-prevspec)*(mysens+prevsens)/2.0
+            myroc+=myarea
+            prevsens=mysens
+            prevspec=myspec
+            xcoord[alpha].append(myspec)
+            ycoord[alpha].append(mysens)
+        myroc+=(1.0-prevspec)*(1.0+prevsens)/2.0
+        output[alpha] = {'FM':bestFM,'ROC':myroc}
+    
     #print xcoord,ycoord
     # make figure
     if withfigs:
         fig = plt.figure();
         ax = fig.add_subplot(111)
-        ax.plot(xcoord,ycoord,'ro-')
+        ax.set_xlabel('Specificity',size='xx-large')
+        ax.set_ylabel('Sensitivity',size='xx-large')
+        
+        ax.plot(xcoord[100],ycoord[100],'r.-',label=r'$\alpha=1.0$, $AUC=%.2f$'% output[100]['ROC'])
+        ax.plot(xcoord[80],ycoord[80],'c.-',label=r'$\alpha=0.8$, $AUC=%.2f$'% output[80]['ROC'])
+        ax.plot(xcoord[50],ycoord[50],'g.-',label=r'$\alpha=0.5$, $AUC=%.2f$'% output[50]['ROC'])
+        ax.plot(xcoord[0],ycoord[0],'m.-',label=r'$\alpha=0.0$, $AUC=%.2f$'% output[0]['ROC'])
         ax.plot([0.0,1.0],[0.0,1.0],'b--')
-        fig.savefig('roccurve.pdf',transparent=True)
-        print 'ROC curve saved in file roccurve.pdf'
+        ax.legend(loc=4, prop={'size':'x-large'})
+        fig.savefig(rocfile,transparent=True)
+        print 'ROC curve saved in file',rocfile
 
-    return bestFM,myroc
-
+    return output
 
 
 ## main
 
-def main(infilename,outfilename,onlybpregion,verbose,mysteps,withread,withfigs,printfile):
+def main(indir,infileprefix,onlybpregion,verbose,mysteps,withread,withfigs):
     
-    indata=readinput(infilename)
-    outdata=readoutput(outfilename)
-
-    if printfile!='':
-        f = open(printfile,'a')
+    indata = {}
+    outdata = {}
+    #nmut_list = [6,12,24]
+    nmut_list = [6,12]
+    alpha_list = [100,80,50,0]
     
-    mutationlist = hammingdistance(indata)
+    for nmut in nmut_list:
+        indata[nmut]={}
+        outdata[nmut]={}
+        for alpha in alpha_list:
+            indata[nmut][alpha]={}
+            outdata[nmut][alpha]={}
+            for mkey in range(45):
+                infilename = infileprefix + '_' + str(mkey) + '.ref'
+                outfilename = indir + infileprefix + '_' + str(mkey) + '_nmut_' + str(nmut) + '_alpha_' + str(alpha) + '.out'
+                #print infilename
+                if os.path.exists(infilename) and os.path.exists(outfilename):
+                    indata[nmut][alpha][mkey]=readinput(infilename)
+                    outdata[nmut][alpha][mkey]=readoutput(outfilename)
+                    print infilename,'and',outfilename,'stored'
 
-    print 'number of mutations: ', len(mutationlist)
 
-    ## withreads means that proba of nucleotide in read is considered as well
-    
-    ## Correlation
-    scores,counter = fullcorrelation(indata,outdata,withread)
-    val = {'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
-    for mkey in val.keys():
-        if counter[mkey]>0:
-            val[mkey] = scores[mkey]/counter[mkey]
-    print 'Correlation: TP=%.2f; TN=%.2f; FP=%.2f; FN=%.2f' % (val['TP'],val['TN'],val['FP'],val['FN'])
+    print ">> Mutational Profile"
+    for nmut in nmut_list:
+        scores,counter = probprofile(indata[nmut],outdata[nmut],withread)
+        for alpha in alpha_list:
+            val = {'TP':0.0,'TN':0.0,'FP':0.0,'FN':0.0}
+            for mkey in val.keys():
+                if counter[alpha][mkey]>0:
+                    #                    val[mkey] = scores[alpha][mkey]/counter[alpha][mkey]
+                    val[mkey] = scores[alpha][mkey]/119
+            print 'Mutations: %d; alpha: %.1f; Good=%.2f; Bad=%.2f' % (nmut,float(alpha)/100,val['TP']+val['TN'],val['FP']+val['FN'])
+        
     
     ## Accuracy of prediction using threshold
-    myFM,myroc = fullprediction(mutationlist,indata,outdata,onlybpregion,verbose,mysteps,withread,withfigs)
-    print 'Best F-measure: %.2f; ROC: %.2f' %(myFM,myroc)
+    print ">> ROC curve"
+    for nmut in nmut_list:
+        rocfile="ROC_" + str(nmut) + ".eps"
+        scores = makeROC(indata[nmut],outdata[nmut],onlybpregion,verbose,mysteps,withread,withfigs,rocfile)
+        for alpha in alpha_list:
+            print 'Mutations: %d; Alpha: %.1f; Best F-measure: %.2f; ROC: %.2f' %(nmut,float(alpha)/100,scores[alpha]['FM'],scores[alpha]['ROC'])
     
-    if printfile!='':
-        print >>f,val['TP'],val['TN'],val['FP'],val['FN'],myFM,myroc
-                
-    if printfile!='':
-        f.close()
-
 
 ###############################################################################
 
@@ -473,7 +463,7 @@ if __name__ == '__main__':
     mysteps=100
     withread=True
     withfigs=False
-    printfile=''
+    indir=''
     
     if len(sys.argv)==1:
         usage(sys.argv[0])
@@ -487,7 +477,7 @@ if __name__ == '__main__':
         if myarg=='-v' or myarg=='--verbose':
             verbose=True
         if myarg=='-i':
-            inputfile=sys.argv[i+1]
+            inputfileprefix=sys.argv[i+1]
         if myarg=='-o':
             outputfile=sys.argv[i+1]
         if myarg=='-s':
@@ -496,10 +486,10 @@ if __name__ == '__main__':
             withread=False
         if myarg=='-x':
             withfigs=True
-        if myarg=='-p':
-            printfile=sys.argv[i+1]
+        if myarg=='-d':
+            indir=sys.argv[i+1] + '/'
 
-    main(inputfile,outputfile,onlybpregion,verbose,mysteps,withread,withfigs,printfile)
+    main(indir,inputfileprefix,onlybpregion,verbose,mysteps,withread,withfigs)
     
 
 

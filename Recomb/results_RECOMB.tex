@@ -18,54 +18,42 @@ We build our data set from the 5S rRNA multiple sequence alignment (MSA) availab
 Since our software does not currently implement gaps (mainly because scoring indels is a challenging issue that cannot be fully addressed
 in this work),  we clustered together the sequences with identical gap locations. From the $54$ MSAs without gap produced, we selected the
 biggest MSA  which contains $130$ sequences (out of $712$ in the original Rfam MSA). Then, in order to avoid any bias, we used \texttt{cd-hit}
-\cite{CDHIT} to remove sequences with more than 80\% of sequence similarity. This operation resulted in a data set of $45$ sequences. 
+\cite{Li:2006fk} to remove sequences with more than 80\% of sequence similarity. This operation resulted in a data set of $45$ sequences. 
 
 We design our benchmark using a leave-one-out strategy. We randomly picked one sequence from our data set and performed $12$ random
 mutations. Our sequences have $119$ nucleotides, thus the number of mutations corresponds to an error-rate of 10\%. We repeated this operation 
 $10$ times. 
 
 To evaluate our method, we computed a ROC curve representing the performance of a classifier based on the mutational probabilities computed by
-\RNApyro. We report in Table \ref{tab:benchmark} the area under the curve (AUC). More specifically, we fix a threshold $\lambda \in [0,1]$ and we
+\RNApyro. We report in Figure \ref{fig:ROCall} the area under the curve (AUC). More specifically, we fix a threshold $\lambda \in [0,1]$ and we
 predict an error at position $i$ in sequence $\omega$ if and only if the probability $P(i,n)$ of a nucleotide $n \in \{ A,C,G,U \}$ exceed this threshold.
 The set of corrections is thus $\{ n \; | \;  n \in \{ A,C,G,U \} \mbox{ and } P(i,n) > \lambda \mbox{ and }  n \neq \omega[i] \}$, where $\omega[i]$ is the
 nucleotide at position $i$ in the input sequence. Then, we progressively vary $\lambda$ between $0$ and $1$ to calculate the ROC curve and the AUC.
 
 
 
-\begin{table}
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-& 1.0 & 0.5 & 0. \\
-\hline
-6 & 0.69 & 0.72 & 0.74 \\
-12 & 0.80 & 0.84 & 0.84 \\
-24 & 0.76 & 0.84 & 0.84 \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Performance of error-correction. The row index indicates the number of mutations performed with \RNApyro, and the column index indicates
-the value of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores. In each cell, we report the average AUC
-values over the 10 experiments.}
-\label{tab:benchmark}
-\end{table}
-
-
 \begin{figure}
 \begin{subfigure}[b]{0.3\textwidth}
 \includegraphics[width=1.2\textwidth]{figures/ROC_6.pdf}
 \caption{6 mutations}
+\label{fig:ROC6mut}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \includegraphics[width=1.2\textwidth]{figures/ROC_12.pdf}
 \caption{12 mutations}
+\label{fig:ROC12mut}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.3\textwidth}
 \includegraphics[width=1.2\textwidth]{figures/ROC_24.pdf}
 \caption{24 mutations}
+\label{fig:ROC24mut}
 \end{subfigure}
+\caption{Performance of error-correction. The row index indicates the number of mutations performed with \RNApyro, and the column index indicates
+the value of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores. In each cell, we report the average AUC
+values over the 10 experiments.}
+\label{fig:ROCall}
 \end{figure}
 
 
