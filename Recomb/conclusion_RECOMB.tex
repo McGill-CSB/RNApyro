@@ -2,12 +2,10 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-In this article we presented a new and efficient way of
-exploring the mutational landscape of an RNA, benefiting from the
- conserved consensus secondary structures  information,
-to identify and fix sequencing errors. We additionally introduce a new
- pseudo energy model, both taking into account the nearest-neighbour energy model 
-and, to account for geometrical discrepancies,  the isostericity of all base pairs. 
+In this article we presented a new and efficient way of exploring the mutational landscape of an RNA under structural constraints,
+and apply our techniques to identify and fix sequencing errors. In adddition, we introduce a new
+scoring scheme combining the nearest-neighbour energy model to new isostericity matrices in order to account for geometrical
+discrepancies occurring during base pair replacements.
 The algorithm runs in  $\Theta(n\cdot(|\Omega|+m^2))$ time and $\Theta(n\cdot(|\Omega|+m))$ memory, where $n$ is the length of the RNA,
 $m$ the number of mutations and $\Omega$ the size of the multiple sequence alignment.
 
