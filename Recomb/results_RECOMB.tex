@@ -22,15 +22,19 @@ biggest MSA  which contains $130$ sequences (out of $712$ in the original Rfam M
 
 We design our benchmark using a leave-one-out strategy. We randomly picked one sequence from our data set and performed $12$ random
 mutations. Our sequences have $119$ nucleotides, thus the number of mutations corresponds to an error-rate of 10\%. We repeated this operation 
-$10$ times. 
+$10$ times. The value of $\beta$ has been set to $1.5$ (larger values gave similar results). To estimate the impact of the distribution of the weights
+between the energy term and isostericity  score, we use 4 different values of $\alpha = {0, 0.5, 0.8, 1.0}$. Similarly, we also investigate the impact of 
+an under- and over- estimate of the number of errors, and use values equal to 50\% (6 mutations) and 200\% (24 mutations) of the exact number of
+errors (i.e. 12).
 
-To evaluate our method, we computed a ROC curve representing the performance of a classifier based on the mutational probabilities computed by
-\RNApyro. We report in Figure \ref{fig:ROCall} the area under the curve (AUC). More specifically, we fix a threshold $\lambda \in [0,1]$ and we
-predict an error at position $i$ in sequence $\omega$ if and only if the probability $P(i,n)$ of a nucleotide $n \in \{ A,C,G,U \}$ exceed this threshold.
-The set of corrections is thus $\{ n \; | \;  n \in \{ A,C,G,U \} \mbox{ and } P(i,n) > \lambda \mbox{ and }  n \neq \omega[i] \}$, where $\omega[i]$ is the
-nucleotide at position $i$ in the input sequence. Then, we progressively vary $\lambda$ between $0$ and $1$ to calculate the ROC curve and the AUC.
-
-
+To evaluate our method, we computed a ROC curve representing the performance of a classifier based on the mutational probabilities computed
+by \RNApyro. More specifically, we fix a threshold $\lambda \in [0,1]$ and we predict an error at position $i$ in sequence $\omega$ if and only if the
+probability $P(i,n)$ of a nucleotide $n \in \{ A,C,G,U \}$ exceed this threshold. To correct the errors we use the set of nucleotides with a probability
+higher than this threshold is  $C(i) = \{ n \; | \;  n \in \{ A,C,G,U \} \mbox{ and } P(i,n) > \lambda \mbox{ and }  n \neq \omega[i] \}$, where $\omega[i]$ is
+the nucleotide at position $i$ in the input sequence. We note that for the lowest thresholds multiple nucleotides can be available in $C(i)$ to correct
+the sequence. Here, we remind that we aim to estimate the potential of error-correction of \RNApyro and not to develop a error-correction pipe-line. 
+The latter will be investigate in further studies. Finally, we progressively vary $\lambda$ between $0$ and $1$ to calculate the ROC curve and the area
+under the curve (AUC). We report our results in Figure \ref{fig:ROCall}. 
 
 \begin{figure}
 \begin{subfigure}[b]{0.3\textwidth}
@@ -56,14 +60,20 @@ values over the 10 experiments.}
 \label{fig:ROCall}
 \end{figure}
 
+Our data demonstrate that our algorithm exhibits interesting performance for error-correction applications. First, the AUC values (up to $0.86$) indicate that a
+signal has been successfully extracted. This result has been achieved with errors in loop regions (i.e. without base pairing information) and thus suggests
+that correction rates in structured regions (i.e. base paired regions) could be even higher. Next, the optimal values of $\alpha$ tend to be close to $0.0$. This 
+finding suggests that at this point the information issued from the stacking energy is currently modest. However, specific examples showed improved performance
+using this energy term. Further studies must be conducted to understand how to make the best use it. Finally, our algorithm seems robust to the number of
+mutations considered. Indeed, good AUC values are achieved with low estimates of the number of errors in the sequence (c.f. 50\% of the errors  in
+Fig.~\ref{fig:ROC6mut}) and with large  values (c.f.~200\% of the errors  in Fig.~\ref{fig:ROC24mut}). It is worth noting that scoring scheme with larger weight on
+the isostericity scores (low $\alpha$ values) seem more robust to under- and over-estimate of the number of errors.
 
 
 
 \subsection{Time}
-The applications for this algorithms implies a need for efficiency
-and scalability. In Table~\ref{tab:time} we
-present different times needed to compute the probabilities for
- every nucleotide at every positions for a vast set of parameters. For those test
+Further NGS applications of \RNApyro implies a need for efficiency and scalability. In Table~\ref{tab:time} we
+present different times needed to compute the probabilities for  every nucleotide at every positions for a vast set of parameters. For those test
  all the sequences were generated randomly, as the target secondary structure.
 
 \begin{table}
