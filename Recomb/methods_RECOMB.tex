@@ -86,6 +86,16 @@ Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping 
 
 
 \subsubsection{Inside}
+\begin{figure}
+\resizebox{\textwidth}{!}{\input{FigDPInside.pgf}}
+\caption{Illustration of the principle underlying the inside computation (aka partition function). Any sequence with $m$ mutations over an interval $[i,j]$ 
+can be decomposed as a sequence over $[i+1,j]$ preceded by a, possibly mutated, base at $i$ 
+(Unpaired case), a sequence over $[i+1,j-1]$ surrounded by some base-pair (Stacking-pair case), 
+or as two sequences over $[i+1,k-1]$ and $[k+1,j]$, completed by some base-pair (General base-pairing case). 
+In each case, one has to investigate any possible ways to distribute mutations between the different sequences 
+and locally instanciated bases.}
+\end{figure}
+
 The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function considering only the 
 energy in subsequence $[i,j]$ over mutants of $s$ having exactly $m$ mutations between $[i,j]$ and whose nucleotide at position $i-1$ is $a$ (resp. $b$ in position $j+1$).
 We define function $\Z{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
@@ -145,8 +155,12 @@ secondary structure $S$, and we return $0$.
 \end{description}
 
 \subsubsection{Outside}	
+\begin{figure}
+\resizebox{\textwidth}{!}{\input{FigDPOutside.pgf}}
+\caption{Principle of the outside computation.}
+\end{figure}
 The \emph{Outside} function, $\mathcal Y$, is the partition function considering only the 
-energy in subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
+contributions of subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
 (resp. in position $j-1$ it is $b$).
 We define function $\Y{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
 \begin{equation}
