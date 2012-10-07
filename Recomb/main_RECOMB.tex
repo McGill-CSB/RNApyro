@@ -74,7 +74,7 @@
 
 %\title{An inside-outside algorithms for mutant RNAs with applications to error detections in structured RNAs}
 \title{A linear inside-outside algorithm for correcting sequencing errors in structured RNA sequences}
-\author{}
+\author{Vladimir Reinharz, Yann Ponty$^{*}$, J\'er\^{o}me Waldisp\"{u}hl$^*$}
 \date{}
 
 
@@ -93,10 +93,19 @@
 %\section{}
 %\subsection{}
 \begin{abstract}
-Some stuff~\cite{Waldispuhl2008}
+Analysis of the sequence-structure relationship in RNA molecules are essential to evolutionary studies but also to 
+concrete applications such as error-correction methodologies in sequencing technologies. The prohibitive sizes of the
+mutational and conformational landscapes combined with the volume of data to proceed require efficient algorithms 
+to compute sequence-structure properties. More specifically, here we aim to calculate which mutations increase the most the 
+likelihood of a sequence to a given structure and RNA family.\\
+In this paper, we introduce \RNApyro, an efficient linear-time and space inside-outside algorithm that computes exact mutational
+probabilities under secondary structure and evolutionary constraints given as a multiple sequence alignment with a consensus structure.
+We develop a scoring scheme combining classical stacking base pair energies to novel isostericity scales, and apply our techniques
+to correct point-wise errors in 5s rRNA sequences. Our results suggest that \RNApyro is a promising algorithm to complement existing
+tools in the NGS error-correction pipeline. 
 
 \noindent
-\textbf{Key words:} RNA
+\textbf{Key words:} RNA, mutations, secondary structure
 \end{abstract}
 
 \newpage
