@@ -233,7 +233,7 @@ secondary structure $S$, and we return $0$.
 
 \end{description}
 
-\subsubsection{Combining Inside and Outside value into base content probabilities}
+\subsubsection{Combining Inside and Outside values into point-wise mutations probabilities}
 By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
 be described in function of the \emph{forward} term as $\Z{0,n-1}{m}{X,X}$,
  for any nucleotide $X\in B$ or
@@ -248,30 +248,32 @@ $$
 We are now left to compute the probability that a given position is a given nucleotide.
 We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
 Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutations. 
-\begin{align*}
-	\mathbb{P}(s_i = x\mid s,\Omega, S,M) &:= \frac{\mathcal{B}(i,x,s,\Omega,S,M)}{\sum_{m=0}^{M}\Z{0,n-1}{m}{X,X}}\\ 
-\mathcal{B}(i,x,s,\Omega,S,M)&=
+\begin{align}
+	\mathbb{P}(s_i = x\mid s,\Omega, S,M) &:= \frac{\mathcal{W}(i,x,s,\Omega,S,M)}{\sum_{m=0}^{M}\Z{0,n-1}{m}{X,X}}\label{eq:normalize}\\ 
+\mathcal{W}(i,x,s,\Omega,S,M)&=
  \left\{
 	\begin{array}{ll}
 			\sum_{m=0}^{M}
 			\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}
 		&\text{If }S_i = -1\\
+			\displaystyle
 			\sum_{m=0}^{M}
 			\sum_{\substack{b\in B\\\Kron_{xb,s_is_k\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
      	 e^{\frac{-E_{(i,k),\varnothing\to xb}^{\Omega,\beta} }{RT}}
-			\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
-			\Z{i+1,k-1}{m'}{x,b}
+			\cdot\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
+			\cdot\Z{i+1,k-1}{m'}{x,b}
 		&\text{If }S_i=k>i\\
+    \displaystyle
 			\sum_{m=0}^{M}
 			\sum_{\substack{b\in B\\\Kron_{bx,s_ks_i\leq m}}}
 			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
      	 e^{\frac{-E^{\Omega, \beta}_{(k,i),\varnothing\to bx}}{RT}}
-			\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
-			\Z{k+1,i-1}{m'}{b,x}
+			\cdot\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
+			\cdot\Z{k+1,i-1}{m'}{b,x}
 		&\text{If }S_i=k<i
-	\end{array}\right.
-\end{align*}
+	\end{array}\right.\label{eq:combine}
+\end{align}
 
 In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, 
 for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
@@ -285,3 +287,10 @@ base pair, and the \emph{inside}, for all possible values for the nucleotide at 
 all possible distribution of the mutant positions between the inside and outside of the base pair. We also add the term of isostericity for this specific base pair.
 \item[$S_i=k<i$:] Same as above, but with position $i$ pairing with a lower position.
 \end{description}
+
+\subsection{Complexity}
+Equations~\eqref{eq:Z_rec} and~\eqref{eq:Y_rec} can be computed using dynamic programming, i.e. $\mathcal{Z}^{*}_{*}$ or $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and interval lengths, memorizing the results such that they become available in constant time during future stages of the computation. Furthermore, energy terms $E(\cdot)$ can be accessed in constant time (after a precomputation in $\Theta(n\cdot|\Omega|)$ for the isostericity part). Computing any given term therefore requires $\Theta(m)$ operations.
+
+In principle, this action should be performed $\Theta(m\cdot n^2)$ times to investigate any triplet $(m,i,j)$.
+However, a close inspection of the recurrences reveal that the computation can be safely restricted to a subset of all intervals.
+For instance, in the forward computation, such intervals $[i,j]$ do not break any base-pair, and their next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation. Such constraints drastically limit the combinatorics of required computations, dropping from $\Theta(n^2)$ to $\Theta(n)$ the number of terms that need to be computed and stored. Consequently the overall complexity of the algorithm is $\Theta(n\cdot(|\Omega|+m^2))$ aritmetic operations and $\Theta(n\cdot(|\Omega|+m))$ memory.
