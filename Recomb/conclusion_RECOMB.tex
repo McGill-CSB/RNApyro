@@ -5,12 +5,12 @@
 In this article we presented a new and efficient way of
 exploring the mutational landscape of an RNA, benefiting from the
  conserved consensus secondary structures  information,
-to identify and fix sequencing errors. The algorithm runs in  $\Theta(n\cdot(|\Omega|+m^2))$ time and $\Theta(n\cdot(|\Omega|+m))$ memory, where $n$ is the length of the RNA,
-$m$ the number of mutations and $\Omega$ the size of the multiple sequence alignment.
-
-We additionally introduce a new
+to identify and fix sequencing errors. We additionally introduce a new
  pseudo energy model, both taking into account the nearest-neighbour energy model 
 and, to account for geometrical discrepancies,  the isostericity of all base pairs. 
+The algorithm runs in  $\Theta(n\cdot(|\Omega|+m^2))$ time and $\Theta(n\cdot(|\Omega|+m))$ memory, where $n$ is the length of the RNA,
+$m$ the number of mutations and $\Omega$ the size of the multiple sequence alignment.
+
 
 By combining  into \texttt{RNApyro} these two approaches,  the 
 mutational landscape exploration and the pseudo energy model,
@@ -21,7 +21,7 @@ as presented in Sec.~\ref{sec:results}.
 We observed that the models
 with larger weights on the
 isostericity seems to hold a higher accuracy on the estimation of errors.
-This indicated that an extractable signal is contained in the isostericity.
+This indicates that an extractable signal is contained in the isostericity.
 Importantly, the implementation is fast enough for practical applications. 
 
 
@@ -31,5 +31,5 @@ We must recall that our approach is restricted to
 information holding, as shown, a strong signal.
 
 Further research, given the potential of error-correction of \texttt{RNApyro}, 
- evaluate its impact over large datasets with different existing
+will evaluate its impact over large datasets with different existing
   NGS error-correction pipe-line.
