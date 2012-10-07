@@ -23,7 +23,7 @@ mutations. Our sequences have $119$ nucleotides, thus the number of mutations co
 $10$ times. 
 
 To evaluate our method, we computed a ROC curve representing the performance of a classifier based on the mutational probabilities computed by
-\RNApyro. We reported in Table \ref{tab:benchmark} the area under the curve (AUC). More specifically, we fix a threshold $\lambda \in [0,1]$ and we
+\RNApyro. We report in Table \ref{tab:benchmark} the area under the curve (AUC). More specifically, we fix a threshold $\lambda \in [0,1]$ and we
 predict an error at position $i$ in sequence $\omega$ if and only if the probability $P(i,n)$ of a nucleotide $n \in \{ A,C,G,U \}$ exceed this threshold.
 The set of corrections is thus $\{ n \; | \;  n \in \{ A,C,G,U \} \mbox{ and } P(i,n) > \lambda \mbox{ and }  n \neq \omega[i] \}$, where $\omega[i]$ is the
 nucleotide at position $i$ in the input sequence. Then, we progressively vary $\lambda$ between $0$ and $1$ to calculate the ROC curve and the AUC.
@@ -38,7 +38,7 @@ nucleotide at position $i$ in the input sequence. Then, we progressively vary $\
 \hline
 6 & 0.69 & 0.72 & 0.74 \\
 12 & 0.80 & 0.84 & 0.84 \\
-24 & 0.76 & & \\
+24 & 0.76 & 0.84 & 0.84 \\
 \hline
 \end{tabular}
 \end{center}
@@ -47,3 +47,21 @@ the value of the parameter $\alpha$ distributing the weights of stacking pair en
 values over the 10 experiments.}
 \label{tab:benchmark}
 \end{table}
+
+
+\begin{figure}
+\begin{subfigure}[b]{0.3\textwidth}
+\includegraphics[width=1.2\textwidth]{figures/ROC_6.pdf}
+\caption{6 mutations}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\includegraphics[width=1.2\textwidth]{figures/ROC_12.pdf}
+\caption{12 mutations}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+\includegraphics[width=1.2\textwidth]{figures/ROC_24.pdf}
+\caption{24 mutations}
+\end{subfigure}
+\end{figure}
