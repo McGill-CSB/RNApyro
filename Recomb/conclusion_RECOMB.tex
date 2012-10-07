@@ -11,10 +11,11 @@ and, to account for geometrical discrepancies,  the isostericity of all base pai
 
 By combining these two approaches,  the 
 mutational landscape exploration and the pseudo energy model,
- into \texttt{RNApyro}, we obtained a tool to predict the position and 
-correct randomly mutated 5s rRNA sequences. 
-As presented in Sec.~\ref{sec:results},
-we observe that the models
+ into \texttt{RNApyro}, we created a tool predicting the positions
+ yielding sequencing error and their correct value.
+We validated our model with the 5s rRNA,
+as presented in Sec.~\ref{sec:results}.
+We observed that the models
 with larger weights on the
 isostericity seems to hold a higher accuracy on the estimation of errors.
 Importantly, the implementation is fast enough for practical applications. 
