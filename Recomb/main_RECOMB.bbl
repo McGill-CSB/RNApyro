@@ -1,0 +1,145 @@
+\begin{thebibliography}{16}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Hori and Osawa(1987)]{Hori1987}
+H~Hori and S~Osawa.
+\newblock {Origin and Evolution of Organisms as Deduced from 5s Ribosomal RNA
+  Sequences}.
+\newblock \emph{Molecular biology and evolution}, 4\penalty0 (5):\penalty0
+  445--472, 1987.
+\newblock URL \url{http://mbe.oxfordjournals.org/content/4/5/445.short}.
+
+\bibitem[Johansson et~al.(2010)]{mpmath}
+Fredrik Johansson et~al.
+\newblock \emph{mpmath: a {P}ython library for arbitrary-precision
+  floating-point arithmetic (version 0.14)}, February 2010.
+\newblock {\tt http://code.google.com/p/mpmath/}.
+
+\bibitem[Kunin et~al.(2010)Kunin, Engelbrektson, Ochman, and
+  Hugenholtz]{Kunin2010}
+Victor Kunin, Anna Engelbrektson, Howard Ochman, and Philip Hugenholtz.
+\newblock {Wrinkles in the rare biosphere: pyrosequencing errors can lead to
+  artificial inflation of diversity estimates.}
+\newblock \emph{Environmental microbiology}, 12\penalty0 (1):\penalty0 118--23,
+  January 2010.
+\newblock ISSN 1462-2920.
+\newblock \doi{10.1111/j.1462-2920.2009.02051.x}.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/19725865}.
+
+\bibitem[Lari and Young(1990)]{Lari1990}
+K~Lari and SJ~Young.
+\newblock {The estimation of stochastic context-free grammars using the
+  Inside-Outside algorithm}.
+\newblock \emph{Computer Speech \& Language}, 4\penalty0 (1):\penalty0 35--56,
+  January 1990.
+\newblock ISSN 08852308.
+\newblock \doi{10.1016/0885-2308(90)90022-X}.
+
+\bibitem[Leontis and Westhof(2001)]{Leontis2001}
+N~B Leontis and E~Westhof.
+\newblock {Geometric nomenclature and classification of RNA base pairs.}
+\newblock \emph{RNA (New York, N.Y.)}, 7\penalty0 (4):\penalty0 499--512, April
+  2001.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/11345429}.
+
+\bibitem[Li and Godzik(2006)]{Li:2006fk}
+Weizhong Li and Adam Godzik.
+\newblock Cd-hit: a fast program for clustering and comparing large sets of
+  protein or nucleotide sequences.
+\newblock \emph{Bioinformatics}, 22\penalty0 (13):\penalty0 1658--9, Jul 2006.
+\newblock \doi{10.1093/bioinformatics/btl158}.
+
+\bibitem[Medvedev et~al.(2011)Medvedev, Scott, Kakaradov, and
+  Pevzner]{Medvedev2011}
+Paul Medvedev, Eric Scott, Boyko Kakaradov, and Pavel Pevzner.
+\newblock {Error correction of high-throughput sequencing datasets with
+  non-uniform coverage.}
+\newblock \emph{Bioinformatics (Oxford, England)}, 27\penalty0 (13):\penalty0
+  i137--41, July 2011.
+\newblock ISSN 1367-4811.
+\newblock \doi{10.1093/bioinformatics/btr208}.
+
+\bibitem[Olsen et~al.(1986)Olsen, Lane, Giovannoni, Pace, and Stahl]{Olsen1986}
+G~J Olsen, D~J Lane, S~J Giovannoni, N~R Pace, and D~a Stahl.
+\newblock {Microbial ecology and evolution: a ribosomal RNA approach.}
+\newblock \emph{Annual review of microbiology}, 40:\penalty0 337--65, January
+  1986.
+\newblock ISSN 0066-4227.
+\newblock \doi{10.1146/annurev.mi.40.100186.002005}.
+
+\bibitem[Olsen and Woese(1993)]{Olsen1993}
+GJ~Olsen and CR~Woese.
+\newblock {Ribosomal RNA: a key to phylogeny.}
+\newblock \emph{The FASEB journal}, 7\penalty0 (1):\penalty0 113--123, 1993.
+
+\bibitem[Quince et~al.(2009)Quince, Lanz{\'e}n, Curtis, Davenport, Hall, Head,
+  Read, and Sloan]{Quince:2009uq}
+Christopher Quince, Anders Lanz{\'e}n, Thomas~P Curtis, Russell~J Davenport,
+  Neil Hall, Ian~M Head, L~Fiona Read, and William~T Sloan.
+\newblock Accurate determination of microbial diversity from 454 pyrosequencing
+  data.
+\newblock \emph{Nat Methods}, 6\penalty0 (9):\penalty0 639--41, Sep 2009.
+\newblock \doi{10.1038/nmeth.1361}.
+
+\bibitem[Quinlan et~al.(2008)Quinlan, Stewart, Str\"{o}mberg, and
+  Marth]{Quinlan2008}
+AR~Quinlan, DA~Stewart, MP~Str\"{o}mberg, and GT~Marth.
+\newblock {Pyrobayes: an improved base caller for SNP discovery in
+  pyrosequences}.
+\newblock \emph{Nature methods}, 5\penalty0 (2):\penalty0 179--81, February
+  2008.
+\newblock ISSN 1548-7105.
+\newblock \doi{10.1038/nmeth.1172}.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/18193056
+  http://www.nature.com/nmeth/journal/vaop/ncurrent/full/nmeth.1172.html}.
+
+\bibitem[Stombaugh et~al.(2009)Stombaugh, Zirbel, Westhof, and
+  Leontis]{Stombaugh2009}
+Jesse Stombaugh, Craig~L Zirbel, Eric Westhof, and Neocles~B Leontis.
+\newblock {Frequency and isostericity of RNA base pairs.}
+\newblock \emph{Nucleic acids research}, 37\penalty0 (7):\penalty0 2294--312,
+  April 2009.
+\newblock ISSN 1362-4962.
+\newblock \doi{10.1093/nar/gkp011}.
+
+\bibitem[Turnbaugh et~al.(2007)Turnbaugh, Ley, Hamady, Fraser-Liggett, Knight,
+  and Gordon]{Turnbaugh2007}
+Peter~J Turnbaugh, Ruth~E Ley, Micah Hamady, Claire~M Fraser-Liggett, Rob
+  Knight, and Jeffrey~I Gordon.
+\newblock {The Human Microbiome Project.}
+\newblock \emph{Nature}, 449\penalty0 (7164):\penalty0 804--10, October 2007.
+\newblock ISSN 1476-4687.
+\newblock \doi{10.1038/nature06244}.
+
+\bibitem[Turner and Mathews(2010)]{Turner2010}
+Douglas~H Turner and David~H Mathews.
+\newblock {NNDB: the nearest neighbor parameter database for predicting
+  stability of nucleic acid secondary structure.}
+\newblock \emph{Nucleic acids research}, 38\penalty0 (Database issue):\penalty0
+  D280--2, January 2010.
+\newblock ISSN 1362-4962.
+\newblock \doi{10.1093/nar/gkp892}.
+
+\bibitem[Waldisp\"{u}hl et~al.(2008)Waldisp\"{u}hl, Devadas, Berger, and
+  Clote]{Waldispuhl2008}
+J\'{e}r\^{o}me Waldisp\"{u}hl, Srinivas Devadas, Bonnie Berger, and Peter
+  Clote.
+\newblock {Efficient Algorithms for Probing the RNA Mutation Landscape}.
+\newblock \emph{PLoS Computational Biology}, 4\penalty0 (8):\penalty0 e1000124,
+  2008.
+\newblock ISSN 1553-7358.
+\newblock \doi{10.1371/journal.pcbi.1000124}.
+
+\bibitem[Zuckerkandl and Pauling(1965)]{Zuckerkandl1965}
+Emile Zuckerkandl and Linus Pauling.
+\newblock {Molecules as documents of evolutionary history}.
+\newblock \emph{Journal of Theoretical Biology}, 8\penalty0 (2):\penalty0
+  357--366, March 1965.
+\newblock ISSN 00225193.
+\newblock \doi{10.1016/0022-5193(65)90083-4}.
+
+\end{thebibliography}
