@@ -363,54 +363,51 @@ def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
-def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
+def forward(seq,ref_seq,struct,(i,j),(a,b),alpha):
   #alpha gives the weight energy vs isostericity
   result = 0.
-  if m<0: return 0
   if i > j :
-    if m==0:
-      result=1.
-    else:
-      result=0.
+    result=1.
   else:
     k = struct[i]
     if k==-1:
       for a2 in BASES:
-        d = delta(seq,i,a2)
-        if d <= m:
-          result += forward(seq,ref_seq,struct,
-                            (i+1,j),
-                            (a2,b),
-                            m-d,alpha)
+        result += forward(seq,ref_seq,struct,
+                          (i+1,j),
+                          (a2,b),
+                          alpha)
     elif i < k <= j: #If k > j we return 0
       for a2 in BASES:
         for b2 in BASES:
-          d = delta(seq,i,a2)+delta(seq,k,b2)
           #if not stacked outside (or border, then no stack possible)
           if i==0 or j==len(seq)-1 or not (j==k and struct[i-1]==j+1):
-            for m2 in range(m-d+1):
-              result += forward(seq,ref_seq,struct,
-                                  (i+1,k-1),
-                                  (a2,b2),
-                                  m2,alpha)*forward(seq,ref_seq,struct,
-                                  (k+1,j),
-                                  (b2,b),
-                                  m-m2-d,alpha)*isostericity(seq,ref_seq,
-                                                       (i,k),
-                                                       (a2,b2),
-                                                       alpha)
-
+            f1 = forward(seq,ref_seq,struct,
+                        (i+1,k-1),
+                        (a2,b2),
+                        alpha)
+            f2 = forward(seq,ref_seq,struct,
+                         (k+1,j),
+                         (b2,b),
+                         alpha)
+            iso = isostericity(seq,ref_seq,
+                               (i,k),
+                               (a2,b2),
+                               alpha)
+            result += f1*f2*iso
           #if stack, we add energy
           else :
-            result += forward(seq,ref_seq,struct,
-                              (i+1,k-1),
-                              (a2,b2),
-                              m-d,alpha)*energy((a,b),
-                                          (a2,b2),
-                                          alpha)*isostericity(seq,ref_seq,
-                                                              (i,k),
-                                                              (a2,b2),
-                                                              alpha)
+            f = forward(seq,ref_seq,struct,
+                       (i+1,k-1),
+                       (a2,b2),
+                       alpha)
+            e = energy((a,b),
+                       (a2,b2),
+                       alpha)
+            iso = isostericity(seq,ref_seq,
+                               (i,k),
+                               (a2,b2),
+                               alpha)
+            result += f*e*iso
   return result
 
 @memoize
