@@ -411,67 +411,71 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),alpha):
   return result
 
 @memoize
-def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha):
+def backward(seq,ref_seq,struct,(i,j),(a,b),alpha):
   result = 0.
-  if m<0: return 0
   if i<0:
     result=forward(seq,ref_seq,struct,
-                        (j,len(seq)-1),
-                        ('X','X'),
-                         m,alpha)
+                   (j,len(seq)-1),
+                   ('X','X'),
+                   alpha)
   else:
     k = struct[i]
     if k==-1:
       for a2 in BASES:
-        d = delta(seq,i,a2)
         result += backward(seq,ref_seq,struct,
-                        (i-1,j),
-                        (a2,b),
-                         m-d,alpha)
+                           (i-1,j),
+                           (a2,b),
+                           alpha)
     #BP to the left
     elif k<i:
       for a2 in BASES:
         for b2 in BASES:
-          d = delta(seq,i,b2) + delta(seq,k,a2)
-          for m2 in range(m-d+1):
-            result += backward(seq,ref_seq,struct,
-                                  (k-1,j),
-                                  (a2,b),
-                                  m-m2-d,alpha)*forward(seq,ref_seq,struct,
-                                                  (k+1,i-1),
-                                                  (a2,b2),
-                                                  m2,alpha)*isostericity(seq,ref_seq,
-                                                                   (k,i),
-                                                                   (a2,b2),
-                                                                   alpha)
-            #print "  L",i,j,m,"B:",m-m2-d,b,"F:(",(k+1,i-1),")",m2,f
+          b = backward(seq,ref_seq,struct,
+                       (k-1,j),
+                       (a2,b),
+                       alpha)
+          f = forward(seq,ref_seq,struct,
+                      (k+1,i-1),
+                      (a2,b2),
+                      alpha)
+          iso = isostericity(seq,ref_seq,
+                             (k,i),
+                             (a2,b2),
+                             alpha)
+          result += b*f*iso
     #BP to the right
     elif k>=j:
       for a2 in BASES:
         for b2 in BASES:
-          d = delta(seq,i,a2) + delta(seq,k,b2)
+          #No stack
           if not (j==k and struct[i+1]==j-1):
-            for m2 in range(m-d+1):
-              result += backward(seq,ref_seq,struct,
-                                 (i-1,k+1),
-                                 (a2,b2),
-                                 m-m2-d,alpha)*forward(seq,ref_seq,struct,
-                                                 (j,k-1),
-                                                 (b,b2),
-                                                 m2,alpha)*isostericity(seq,ref_seq,
-                                                                  (i,k),
-                                                                  (a2,b2),
-                                                                  alpha)
+            b = backward(seq,ref_seq,struct,
+                         (i-1,k+1),
+                         (a2,b2),
+                         alpha)
+            f = forward(seq,ref_seq,struct,
+                        (j,k-1),
+                        (b,b2),
+                        alpha)
+            iso = isostericity(seq,ref_seq,
+                               (i,k),
+                               (a2,b2),
+                               alpha)
+            result += b*f*iso
+          #Stack
           else:
-            result +=  backward(seq,ref_seq,struct,
-                                 (i-1,k+1),
-                                 (a2,b2),
-                                 m-d,alpha)*energy((a2,b2),
-                                             (a,b),
-                                             alpha)*isostericity(seq,ref_seq,
-                                                                 (i,k),
-                                                                 (a2,b2),
-                                                                 alpha)
+            b = backward(seq,ref_seq,struct,
+                         (i-1,k+1),
+                         (a2,b2),
+                         alpha)
+            e = energy((a2,b2),
+                       (a,b),
+                       alpha)
+            iso = isostericity(seq,ref_seq,
+                               (i,k),
+                               (a2,b2),
+                               alpha)
+            result += b*e*iso
   return result
 
 def parseStruct(dbn):
