@@ -557,8 +557,8 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
           result_list = [a2]
         elif result == max_result:
           max_result = result
-          result_list = [a2]
-          #result_list.append(a2)
+          #result_list = [a2]
+          result_list.append(a2)
       for a2 in result_list:
         for best in backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha):
           max_seq_list.append(a2 + best)
@@ -581,8 +581,6 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
                                (a2,b2),
                                alpha)
             result = pro*f1*f2*iso
-            if i == 0:
-              print i,j,a2,b2,result, iso
           #if stack, we add energy
           else :
             f = forward(profile,ref_seq,struct,
@@ -601,8 +599,8 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
             max_result = result
             result_list = [(a2,b2)]
           elif result == max_result:
-            #result_list.append((a2,b2))
-            result_list = [(a2,b2)]
+            result_list.append((a2,b2))
+            #result_list = [(a2,b2)]
       for a2,b2 in result_list:
         for best_1 in backtrack(profile,ref_seq,struct,(i+1,k-1),(a2,b2),alpha):
           for best_2 in backtrack(profile,ref_seq,struct,(k+1,j),(b2,b),alpha): 
@@ -744,8 +742,8 @@ if __name__ == "__main__":
 
   ref_seq,struct = parse_fasta(file_name)
   profile = parse_profile(profile_path)
-  #results = all_probabilities(profile,ref_seq,struct,alpha)
-  #display_all_probabilities(results)
+  results = all_probabilities(profile,ref_seq,struct,alpha)
+  display_all_probabilities(results)
   n = len(struct)
   print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
 
