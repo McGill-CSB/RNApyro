@@ -323,6 +323,23 @@ ISO = {(('A', 'C'), ('C', 'A')):4.93,
         (('G', 'G'), ('U', 'G')):10.0,
         (('A', 'U'), ('U', 'C')):3.5}
 
+class memoize_str(dict):
+  """Generically memoizes a function results."""
+  fun = None
+  
+  def __init__(self, f):
+      self.fun = f
+  
+  def __call__(self,profile,ref_seq,struct,*args):
+      nargs = (args)
+      if nargs in self:
+          return self[nargs]
+      else:
+          val = self.fun(profile,ref_seq,struct,*args)
+          self[nargs] = val
+          return val
+  def resetCache(self):
+      self.clear()
 
 class memoize(dict):
   """Generically memoizes a function results."""
@@ -517,6 +534,81 @@ def product_given_i(profile,ref_seq,struct,i,a,alpha):
       result += pro*f*b*iso
   return result
 
+#@memoize_str
+def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
+  #alpha gives the weight energy vs isostericity
+  max_result = 0.
+  result_list = []
+  max_seq_list = []
+  if i > j :
+    return [''] 
+  else:
+    k = struct[i]
+    if k==-1:
+      for a2 in BASES:
+        pro = profile[i][a2]
+        f = forward(profile,ref_seq,struct,
+                    (i+1,j),
+                    (a2,b),
+                    alpha)
+        result =  pro*f
+        if result > max_result:
+          max_result = result
+          result_list = [a2]
+        elif result == max_result:
+          max_result = result
+          result_list = [a2]
+          #result_list.append(a2)
+      for a2 in result_list:
+        for best in backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha):
+          max_seq_list.append(a2 + best)
+    elif i < k <= j: #If k > j we return 0
+      for a2 in BASES:
+        for b2 in BASES:
+          pro = profile[i][a2]*profile[k][b2]
+          #if not stacked outside (or border, then no stack possible)
+          if i==0 or j==len(struct)-1 or not (j==k and struct[i-1]==j+1):
+            f1 = forward(profile,ref_seq,struct,
+                        (i+1,k-1),
+                        (a2,b2),
+                        alpha)
+            f2 = forward(profile,ref_seq,struct,
+                         (k+1,j),
+                         (b2,b),
+                         alpha)
+            iso = isostericity(ref_seq,
+                               (i,k),
+                               (a2,b2),
+                               alpha)
+            result = pro*f1*f2*iso
+            if i == 0:
+              print i,j,a2,b2,result, iso
+          #if stack, we add energy
+          else :
+            f = forward(profile,ref_seq,struct,
+                       (i+1,k-1),
+                       (a2,b2),
+                       alpha)
+            e = energy((a,b),
+                       (a2,b2),
+                       alpha)
+            iso = isostericity(ref_seq,
+                               (i,k),
+                               (a2,b2),
+                               alpha)
+            result = pro*f*e*iso
+          if result > max_result:
+            max_result = result
+            result_list = [(a2,b2)]
+          elif result == max_result:
+            #result_list.append((a2,b2))
+            result_list = [(a2,b2)]
+      for a2,b2 in result_list:
+        for best_1 in backtrack(profile,ref_seq,struct,(i+1,k-1),(a2,b2),alpha):
+          for best_2 in backtrack(profile,ref_seq,struct,(k+1,j),(b2,b),alpha): 
+            max_seq_list.append(a2+best_1+b2+best_2)
+  return max_seq_list
+
 def probability_given_i(profile,ref_seq,struct,i,a,alpha):
   """Will compute the probability that the 'i-th' nucleotide
   is 'a' over all sequences at 'm' mutations from seq
@@ -529,7 +621,6 @@ def probability_given_i(profile,ref_seq,struct,i,a,alpha):
     the number of mutations allowed"""
     sys.exit(1)
   return result/tot
-
 
 def testSingleSequence(profile,ref_seq,struct,alpha):
   forward.resetCache()
@@ -653,6 +744,8 @@ if __name__ == "__main__":
 
   ref_seq,struct = parse_fasta(file_name)
   profile = parse_profile(profile_path)
-  results = all_probabilities(profile,ref_seq,struct,alpha)
-  display_all_probabilities(results)
+  #results = all_probabilities(profile,ref_seq,struct,alpha)
+  #display_all_probabilities(results)
+  n = len(struct)
+  print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
 
