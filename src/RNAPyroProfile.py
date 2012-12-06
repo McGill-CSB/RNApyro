@@ -744,6 +744,8 @@ if __name__ == "__main__":
   profile = parse_profile(profile_path)
   results = all_probabilities(profile,ref_seq,struct,alpha)
   display_all_probabilities(results)
+  """
   n = len(struct)
   print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
+  """
 
