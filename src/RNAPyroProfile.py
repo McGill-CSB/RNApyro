@@ -1,5 +1,6 @@
 import os,sys
 import itertools
+import random
 import math
 
 def MPMATH_MISSING():
@@ -534,14 +535,14 @@ def product_given_i(profile,ref_seq,struct,i,a,alpha):
       result += pro*f*b*iso
   return result
 
-#@memoize_str
 def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
   #alpha gives the weight energy vs isostericity
   max_result = 0.
   result_list = []
-  max_seq_list = []
+  #max_seq_list = []
+  max_seq = ''
   if i > j :
-    return [''] 
+    return '' 
   else:
     k = struct[i]
     if k==-1:
@@ -559,9 +560,15 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
           max_result = result
           #result_list = [a2]
           result_list.append(a2)
+      """
       for a2 in result_list:
         for best in backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha):
           max_seq_list.append(a2 + best)
+      """
+      a2 = random.choice(result_list)
+      max_seq = a2 + backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha)
+      
+
     elif i < k <= j: #If k > j we return 0
       for a2 in BASES:
         for b2 in BASES:
@@ -601,11 +608,17 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
           elif result == max_result:
             result_list.append((a2,b2))
             #result_list = [(a2,b2)]
+      """
       for a2,b2 in result_list:
         for best_1 in backtrack(profile,ref_seq,struct,(i+1,k-1),(a2,b2),alpha):
           for best_2 in backtrack(profile,ref_seq,struct,(k+1,j),(b2,b),alpha): 
             max_seq_list.append(a2+best_1+b2+best_2)
-  return max_seq_list
+      """
+      a2,b2 = random.choice(result_list)
+      best_1 = backtrack(profile,ref_seq,struct,(i+1,k-1),(a2,b2),alpha)
+      best_2 = backtrack(profile,ref_seq,struct,(k+1,j),(b2,b),alpha)
+      max_seq = a2+best_1+b2+best_2
+  return max_seq
 
 def probability_given_i(profile,ref_seq,struct,i,a,alpha):
   """Will compute the probability that the 'i-th' nucleotide
@@ -705,12 +718,17 @@ def help():
     ii)A file containing an RNA profile (i.e. every lines contains
        nucleotides probability in order: 'ACGU')
     iii) The value of alpha, between 0 and 1.
-    An optional 4th argument can be given if you want to change the max penality for an invalid base pair
+    iv) The max penality for an invalid base pair, -1 for infinity
+    v) OPTIONAL:  If a fifth option is inputed, ONE RANDOM best sequence will be backtracked
+
+    e.g. 
+      profile)    python RNAPyroProfile mseq_sec_strut.txt profile.txt 0.5 20
+      backtrack)  python RNAPyroProfile mseq_sec_strut.txt profile.txt 0.5 20 y
     """
 
 if __name__ == "__main__":
   opts = sys.argv
-  if len(opts) < 4:
+  if len(opts) < 5:
     help()
     sys.exit(1)
   file_name = opts[1]
@@ -729,23 +747,21 @@ if __name__ == "__main__":
   if not 0 <= alpha <= 1:
     help()
     sys.exit(1)
-  if len(opts) == 5:
-    try:
-      z = float(opts[4])
+  try:
+    z = float(opts[4])
+    if z >= 0:
       for x in STACKING_ENERGY:
         if STACKING_ENERGY[x] == sys.maxint:
           STACKING_ENERGY[x] = z
-    except ValueError:
-      pass
-
-
-
+  except ValueError:
+    pass
   ref_seq,struct = parse_fasta(file_name)
   profile = parse_profile(profile_path)
-  results = all_probabilities(profile,ref_seq,struct,alpha)
-  display_all_probabilities(results)
-  """
-  n = len(struct)
-  print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
-  """
+
+  if len(opts) == 5:#We output profile adjusted
+    results = all_probabilities(profile,ref_seq,struct,alpha)
+    display_all_probabilities(results)
+  else:#Backtrack
+    n = len(struct)
+    print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
 
