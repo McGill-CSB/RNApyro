@@ -767,18 +767,39 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
   min_bound = 0.0
   l_all_sample = []
   l_correct_gc = []
+
+  if file_gc_data:
+    l_contents = []
+    if os.path.isfile(file_gc_data):
+      if  raw_input("""The file, %s, to write the weight/content
+                       data already exist, do you want to
+                       overwrite it? Y/n\n""" % file_gc_data) in ('n','N',
+                                                                  'no','NO'):
+        print 'You decided to exit'
+        sys.exit(0)
+    f = open(file_gc_data,'w')
+
   while len(l_correct_gc) < nb_gc_sample:
     l_all_sample.append([backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
                          for _ in xrange(sample_before_update)])
     over_under = 0 
+    l_contents[:] = []
     for sample in l_all_sample[-1]:
       if f_gc_only_structure:
         content = gc_content(sample,structure=struct)
       else:
         content = gc_content(sample)
+      if file_gc_data:
+        l_contents.append(content)
       over_under += (content - gc_target)
       if lower_gc <= content <= upper_gc: 
         l_correct_gc.append(sample)
+
+    if file_gc_data:
+        f.write('%s\n' % profile[0]['C'])
+        for c in l_contents[:-1]:
+          f.write('%s\t' % c)
+        f.write('%s\n' % l_contents[-1])
     if over_under < 0:
       min_bound = profile[0]['C']
       profile = update_profile(profile,max_bound,min_bound) 
@@ -787,6 +808,9 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
       max_bound = profile[0]['C']
       profile = update_profile(profile,max_bound,min_bound,increase=False)
       forward.clear()
+
+  if file_gc_data:
+    f.close()
 
   return l_correct_gc
 
@@ -839,7 +863,7 @@ if __name__ == "__main__":
   f_sample_gc = False#Sample with given gc content
   f_gc_only_structure = False#Only take into account GC with interactions
   f_gc_max_error = False#Custom max error for gc content, default 0.1
-  file_gc_data#If a file given, print to it for each iter. weight C, GC content
+  file_gc_data=None#If a file given, print to it for each iter. weight C, GC content
 
   while i < l:
     cmd = opts[i]
