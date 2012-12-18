@@ -756,7 +756,8 @@ def update_profile(profile,max_bound,min_bound,increase=True):
   return new_profile
      
 def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
-                     f_gc_only_structure,max_err=0.1,sample_before_update=100):
+                     file_gc_data,f_gc_only_structure,
+                     max_err=0.1,sample_before_update=100):
   """Will sample the required number of sequences, inside the gc_target
 
   """
@@ -815,6 +816,9 @@ def help():
       will be considered for the GC content
     -gc_max_err <float>
       Max error from GC target allowed in sample, default 0.1
+    -gc_data <file_name>
+      Create a file with the given name, will print to it a first line
+      the weight of 'C' and on the next the list of sampled GC content
     -t <float>
       The temperature (default 310.5K)
 
@@ -835,6 +839,7 @@ if __name__ == "__main__":
   f_sample_gc = False#Sample with given gc content
   f_gc_only_structure = False#Only take into account GC with interactions
   f_gc_max_error = False#Custom max error for gc content, default 0.1
+  file_gc_data#If a file given, print to it for each iter. weight C, GC content
 
   while i < l:
     cmd = opts[i]
@@ -928,6 +933,7 @@ if __name__ == "__main__":
         except ValueError:
           help()
           sys.exit(1)
+      #Max error from GC_Target allowed
       elif cmd == '-gc_max_err':
         f_gc_max_error = True
         max_error = opts[i+1]
@@ -942,6 +948,10 @@ if __name__ == "__main__":
           print "Error gc_max_err"
           help()
           sys.exit(1)
+      #If want data from GC sampling
+      elif cmd == '-gc_data':
+        file_gc_data = opts[i+1]
+        i += 2
       else:
         print "Unrecognized arguement"
         help()
@@ -976,9 +986,11 @@ if __name__ == "__main__":
   if f_sample_gc:
     if f_gc_max_error:
       res = sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,
-                             gc_target,f_gc_only_structure,max_err=max_error)
+                             gc_target,file_gc_data,f_gc_only_structure,
+                             max_err=max_error)
     else:
       res = sample_gc_target(profile,ref_seq,struct,alpha,
-                             nb_gc_sample,gc_target,f_gc_only_structure)
+                             nb_gc_sample,gc_target,file_gc_data,
+                             f_gc_only_structure)
     for x in res:
       print x
