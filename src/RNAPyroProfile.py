@@ -713,17 +713,21 @@ def display_all_probabilities(results):
     print x[0],x[1],x[2],x[3]
 
 def help():
-  print """You need at least three arguments:
-    i) A file containing the MSE and Secondary structure
-    ii)A file containing an RNA profile (i.e. every lines contains
+  print """
+  Required:
+    -p <file_path> A file containing the MSE and Secondary structure
+    -d <file_path> A data file with  RNA profile (i.e. every lines contains
        nucleotides probability in order: 'ACGU')
-    iii) The value of alpha, between 0 and 1.
-    iv) The max penality for an invalid base pair, -1 for infinity
-    v) OPTIONAL:  If a fifth option is inputed, ONE RANDOM best sequence will be backtracked
+    -a <float> The value of alpha, between 0 and 1.
 
-    e.g. 
-      profile)    python RNAPyroProfile mseq_sec_strut.txt profile.txt 0.5 20
-      backtrack)  python RNAPyroProfile mseq_sec_strut.txt profile.txt 0.5 20 y
+  Optional:
+    -m <int> The max penality for an invalid base pair, -1 for infinity
+    -b <int> print 'n' optimal sequences
+    -no_profile <> Doesn't output a profile
+
+  e.g.
+    python RNAPyroProfile -p prof.txt -d data.txt -a 0.5 -m 20
+    python RNAPyroProfile -p prof.txt -d data.txt -a 0.5 -m 20 -b -no_profile
     """
 
 if __name__ == "__main__":
@@ -796,8 +800,13 @@ if __name__ == "__main__":
           sys.exit(1)
 
 
-  ref_seq,struct = parse_fasta(file_name)
-  profile = parse_profile(profile_path)
+  try:
+    ref_seq,struct = parse_fasta(file_name)
+    profile = parse_profile(profile_path)
+  except NameError:
+    help()
+    sys.exit(1)
+
   n = len(struct)
 
   if not f_no_profile:
