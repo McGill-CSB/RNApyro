@@ -720,6 +720,16 @@ def display_all_probabilities(results):
   for x in results:
     print x[0],x[1],x[2],x[3]
 
+def gc_content(sequence,structure=None):
+  if not structure:
+    nb = len([x for x in sequence if x in 'GC'])
+    return float(nb)/len(sequence)
+  else:
+    nb = len([x for i,x in enumerate(sequence) if x in 'GC' and 
+             structure[i] > -1])
+    nb_bp = len([x for x in structure if x > -1])
+    return float(nb) / nb_bp
+
 def help():
   print """
   Required:
@@ -826,10 +836,10 @@ if __name__ == "__main__":
         nb_gc_sample = opts[i+2]
         i += 3
         try:
-          print "Error s_gc"
           nb_gc_sample = int(nb_gc_sample)
           gc_target = float(gc_target)
         except ValueError:
+          print "Error s_gc"
           help()
           sys.exit(1)
         if not (0 <= gc_target <= 1) or not nb_gc_sample > 0:
@@ -861,7 +871,9 @@ if __name__ == "__main__":
 
   if f_backtrack:
     for _ in xrange(nb_backtrack):
-      print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
+      res = backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
+      print res, gc_content(res,struct)
+
 
   if f_sample_gc:
     print nb_gc_sample, gc_target
