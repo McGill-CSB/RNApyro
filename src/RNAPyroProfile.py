@@ -698,6 +698,14 @@ def parse_profile(file_name):
       profile.append(prob)
   return tuple(profile)
 
+def equiprob_profile(n):
+      prob = {'A':0.25,
+              'C':0.25,
+              'G':0.25,
+              'U':0.25}
+      profile = tuple(prob for _ in xrange(n))
+      return profile
+
 def all_probabilities(profile,ref_seq, stuct, alpha):
   n = len(struct)
   results = []
@@ -715,19 +723,29 @@ def display_all_probabilities(results):
 def help():
   print """
   Required:
-    -p <file_path> A file containing the MSE and Secondary structure
-    -d <file_path> A data file with  RNA profile (i.e. every lines contains
+    -p <file_path> 
+      A file containing the MSE and Secondary structure
+    -d <file_path> 
+      A data file with  RNA profile (i.e. every lines contains
        nucleotides probability in order: 'ACGU')
-    -a <float> The value of alpha, between 0 and 1.
+    -a <float> 
+      The value of alpha, between 0 and 1.
 
   Optional:
-    -m <int> The max penality for an invalid base pair, -1 for infinity
-    -b <int> print 'n' optimal sequences
-    -no_profile <> Doesn't output a profile
+    -m <int> 
+      The max penality for an invalid base pair, -1 for infinity
+    -b <int> 
+      print 'n' optimal sequences
+    -no_profile <> 
+      Doesn't output a profile
+    -s_gc <target_gc> <nb_samples> 
+      Sampling sequences with a 0<=target_gc<=1 and a given
+      number of samples 
 
   e.g.
     python RNAPyroProfile -p prof.txt -d data.txt -a 0.5 -m 20
-    python RNAPyroProfile -p prof.txt -d data.txt -a 0.5 -m 20 -b -no_profile
+    python RNAPyroProfile -p prof.txt -d data.txt -a 0.5 -m 20 -b 5 -no_profile
+    python RNAPyroProfile -d data.txt -a 0.5 -m 20 -no_profile -s_gc 0.5 100
     """
 
 if __name__ == "__main__":
@@ -738,6 +756,7 @@ if __name__ == "__main__":
   #Action Flags!!
   f_no_profile = False#Don't do profile
   f_backtrack = False#Do backtrack
+  f_sample_gc = False#Sample with given gc content
 
   while i < l:
     cmd = opts[i]
@@ -745,14 +764,14 @@ if __name__ == "__main__":
       i += 1
     else:
       #Profile
-      if cmd[1:] == 'p':  
+      if cmd[1:] == 'd':  
         file_name = opts[i+1]
         i += 2
         if not os.path.isfile(file_name):
           help()
           sys.exit(1)
       #Data (MSA + sec struct)
-      elif cmd[1:] == 'd':
+      elif cmd[1:] == 'p':
         profile_path = opts[i+1]
         i += 2
         if not os.path.isfile(profile_path):
@@ -786,6 +805,7 @@ if __name__ == "__main__":
       elif cmd[1:] == 'no_profile':
         f_no_profile = True
         i += 1
+      #Backtrack N optimal sequences
       elif cmd[1:] == 'b':
         f_backtrack = True
         nb_backtrack = opts[i+1]
@@ -793,26 +813,55 @@ if __name__ == "__main__":
         try:
           nb_backtrack = int(nb_backtrack)
         except ValueError:
+          print "Error -b"
           help()
           sys.exit(1)
         if nb_backtrack < 1:
+          print "Error -b"
           help()
           sys.exit(1)
+      elif cmd[1:] == 's_gc':
+        f_sample_gc = True
+        gc_target = opts[i+1]
+        nb_gc_sample = opts[i+2]
+        i += 3
+        try:
+          print "Error s_gc"
+          nb_gc_sample = int(nb_gc_sample)
+          gc_target = float(gc_target)
+        except ValueError:
+          help()
+          sys.exit(1)
+        if not (0 <= gc_target <= 1) or not nb_gc_sample > 0:
+          print "Error s_gc"
+          help()
+          sys.exit(1)
+
+
 
 
   try:
     ref_seq,struct = parse_fasta(file_name)
-    profile = parse_profile(profile_path)
   except NameError:
     help()
     sys.exit(1)
 
   n = len(struct)
 
+  try:
+    profile = parse_profile(profile_path)
+  except NameError:
+    profile = equiprob_profile(n)
+
+  #Action!
+
   if not f_no_profile:
     results = all_probabilities(profile,ref_seq,struct,alpha)
     display_all_probabilities(results)
+
   if f_backtrack:
     for _ in xrange(nb_backtrack):
       print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
 
+  if f_sample_gc:
+    print nb_gc_sample, gc_target
