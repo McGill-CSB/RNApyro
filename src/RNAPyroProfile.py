@@ -733,6 +733,62 @@ def gc_content(sequence,structure=None):
     nb_bp = len([x for x in structure if x > -1])
     return float(nb) / nb_bp
 
+def update_profile(profile,max_bound,min_bound,increase=True):
+  """Given a profile, will increase (resp. decrease) by half the probability
+  of GC content at all positions. Will equaly distribute the remaining between
+  AU
+  """
+  new_profile = []
+  for position in profile:
+    if increase:
+      up_G = (max_bound-position['G'])/2
+      up_C = (max_bound-position['C'])/2
+    else:
+      up_G = -(position['G']-min_bound)/2
+      up_C = -(position['C']-min_bound) /2
+    to_remove = up_G+up_C
+    new_profile.append(
+      {'G':position['G']+up_G,
+       'C':position['C']+up_C,
+       'A':position['A']-to_remove/2})
+    #make sure sums to 1
+    new_profile[-1]['U'] = 1.0 - sum(new_profile[-1][x] for x in 'GCA')
+  return new_profile
+     
+def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
+                     f_gc_only_structure,max_err=0.1,sample_before_update=100):
+  """Will sample the required number of sequences, inside the gc_target
+
+  """
+  lower_gc = gc_target-max_err
+  upper_gc = gc_target+max_err
+  max_bound = 1.0
+  min_bound = 0.0
+  l_all_sample = []
+  l_correct_gc = []
+  while len(l_correct_gc) < nb_gc_sample:
+    l_all_sample.append([backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
+                         for _ in xrange(sample_before_update)])
+    over_under = 0 
+    for sample in l_all_sample[-1]:
+      if f_gc_only_structure:
+        content = gc_content(sample,structure=struct)
+      else:
+        content = gc_content(sample)
+      over_under += (content - gc_target)
+      if lower_gc <= content <= upper_gc: 
+        l_correct_gc.append(sample)
+    if over_under < 0:
+      min_bound = profile[0]['C']
+      profile = update_profile(profile,max_bound,min_bound) 
+      forward.clear()
+    elif over_under > 0:
+      max_bound = profile[0]['C']
+      profile = update_profile(profile,max_bound,min_bound,increase=False)
+      forward.clear()
+
+  return l_correct_gc
+
 def help():
   print """
   Required:
@@ -754,6 +810,11 @@ def help():
     -s_gc <target_gc> <nb_samples> 
       Sampling sequences with a 0<=target_gc<=1 and a given
       number of samples 
+    -gc_sec_struct <>
+      Only the nucleotides with an interaction in the secondary structure
+      will be considered for the GC content
+    -gc_max_err <float>
+      Max error from GC target allowed in sample, default 0.1
     -t <float>
       The temperature (default 310.5K)
 
@@ -772,6 +833,8 @@ if __name__ == "__main__":
   f_no_profile = False#Don't do profile
   f_backtrack = False#Do backtrack
   f_sample_gc = False#Sample with given gc content
+  f_gc_only_structure = False#Only take into account GC with interactions
+  f_gc_max_error = False#Custom max error for gc content, default 0.1
 
   while i < l:
     cmd = opts[i]
@@ -779,21 +842,21 @@ if __name__ == "__main__":
       i += 1
     else:
       #Profile
-      if cmd[1:] == 'd':  
+      if cmd == '-d':  
         file_name = opts[i+1]
         i += 2
         if not os.path.isfile(file_name):
           help()
           sys.exit(1)
       #Data (MSA + sec struct)
-      elif cmd[1:] == 'p':
+      elif cmd == '-p':
         profile_path = opts[i+1]
         i += 2
         if not os.path.isfile(profile_path):
           help()
           sys.exit(1)
       #alpha
-      elif cmd[1:] == 'a':
+      elif cmd == '-a':
         alpha = opts[i+1]
         i += 2
         try:
@@ -805,7 +868,7 @@ if __name__ == "__main__":
           help()
           sys.exit(1)
       #Max BP penality (def inf.)
-      elif cmd[1:] == 'm':
+      elif cmd == '-m':
         i += 2
         z = opts[i+1]
         try:
@@ -817,11 +880,11 @@ if __name__ == "__main__":
         except ValueError:
           pass
       #Don't output profile
-      elif cmd[1:] == 'no_profile':
+      elif cmd == '-no_profile':
         f_no_profile = True
         i += 1
       #Backtrack N optimal sequences
-      elif cmd[1:] == 'b':
+      elif cmd == '-b':
         f_backtrack = True
         nb_backtrack = opts[i+1]
         i += 2
@@ -836,7 +899,7 @@ if __name__ == "__main__":
           help()
           sys.exit(1)
       #Sampling Sequences given GC target
-      elif cmd[1:] == 's_gc':
+      elif cmd == '-s_gc':
         f_sample_gc = True
         gc_target = opts[i+1]
         nb_gc_sample = opts[i+2]
@@ -852,8 +915,12 @@ if __name__ == "__main__":
           print "Error s_gc"
           help()
           sys.exit(1)
+      #Only check sec struct pos for GC content
+      elif cmd == '-gc_sec_struct':
+        f_gc_only_structure = True
+        i += 1
       #Temperature of the system
-      if cmd[1:] == 't':
+      elif cmd == '-t':
         T = opts[i+1]
         i += 2
         try:
@@ -861,7 +928,24 @@ if __name__ == "__main__":
         except ValueError:
           help()
           sys.exit(1)
-
+      elif cmd == '-gc_max_err':
+        f_gc_max_error = True
+        max_error = opts[i+1]
+        i += 2
+        try:
+          max_error = float(max_error)
+        except ValueError:
+          print "Error gc_max_err"
+          help()
+          sys.exit(1)
+        if not 0 <= max_error <= 1:
+          print "Error gc_max_err"
+          help()
+          sys.exit(1)
+      else:
+        print "Unrecognized arguement"
+        help()
+        sys.exit(1)
 
 
 
@@ -889,6 +973,12 @@ if __name__ == "__main__":
       res = backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
       print res, gc_content(res,struct)
 
-
   if f_sample_gc:
-    print nb_gc_sample, gc_target
+    if f_gc_max_error:
+      res = sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,
+                             gc_target,f_gc_only_structure,max_err=max_error)
+    else:
+      res = sample_gc_target(profile,ref_seq,struct,alpha,
+                             nb_gc_sample,gc_target,f_gc_only_structure)
+    for x in res:
+      print x
