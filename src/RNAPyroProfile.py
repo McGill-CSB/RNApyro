@@ -728,40 +728,82 @@ def help():
 
 if __name__ == "__main__":
   opts = sys.argv
-  if len(opts) < 5:
-    help()
-    sys.exit(1)
-  file_name = opts[1]
-  if not os.path.isfile(file_name):
-    help()
-    sys.exit(1)
-  profile_path = opts[2]
-  if not os.path.isfile(profile_path):
-    help()
-    sys.exit(1)
-  try:
-    alpha = float(opts[3])
-  except ValueError:
-    help()
-    sys.exit(1)
-  if not 0 <= alpha <= 1:
-    help()
-    sys.exit(1)
-  try:
-    z = float(opts[4])
-    if z >= 0:
-      for x in STACKING_ENERGY:
-        if STACKING_ENERGY[x] == sys.maxint:
-          STACKING_ENERGY[x] = z
-  except ValueError:
-    pass
+  l = len(opts)
+  i = 1
+
+  #Action Flags!!
+  f_no_profile = False#Don't do profile
+  f_backtrack = False#Do backtrack
+
+  while i < l:
+    cmd = opts[i]
+    if not cmd.startswith('-'):
+      i += 1
+    else:
+      #Profile
+      if cmd[1:] == 'p':  
+        file_name = opts[i+1]
+        i += 2
+        if not os.path.isfile(file_name):
+          help()
+          sys.exit(1)
+      #Data (MSA + sec struct)
+      elif cmd[1:] == 'd':
+        profile_path = opts[i+1]
+        i += 2
+        if not os.path.isfile(profile_path):
+          help()
+          sys.exit(1)
+      #alpha
+      elif cmd[1:] == 'a':
+        alpha = opts[i+1]
+        i += 2
+        try:
+          alpha = float(alpha)
+        except ValueError:
+          help()
+          sys.exit(1)
+        if not 0 <= alpha <= 1:
+          help()
+          sys.exit(1)
+      #Max BP penality (def inf.)
+      elif cmd[1:] == 'm':
+        i += 2
+        z = opts[i+1]
+        try:
+          z = float(z)
+          if z >= 0:
+            for x in STACKING_ENERGY:
+              if STACKING_ENERGY[x] == sys.maxint:
+                STACKING_ENERGY[x] = z
+        except ValueError:
+          pass
+      #Don't output profile
+      elif cmd[1:] == 'no_profile':
+        f_no_profile = True
+        i += 1
+      elif cmd[1:] == 'b':
+        f_backtrack = True
+        nb_backtrack = opts[i+1]
+        i += 2
+        try:
+          nb_backtrack = int(nb_backtrack)
+        except ValueError:
+          help()
+          sys.exit(1)
+        if nb_backtrack < 1:
+          help()
+          sys.exit(1)
+
+
   ref_seq,struct = parse_fasta(file_name)
   profile = parse_profile(profile_path)
+  n = len(struct)
 
-  if len(opts) == 5:#We output profile adjusted
+  if not f_no_profile:
     results = all_probabilities(profile,ref_seq,struct,alpha)
     display_all_probabilities(results)
-  else:#Backtrack
-    n = len(struct)
-    print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
+  if f_backtrack:
+    for _ in xrange(nb_backtrack):
+      print backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
 
