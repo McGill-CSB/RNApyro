@@ -21,6 +21,7 @@ sys.setrecursionlimit(10000)
 
 BASES = ['A','C','G','U']
 BOLTZMANN = 0.0019872041
+global T
 T = 310.15
 
 #Just generate all possible combination with maxint
@@ -324,23 +325,6 @@ ISO = {(('A', 'C'), ('C', 'A')):4.93,
         (('G', 'G'), ('U', 'G')):10.0,
         (('A', 'U'), ('U', 'C')):3.5}
 
-class memoize_str(dict):
-  """Generically memoizes a function results."""
-  fun = None
-  
-  def __init__(self, f):
-      self.fun = f
-  
-  def __call__(self,profile,ref_seq,struct,*args):
-      nargs = (args)
-      if nargs in self:
-          return self[nargs]
-      else:
-          val = self.fun(profile,ref_seq,struct,*args)
-          self[nargs] = val
-          return val
-  def resetCache(self):
-      self.clear()
 
 class memoize(dict):
   """Generically memoizes a function results."""
@@ -360,11 +344,30 @@ class memoize(dict):
   def resetCache(self):
       self.clear()
 
+class memoize_iso(dict):
+  """Generically memoizes a function results."""
+  fun = None
+  
+  def __init__(self, f):
+      self.fun = f
+  
+  def __call__(self,ref_seq,*args):
+      nargs = (args)
+      if nargs in self:
+          return self[nargs]
+      else:
+          val = mpf(self.fun(ref_seq,*args))
+          self[nargs] = val
+          return val
+  def resetCache(self):
+      self.clear()
+
 def energy((a,b),(a2,b2),alpha):
   #stacking energy of base pair (a,b) around base pair (a2,b2)
   E = STACKING_ENERGY[a,a2,b2,b]
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
+@memoize_iso
 def isostericity(ref_seq,(i,j),(a,b), alpha):
   #isostericity of going from original base pair to (a,b)
   iso = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)/len(ref_seq)
@@ -751,6 +754,8 @@ def help():
     -s_gc <target_gc> <nb_samples> 
       Sampling sequences with a 0<=target_gc<=1 and a given
       number of samples 
+    -t <float>
+      The temperature (default 310.5K)
 
   e.g.
     python RNAPyroProfile -p prof.txt -d data.txt -a 0.5 -m 20
@@ -830,6 +835,7 @@ if __name__ == "__main__":
           print "Error -b"
           help()
           sys.exit(1)
+      #Sampling Sequences given GC target
       elif cmd[1:] == 's_gc':
         f_sample_gc = True
         gc_target = opts[i+1]
@@ -844,6 +850,15 @@ if __name__ == "__main__":
           sys.exit(1)
         if not (0 <= gc_target <= 1) or not nb_gc_sample > 0:
           print "Error s_gc"
+          help()
+          sys.exit(1)
+      #Temperature of the system
+      if cmd[1:] == 't':
+        T = opts[i+1]
+        i += 2
+        try:
+          T = float(T)
+        except ValueError:
           help()
           sys.exit(1)
 
