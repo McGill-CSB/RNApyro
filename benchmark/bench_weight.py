@@ -31,7 +31,7 @@ def benchmark(list_sec_struc,weights,nb,output_cPickle=None):
                    w,nb,
                    full_path_content)
       res = subprocess.check_output(to_do,shell=True)
-      print struct,w,tac-tic
+      print struct,w
       data_dump = [x.strip() for x in open(full_path_content)]
       d_all_bench[struct,w] = (res,data_dump)
   if output_cPickle:
