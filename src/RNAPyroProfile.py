@@ -773,7 +773,6 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
     f = open(file_gc_data,'w')
 
   while len(l_correct_gc) < nb_gc_sample:
-    print profile[0]['C']
     l_all_sample.append([backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
                          for _ in xrange(sample_before_update)])
     over_under = 0 
@@ -790,9 +789,10 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
         l_correct_gc.append(sample)
 
     if file_gc_data:
-        for c in l_contents[:-1]:
-          f.write('%s\t' % c)
-        f.write('%s\n' % l_contents[-1])
+      f.write('%s\n' % profile[0]['C']) 
+      for c in l_contents[:-1]:
+        f.write('%s\t' % c)
+      f.write('%s\n' % l_contents[-1])
     if over_under < 0:
       min_bound = profile[0]['C']
       profile = update_profile(profile,max_bound,min_bound) 
