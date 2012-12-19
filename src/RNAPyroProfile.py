@@ -541,6 +541,18 @@ def product_given_i(profile,ref_seq,struct,i,a,alpha):
       result += pro*f*b*iso
   return result
 
+def random_weighted_sampling(l_samples):
+  tot = sum(x[1] for x in l_samples)
+  scaled_weights = [x[1]/tot for x in l_samples]
+  rand_nb = random.random()
+  accumulation = 0
+  for i,x in enumerate(scaled_weights):
+    accumulation += x
+    if accumulation > rand_nb:
+      return l_samples[i][0]
+  return l_samples[-1][0]
+
+
 def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
   #alpha gives the weight energy vs isostericity
   max_result = 0.
@@ -552,6 +564,7 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
   else:
     k = struct[i]
     if k==-1:
+      l_samples = []
       for a2 in BASES:
         pro = profile[i][a2]
         f = forward(profile,ref_seq,struct,
@@ -559,22 +572,12 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
                     (a2,b),
                     alpha)
         result =  pro*f
-        if result > max_result:
-          max_result = result
-          result_list = [a2]
-        elif result == max_result:
-          max_result = result
-          #result_list = [a2]
-          result_list.append(a2)
-      """
-      for a2 in result_list:
-        for best in backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha):
-          max_seq_list.append(a2 + best)
-      """
-      a2 = random.choice(result_list)
+        l_samples.append((a2,result))
+      a2 = random_weighted_sampling(l_samples)
       max_seq = a2 + backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha)
       
     elif i < k <= j: #If k > j we return 0
+      l_samples = []
       for a2 in BASES:
         for b2 in BASES:
           pro = profile[i][a2]*profile[k][b2]
@@ -607,19 +610,14 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
                                (a2,b2),
                                alpha)
             result = pro*f*e*iso
-          if result > max_result:
-            max_result = result
-            result_list = [(a2,b2)]
-          elif result == max_result:
-            result_list.append((a2,b2))
-            #result_list = [(a2,b2)]
+          l_samples.append(((a2,b2),result))
       """
       for a2,b2 in result_list:
         for best_1 in backtrack(profile,ref_seq,struct,(i+1,k-1),(a2,b2),alpha):
           for best_2 in backtrack(profile,ref_seq,struct,(k+1,j),(b2,b),alpha): 
             max_seq_list.append(a2+best_1+b2+best_2)
       """
-      a2,b2 = random.choice(result_list)
+      a2,b2 = random_weighted_sampling(l_samples)
       best_1 = backtrack(profile,ref_seq,struct,(i+1,k-1),(a2,b2),alpha)
       best_2 = backtrack(profile,ref_seq,struct,(k+1,j),(b2,b),alpha)
       max_seq = a2+best_1+b2+best_2
