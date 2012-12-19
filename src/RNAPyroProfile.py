@@ -1019,4 +1019,4 @@ if __name__ == "__main__":
       res = sample_gc_target(profile,ref_seq,struct,alpha,
                              nb_gc_sample,gc_target,file_gc_data,
                              f_gc_only_structure)
-      print diversity_seq(res,struct)
+      print '\n'.join(res)
