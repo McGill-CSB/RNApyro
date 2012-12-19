@@ -1,7 +1,8 @@
-import os,sys
 import itertools
 import random
 import math
+import sys
+import os
 
 def MPMATH_MISSING():
   print """The module `mpmath` was not found. This might impeed the
@@ -370,6 +371,8 @@ def energy((a,b),(a2,b2),alpha):
 @memoize_iso
 def isostericity(ref_seq,(i,j),(a,b), alpha):
   #isostericity of going from original base pair to (a,b)
+  if not ref_seq:
+    return 1
   iso = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)/len(ref_seq)
   #iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
   #iso = mpf(iso_mut-iso_start)/len(ref_seq)
@@ -571,7 +574,6 @@ def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
       a2 = random.choice(result_list)
       max_seq = a2 + backtrack(profile,ref_seq,struct,(i+1,j),(a2,b),alpha)
       
-
     elif i < k <= j: #If k > j we return 0
       for a2 in BASES:
         for b2 in BASES:
@@ -770,16 +772,10 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
 
   if file_gc_data:
     l_contents = []
-    if os.path.isfile(file_gc_data):
-      if  raw_input("""The file, %s, to write the weight/content
-                       data already exist, do you want to
-                       overwrite it? Y/n\n""" % file_gc_data) in ('n','N',
-                                                                  'no','NO'):
-        print 'You decided to exit'
-        sys.exit(0)
     f = open(file_gc_data,'w')
 
   while len(l_correct_gc) < nb_gc_sample:
+    print profile[0]['C']
     l_all_sample.append([backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
                          for _ in xrange(sample_before_update)])
     over_under = 0 
@@ -796,7 +792,6 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
         l_correct_gc.append(sample)
 
     if file_gc_data:
-        f.write('%s\n' % profile[0]['C'])
         for c in l_contents[:-1]:
           f.write('%s\t' % c)
         f.write('%s\n' % l_contents[-1])
@@ -813,6 +808,16 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
     f.close()
 
   return l_correct_gc
+
+def sub_seq_structure(sequence,struct):
+  return ''.join(x for i,x in enumerate(sequence) if struct[i] > -1)
+
+def diversity_seq(l_sequence,struct):
+  n = len(l_sequence)
+  n_set = float(len(set(l_sequence)))
+  n_struct_set = float(len(set(sub_seq_structure(x,struct)
+                               for x in l_sequence)))
+  return n,n_set/n,n_struct_set/n
 
 def help():
   print """
@@ -977,7 +982,7 @@ if __name__ == "__main__":
         file_gc_data = opts[i+1]
         i += 2
       else:
-        print "Unrecognized arguement"
+        print "Unrecognized arg"
         help()
         sys.exit(1)
 
@@ -1016,5 +1021,4 @@ if __name__ == "__main__":
       res = sample_gc_target(profile,ref_seq,struct,alpha,
                              nb_gc_sample,gc_target,file_gc_data,
                              f_gc_only_structure)
-    for x in res:
-      print x
+      print diversity_seq(res,struct)

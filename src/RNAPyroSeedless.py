@@ -348,6 +348,8 @@ def energy((a,b),(a2,b2),alpha):
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
 def isostericity(ref_seq,(i,j),(a,b), alpha):
+  if not ref_seq:
+    return 1
   #isostericity of going from original base pair to (a,b)
   iso = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)/len(ref_seq)
   #iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
