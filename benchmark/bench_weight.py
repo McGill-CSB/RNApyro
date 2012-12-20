@@ -37,14 +37,14 @@ def benchmark(list_sec_struc,weights,nb,output_cPickle=None):
   if output_cPickle:
     with open(output_cPickle, 'wb') as f:
       cPickle.dump(d_all_bench,f,-1)
-    os.remove(tmp_struct_file)
+  os.remove(tmp_struct_file)
   return d_all_bench
 
 if __name__ == '__main__':
   list_sec_struct = [x.strip() for x in open(
     os.path.join('..','data','rnastrand_dataset_filtered_nodup.txt')
     )]
-  nb = 1000
+  nb = 100
   weights = [0.1,0.3,0.5,0.7,0.9]
   output_file = 'dump_rnastrand_dataset_filtered_nodup.cPickle'
   benchmark(list_sec_struct,weights,nb,output_file)

@@ -757,7 +757,7 @@ def update_profile(profile,max_bound,min_bound,increase=True):
      
 def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
                      file_gc_data,f_gc_only_structure,
-                     max_err=0.1,sample_before_update=100):
+                     max_err=0.1,sample_before_update=1000):
   """Will sample the required number of sequences, inside the gc_target
 
   """
