@@ -776,7 +776,8 @@ def sample_gc_target(profile,ref_seq,struct,alpha,nb_gc_sample,gc_target,
     l_all_sample.append([backtrack(profile,ref_seq,struct,(0,n-1),('',''),alpha)
                          for _ in xrange(sample_before_update)])
     over_under = 0 
-    l_contents[:] = []
+    if file_gc_data:
+      l_contents[:] = []
     for sample in l_all_sample[-1]:
       if f_gc_only_structure:
         content = gc_content(sample,structure=struct)
