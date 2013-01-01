@@ -1,5 +1,6 @@
 import os,sys
 import itertools
+import random
 import math
 
 def MPMATH_MISSING():
@@ -415,6 +416,79 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
                                                               alpha)
   return result
 
+def random_weighted_sampling(l_samples):
+  tot = sum(x[1] for x in l_samples)
+  if tot == 0:
+    print 'euurrrr'
+    return random.choice([x[0] for x in l_samples])
+  scaled_weights = [x[1]/tot for x in l_samples]
+  rand_nb = random.random()
+  accumulation = 0
+  for i,x in enumerate(scaled_weights):
+    accumulation += x
+    if accumulation > rand_nb:
+      return l_samples[i][0]
+  return l_samples[-1][0]
+
+def backtrack(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
+  #alpha gives the weight energy vs isostericity
+  result = 0.
+  max_seq = ''
+  if m<0: return seq[i:j+1]
+  if i > j : return ''
+  else:
+    k = struct[i]
+    if k==-1:
+      l_samples = []
+      for a2 in BASES:
+        d = delta(seq,i,a2)
+        if d <= m:
+          result = forward(seq,ref_seq,struct,
+                            (i+1,j),
+                            (a2,b),
+                            m-d,alpha)
+          l_samples.append((a2,result))
+      a2 = random_weighted_sampling(l_samples)
+      d = delta(seq,i,a2)
+      max_seq = a2 + backtrack(seq,ref_seq,struct,(i+1,j),(a2,b),m-d,alpha)
+    elif i < k <= j: #If k > j we return 0
+      l_samples=[]
+      for a2 in BASES:
+        for b2 in BASES:
+          d = delta(seq,i,a2)+delta(seq,k,b2)
+          #if not stacked outside (or border, then no stack possible)
+          if i==0 or j==len(seq)-1 or not (j==k and struct[i-1]==j+1):
+            for m2 in range(m-d+1):
+              result = forward(seq,ref_seq,struct,
+                                  (i+1,k-1),
+                                  (a2,b2),
+                                  m2,alpha)*forward(seq,ref_seq,struct,
+                                  (k+1,j),
+                                  (b2,b),
+                                  m-m2-d,alpha)*isostericity(seq,ref_seq,
+                                                       (i,k),
+                                                       (a2,b2),
+                                                       alpha)
+              l_samples.append(((a2,b2,m2),result))
+          #if stack, we add energy
+          else :
+            result = forward(seq,ref_seq,struct,
+                              (i+1,k-1),
+                              (a2,b2),
+                              m-d,alpha)*energy((a,b),
+                                          (a2,b2),
+                                          alpha)*isostericity(seq,ref_seq,
+                                                              (i,k),
+                                                              (a2,b2),
+                                                              alpha)
+            l_samples.append(((a2,b2,0),result))
+      a2,b2,m2 = random_weighted_sampling(l_samples)
+      d = delta(seq,i,a2)+delta(seq,k,b2)
+      best_1 = backtrack(seq,ref_seq,struct,(i+1,k-1),(a2,b2),m2,alpha)
+      best_2 = backtrack(seq,ref_seq,struct,(k+1,j),(b2,b),m-m2-d,alpha)
+      max_seq = a2+best_1+b2+best_2
+  return max_seq
+
 @memoize
 def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha):
   result = 0.
@@ -623,6 +697,10 @@ def help():
     """
 
 if __name__ == "__main__":
+
+  f_no_profile = False
+  f_nb_backtrack = 0
+
   opts = sys.argv
   if len(opts) < 4:
     help()
@@ -652,10 +730,24 @@ if __name__ == "__main__":
           STACKING_ENERGY[x] = z
     except ValueError:
       pass
+  for i in range(5,len(opts)):
+    if opts[i] == '-noProfile':
+      f_no_profile = True
+    if opts[i] == '-nb_backtrack':
+      try:
+        f_nb_backtrack = int(opts[i+1])
+      except IndexError,ValueError:
+        print 'Number backtrack sequences missing'
 
 
 
   ref_seq,seq,struct = parse_fasta(file_name)
-  results = all_probabilities(seq,ref_seq,struct,m,alpha)
-  display_all_probabilities(results)
 
+  if not f_no_profile:
+    results = all_probabilities(seq,ref_seq,struct,m,alpha)
+    display_all_probabilities(results)
+  else:
+    n = len(seq)
+    forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
+    for i in range(f_nb_backtrack):
+      print backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha)

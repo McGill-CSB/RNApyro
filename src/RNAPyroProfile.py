@@ -555,7 +555,6 @@ def random_weighted_sampling(l_samples):
 
 def backtrack(profile,ref_seq,struct,(i,j),(a,b),alpha):
   #alpha gives the weight energy vs isostericity
-  max_result = 0.
   result_list = []
   #max_seq_list = []
   max_seq = ''
