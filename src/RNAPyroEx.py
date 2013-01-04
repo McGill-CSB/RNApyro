@@ -369,7 +369,7 @@ def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
 def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
   #alpha gives the weight energy vs isostericity
   result = 0.
-  if m<0: return 0
+  if m<0 or m>j-i+1: return 0
   if i > j :
     if m==0:
       result=1.
@@ -419,7 +419,7 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
 def random_weighted_sampling(l_samples):
   tot = sum(x[1] for x in l_samples)
   if tot == 0:
-    print 'euurrrr'
+    print l_samples
     return random.choice([x[0] for x in l_samples])
   scaled_weights = [x[1]/tot for x in l_samples]
   rand_nb = random.random()
@@ -434,7 +434,7 @@ def backtrack(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
   #alpha gives the weight energy vs isostericity
   result = 0.
   max_seq = ''
-  if m<0: return seq[i:j+1]
+  if m==0: return seq[i:j+1]
   if i > j : return ''
   else:
     k = struct[i]
@@ -442,12 +442,11 @@ def backtrack(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
       l_samples = []
       for a2 in BASES:
         d = delta(seq,i,a2)
-        if d <= m:
-          result = forward(seq,ref_seq,struct,
-                            (i+1,j),
-                            (a2,b),
-                            m-d,alpha)
-          l_samples.append((a2,result))
+        result = forward(seq,ref_seq,struct,
+                          (i+1,j),
+                          (a2,b),
+                          m-d,alpha)
+        l_samples.append((a2,result))
       a2 = random_weighted_sampling(l_samples)
       d = delta(seq,i,a2)
       max_seq = a2 + backtrack(seq,ref_seq,struct,(i+1,j),(a2,b),m-d,alpha)
@@ -481,7 +480,7 @@ def backtrack(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
                                                               (i,k),
                                                               (a2,b2),
                                                               alpha)
-            l_samples.append(((a2,b2,0),result))
+            l_samples.append(((a2,b2,m-d),result))
       a2,b2,m2 = random_weighted_sampling(l_samples)
       d = delta(seq,i,a2)+delta(seq,k,b2)
       best_1 = backtrack(seq,ref_seq,struct,(i+1,k-1),(a2,b2),m2,alpha)
