@@ -6,8 +6,13 @@
 \newcommand{\EI}{\text{EI}}
 \newcommand{\ES}{\text{ES}}
 \newcommand{\ISO}{\text{ISO}}
-We introduce a probabilistic model, which aims at capturing both the stability of the folded RNA and its ability to adopt a predefined 3D conformation.
-To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990}.
+We introduce a probabilistic model, aiming to design RNA sequences with a 
+specific $\Gb+\Cb$ content, folding into a predefined 2D conformation.
+We use a Boltzmann weighted distribution based on a pseudo-energy function 
+$\PE{\cdot}$ taking into accounts stacked canonical base pairs free-energy. 
+
+
+%To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990}.
 
 \subsection{Probabilistic model}
 Let $\Omega$ be an gap-free RNA alignment sequence, $S$ its associated secondary structure, 
