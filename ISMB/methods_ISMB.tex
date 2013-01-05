@@ -6,10 +6,12 @@
 \newcommand{\EI}{\text{EI}}
 \newcommand{\ES}{\text{ES}}
 \newcommand{\ISO}{\text{ISO}}
+\newcommand{\Prob}{\text{P}}
+
 We introduce a probabilistic model, aiming to design RNA sequences with a 
 specific $\Gb+\Cb$ content, folding into a predefined 2D conformation.
 We use a Boltzmann weighted distribution based on a pseudo-energy function 
-$\PE{\cdot}$ taking into accounts stacked canonical base pairs free-energy. 
+$\ES(\cdot)$ taking into accounts stacked canonical base pairs free-energy. 
 
 
 %To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990}.
@@ -24,11 +26,26 @@ $\PE{\cdot}$ taking into accounts stacked canonical base pairs free-energy.
 %are the free-energy and isostericity contributions respectively (further described below), and $\alpha\in[0,1]$ is an arbitrary parameter that sets the relative weight for both contributions.
 %
 %\subsubsection{Energy contribution}
-%The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, taking values from the Turner 2004 model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
-%\begin{align*}
-%  \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
-%\end{align*}
-%where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\Gb\Ub,\Ub\Gb,\Cb\Gb,\Gb\Cb, \Ab\Ub\text{ or }\Ub\Ab\}$). This latter parameter allows to choose whether to simply penalize invalid base pairs, or forbid them altogether ($\beta = \infty$).
+\subsection{Definitions}
+\subsubsection{Profile}
+At every position, the nucleotide distribution is the same. 
+It is first initialized equiprobably. A bisection scheme is then applied until the sampled sequences $\Cb+\Gb$ content is as desired. The probability
+of a given nucleotide $a\in\B$ will be given by $\Prob(a)$ at every 
+position.
+
+
+\subsubsection{Energetic model}
+
+The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, taking values from the Turner 2004 model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
+
+\begin{align*}
+  \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
+\end{align*}
+
+
+where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\Gb\Ub,\Ub\Gb,\Cb\Gb,\Gb\Cb, \Ab\Ub\text{ or }\Ub\Ab\}$). This latter parameter allows to choose whether to simply penalize invalid base pairs, or forbid them altogether ($\beta = \infty$).
+
+
 %The loss of precision due to this simplification of the Turner model remains reasonable since the targeted secondary structure is fixed 
 %(e.g. multiloops do not account for base-specific contributions). Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
 %\subsubsection{Isostericity contribution}
@@ -76,7 +93,6 @@ $\PE{\cdot}$ taking into accounts stacked canonical base pairs free-energy.
 %
 %
 %
-%\subsubsection{Definitions}
 %Let $B:=\left\{\Ab,\Cb,\Gb,\Ub\right\}$ be the set of nucleotides.
 %Given $s\in B^n$ an RNA sequence, let $s_i$ be the nucleotide at position $i$. Let $\Omega$ be a set of un-gapped RNA sequences of
 %length $n$, and $S$ a secondary structure without pseudoknots. 
@@ -87,6 +103,7 @@ $\PE{\cdot}$ taking into accounts stacked canonical base pairs free-energy.
 %
 %Let us then remind a Hamming distance function $\delta: B^*\times B^* \to \mathbb{N}^+$, which takes two sequences $s'$ and $s''$ as input, $|s'|=|s''|$, and returns the number of differing positions.
 %Finally, let us denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contribution of a base-pair $(i,j)$ to the pseudo-energy, such that
+
 %\begin{equation}
 %  E_{(i,j),ab \to a'b'}^{\Omega,\beta}  = \alpha \cdot\ES^\beta_{a b \to a' b'}+(1-\alpha)\cdot\EI^{\Omega}_{(i,j),a'b'}.
 %\end{equation}
@@ -118,22 +135,26 @@ $\PE{\cdot}$ taking into accounts stacked canonical base pairs free-energy.
 
 The main recursion is composed of four terms:
 \begin{equation}
-	\Z{i,j}{m}{a,b}:=\left\{
+	\Z{i,j}{a,b}:=\left\{
   \begin{array}{ll}
   		\displaystyle
-      \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
-      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} & \text{If }S_{i}=-1\\
+      \sum_{a'\in \B}  
+      \Prob(a')
+      \cdot\Z{i+1,j}{a',b} & \text{If }S_{i}=-1\\
       \displaystyle
-      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
-			 e^{\frac{-E_{(i,j),ab \to a'b'}^{\Omega,\beta}}{RT}}
-			 \cdot \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
+      \sum_{a',b'\in \B^2}
+			 \Prob(a')
+			 \cdot\Prob(b')
+			 \cdot e^{\frac{-\ES^{\beta}_{ab \to a'b'}}{RT}}
+			 \cdot \Z{i+1,j-1}{a',b'}&
 			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
 			 \displaystyle
-      \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
-      \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-   		 e^{\frac{-E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
-      \cdot\Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
-      \cdot\Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
+      \sum_{a',b'\in \B^2}
+      \Prob(a')
+			\cdot\Prob(b')
+			\cdot e^{\frac{-\ES^{\beta}_{\varnothing\to a'b'}}{RT}}
+      \cdot\Z{i+1,k-1}{a',b'}
+      \cdot\Z{k+1,j}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
       0 &\text{Otherwise}
 	\end{array}\right.
 \label{eq:Z_rec}
@@ -141,17 +162,67 @@ The main recursion is composed of four terms:
 The cases can be broken down as follows:
 \begin{description}
 \item[$S_{i}=-1$:] If the nucleotide at position $i$ is unpaired, then 
-any sequence consists in a, possibly mutated, nucleotide $a'$ at position  $i$, 
-followed by a sequence over $[i+1,j]$ having either $m-\Kron_{a',s_i}$, accounting for a possible mutation 
-at position $i$, and having flanking nucleotides $a'$ and $b$.
-\item[$S_i=j$ and $S_{i-1}=j+1$:] Any sequence generated in $[i,j]$ consists of two, possibly mutated, nucleotides $a'$ and $b'$, flanking a sequence over $[i+1,j-1]$ having distance $m-\Kron_{a'b',s_is_j}$ (to avoid exceeding the targeted distance $m$).
+any sequence consists in a nucleotide $a'$ at position  $i$, 
+followed by a sequence over $[i+1,j]$ and having flanking nucleotides $a'$ and $b$.
+\item[$S_i=j$ and $S_{i-1}=j+1$:] Any sequence generated in $[i,j]$ consists of two nucleotides $a'$ and $b'$, flanking a sequence over $[i+1,j-1]$.
 Since positions $i$ and $i-1$ are paired with $j$ and $j+1$ respectively, 
 then a stacking energy contribution is added. 
 \item[$S_i=k$ and $i<k \leq j$:] If position $i$ is paired and not involved in a stacking, then the 
-only term contributing directly to the energy is the isostericity of the base pair $(i,k)$. 
-Any sequence on $[i,j]$ consists of two nucleotide $a'$ and $b'$ at positions $i$ and $k$ respectively, flanking a sequence over interval $[i+1,k-1]$ and preceding a (possibly empty) sequence interval $[k+1,j]$. Since the number of mutations sum to $m$ over the whole sequence must , then a parameter $m'$ is introduced to distribute the remaining mutations between the two sequences.
+only term contributing directly to the energy is the nucleotide distribution $\Prob(\cdot)$. 
+Any sequence on $[i,j]$ consists of two nucleotide $a'$ and $b'$ at positions $i$ and $k$ respectively, flanking a sequence over interval $[i+1,k-1]$ and preceding a (possibly empty) sequence interval $[k+1,j]$.
 \item[Else:] In any other case, we are in a derivation of the SCFG that does not correspond to the secondary structure $S$, and we return $0$.
 \end{description}
+
+
+\subsection{Stochastic backtrack}
+
+\begin{algorithm}
+	\SetAlgoLined
+	\lIf{$i>j$} \Return{$\varepsilon$};\tcp*[f]{Empty sequence}\\
+	rand $\leftarrow$ Random$\left(\Z{i,j}{a,b}\right)$\;
+	k $\leftarrow S_i$\;
+	\If(\tcp*[f]{Unpaired}){$k = -1$}{
+		\For{$a'\in\B$}{
+			rand $\leftarrow$ rand $- \Prob(a')\cdot \Z{i+1,j}{a',b}$\;
+			\lIf{$\text{rand}<0$}\Return{$a'\cdot\text{Backtrack}\left((i+1,j),(a',b),S\right)$}\;
+		}
+	}
+	\Else{
+		\If(\tcp*[f]{Stack}){$k=j \land S_{i-1}=j+1$}{
+			\For{$(a',b')\in\B\times\B$}{
+				rand $\leftarrow$ rand $-
+			 	\Prob(a')
+			 	\cdot\Prob(b')
+			 	\cdot e^{\frac{-\ES^{\beta}_{ab \to a'b'}}{RT}}
+			 	\cdot \Z{i+1,j-1}{a',b'}	$\;
+				\If{$\text{rand}<0$}{
+					\Return{$a'\cdot\text{Backtrack}\left((i+1,j-1),(a',b'),S\right)\cdot b'$}\;		
+				}
+			}
+		}
+		\Else(\tcp*[f]{Paired not stacked}){
+			\For{$(a',b')\in\B\times\B$}{
+				rand $\leftarrow$ rand $-
+				\Prob(a')
+				\cdot\Prob(b')
+				\cdot e^{\frac{-\ES^{\beta}_{\varnothing\to a'b'}}{RT}}
+  	    \cdot\Z{i+1,k-1}{a',b'}
+    	  \cdot\Z{k+1,j}{b',b}$\;	
+ 				\If{$\text{rand}<0$}{
+					\Return{$a'
+					\cdot\text{Backtrack}\left((i+1,k-1),(a',b'),S\right)
+					\cdot b'
+					\cdot\text{Backtrack}\left((k+1,j),(b',b),S\right)
+					$}\;	
+				}
+			}
+		}
+	}
+\caption{Backtrack$\left((i,j),(a,b),S\right)$\label{alg:back}}
+\end{algorithm}
+
+
+
 
 %\subsubsection{Outside}	
 %\begin{figure}
