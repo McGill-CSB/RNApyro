@@ -8,6 +8,8 @@
 *.blg
 *.gz
 ISMB/main_ISMB.pdf
+local/
+.DS_Store
 
 # Packages
 *.egg
