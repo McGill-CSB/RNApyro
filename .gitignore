@@ -1,5 +1,14 @@
 *.py[co]
 
+# compiled files
+*.aux
+*.dvi
+*.log
+*.bbl
+*.blg
+*.gz
+ISMB/main_ISMB.pdf
+
 # Packages
 *.egg
 *.egg-info
