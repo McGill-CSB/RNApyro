@@ -2,12 +2,206 @@
 %% http://bibdesk.sourceforge.net/
 
 
-%% Created for Jerome Waldispuhl at 2012-10-07 04:23:49 -0400 
+%% Created for Jerome Waldispuhl at 2013-01-06 02:59:55 -0500 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
 
 
+
+@article{DBLP:journals/corr/abs-1002-0046,
+	Author = {Olivier Bodini and Yann Ponty},
+	Bibsource = {DBLP, http://dblp.uni-trier.de},
+	Date-Added = {2013-01-06 07:56:52 +0000},
+	Date-Modified = {2013-01-06 07:56:52 +0000},
+	Journal = {CoRR},
+	Title = {Multi-dimensional Boltzmann Sampling of context-free Languages},
+	Volume = {abs/1002.0046},
+	Year = {2010},
+	Bdsk-Url-1 = {http://arxiv.org/abs/1002.0046}}
+
+@conference{Reinharz:2013aa,
+	Author = {Reinharz, Vladimir and Ponty, Yann and Waldisp\"{u}hl, J\'{e}r\^{o}me},
+	Booktitle = {Proceeding of the 17th Annual International Conference on Research in Computational Molecular Biology (RECOMB 2013)},
+	Date-Added = {2013-01-06 07:31:26 +0000},
+	Date-Modified = {2013-01-06 07:33:18 +0000},
+	Title = {A linear inside-outside algorithm for correcting sequencing errors in structured RNA sequences},
+	Year = {2013}}
+
+@article{Lyngso:2012vn,
+	Abstract = {UNLABELLED: ABSTRACT:
+BACKGROUND: RNA secondary structure prediction, or folding, is a classic problem in bioinformatics: given a sequence of nucleotides, the aim is to predict the base pairs formed in its three dimensional conformation. The inverse problem of designing a sequence folding into a particular target structure has only more recently received notable interest. With a growing appreciation and understanding of the functional and structural properties of RNA motifs, and a growing interest in utilising biomolecules in nano-scale designs, the interest in the inverse RNA folding problem is bound to increase. However, whereas the RNA folding problem from an algorithmic viewpoint has an elegant and efficient solution, the inverse RNA folding problem appears to be hard.
+RESULTS: In this paper we present a genetic algorithm approach to solve the inverse folding problem. The main aims of the development was to address the hitherto mostly ignored extension of solving the inverse folding problem, the multi-target inverse folding problem, while simultaneously designing a method with superior performance when measured on the quality of designed sequences. The genetic algorithm has been implemented as a Python program called Frnakenstein. It was benchmarked against four existing methods and several data sets totalling 769 real and predicted single structure targets, and on 292 two structure targets. It performed as well as or better at finding sequences which folded in silico into the target structure than all existing methods, without the heavy bias towards CG base pairs that was observed for all other top performing methods. On the two structure targets it also performed well, generating a perfect design for about 80% of the targets.
+CONCLUSIONS: Our method illustrates that successful designs for the inverse RNA folding problem does not necessarily have to rely on heavy biases in base pair and unpaired base distributions. The design problem seems to become more difficult on larger structures when the target structures are real structures, while no deterioration was observed for predicted structures. Design for two structure targets is considerably more difficult, but far from impossible, demonstrating the feasibility of automated design of artificial riboswitches. The Python implementation is available at http://www.stats.ox.ac.uk/research/genome/software/frnakenstein.},
+	Author = {Lyngs{\o}, Rune B and Anderson, James Wj and Sizikova, Elena and Badugu, Amarendra and Hyland, Tomas and Hein, Jotun},
+	Date-Added = {2013-01-06 01:25:25 +0000},
+	Date-Modified = {2013-01-06 01:25:25 +0000},
+	Doi = {10.1186/1471-2105-13-260},
+	Journal = {BMC Bioinformatics},
+	Journal-Full = {BMC bioinformatics},
+	Pages = {260},
+	Pmc = {PMC3534541},
+	Pmid = {23043260},
+	Pst = {epublish},
+	Title = {Frnakenstein: multiple target inverse RNA folding},
+	Volume = {13},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1186/1471-2105-13-260}}
+
+@article{Garcia-Martin:2013aa,
+	Author = {Garcia-Martin, Juan Antonio and Clote, Peter and Dotu, Ivan},
+	Date-Added = {2013-01-06 01:14:52 +0000},
+	Date-Modified = {2013-01-06 01:16:35 +0000},
+	Journal = {Journal of Bioinformatics and Computational Biology},
+	Title = {RNAiFold: A constraint programming algorithm for RNA inverse folding and molecular design},
+	Year = {2013}}
+
+@article{Levin:2012kx,
+	Abstract = {The development of algorithms for designing artificial RNA sequences that fold into specific secondary structures has many potential biomedical and synthetic biology applications. To date, this problem remains computationally difficult, and current strategies to address it resort to heuristics and stochastic search techniques. The most popular methods consist of two steps: First a random seed sequence is generated; next, this seed is progressively modified (i.e. mutated) to adopt the desired folding properties. Although computationally inexpensive, this approach raises several questions such as (i) the influence of the seed; and (ii) the efficiency of single-path directed searches that may be affected by energy barriers in the mutational landscape. In this article, we present RNA-ensign, a novel paradigm for RNA design. Instead of taking a progressive adaptive walk driven by local search criteria, we use an efficient global sampling algorithm to examine large regions of the mutational landscape under structural and thermodynamical constraints until a solution is found. When considering the influence of the seeds and the target secondary structures, our results show that, compared to single-path directed searches, our approach is more robust, succeeds more often and generates more thermodynamically stable sequences. An ensemble approach to RNA design is thus well worth pursuing as a complement to existing approaches. RNA-ensign is available at http://csb.cs.mcgill.ca/RNAensign.},
+	Author = {Levin, Alex and Lis, Mieszko and Ponty, Yann and O'Donnell, Charles W and Devadas, Srinivas and Berger, Bonnie and Waldisp{\"u}hl, J{\'e}r{\^o}me},
+	Date-Added = {2013-01-06 01:12:51 +0000},
+	Date-Modified = {2013-01-06 01:12:51 +0000},
+	Doi = {10.1093/nar/gks768},
+	Journal = {Nucleic Acids Res},
+	Journal-Full = {Nucleic acids research},
+	Month = {Nov},
+	Number = {20},
+	Pages = {10041-52},
+	Pmc = {PMC3488226},
+	Pmid = {22941632},
+	Pst = {ppublish},
+	Title = {A global sampling approach to designing and reengineering RNA secondary structures},
+	Volume = {40},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/nar/gks768}}
+
+@inproceedings{DaiTsangWiese09a,
+	Author = {Dai, Denny C. and Tsang, Herbert H. and Wiese, Kay C.},
+	Booktitle = {IEEE Symposium on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB)},
+	Date-Added = {2013-01-06 01:12:20 +0000},
+	Date-Modified = {2013-01-06 01:12:20 +0000},
+	Title = {rnaDesign: Local Search for RNA Secondary Structure Design},
+	Year = {2009}}
+
+@article{Avihoo:2011fk,
+	Abstract = {ABSTRACT: Backround RNAexinv is an interactive java application that performs RNA sequence design, constrained to yield a specific RNA shape and physical attributes. It is an extended inverse RNA folding program with the rationale behind that the generated sequences should not only fold into a desired structure, but they should also exhibit favorable attributes such as thermodynamic stability and mutational robustness. RNAexinv considers not only the secondary structure in order to design sequences, but also the mutational robustness and the minimum free energy. The sequences that are generated may not fully conform with the given RNA secondary structure, but they will strictly conform with the RNA shape of the given secondary structure and thereby take into consideration the recommended values of thermodynamic stability and mutational robustness that are provided. RESULTS: The output consists of designed sequences that are generated by the proposed method. Selecting a sequence displays the secondary structure drawings of the target and the predicted fold of the sequence, including some basic information about the desired and achieved thermodynamic stability and mutational robustness. RNAexinv can be used successfully without prior experience, simply specifying an initial RNA secondary structure in dot-bracket notation and numerical values for the desired neutrality and minimum free energy. The package runs under LINUX operating system. Secondary structure predictions are performed using the Vienna RNA package. CONCLUSIONS: RNAexinv is a user friendly tool that can be used for RNA sequence design. It is especially useful in cases where a functional stem-loop structure of a natural sequence should be strictly kept in the designed sequences but a distant motif in the rest of the structure may contain one more or less nucleotide at the expense of another, as long as the global shape is preserved. This allows the insertion of physical observables as constraints. RNAexinv is available at http://www.cs.bgu.ac.il/~RNAexinv .},
+	Author = {Avihoo, Assaf and Churkin, Alexander and Barash, Danny},
+	Date-Added = {2013-01-06 01:11:43 +0000},
+	Date-Modified = {2013-01-06 01:11:43 +0000},
+	Doi = {10.1186/1471-2105-12-319},
+	Journal = {BMC Bioinformatics},
+	Journal-Full = {BMC bioinformatics},
+	Month = {Aug},
+	Number = {1},
+	Pages = {319},
+	Pmid = {21813013},
+	Pst = {aheadofprint},
+	Title = {RNAexinv: An Extended Inverse RNA Folding from Shape and Physical Attributes to Sequences},
+	Volume = {12},
+	Year = {2011},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1186/1471-2105-12-319}}
+
+@article{Zadeh:2011fk,
+	Abstract = {We describe an algorithm for designing the sequence of one or more interacting nucleic acid strands intended to adopt a target secondary structure at equilibrium. Sequence design is formulated as an optimization problem with the goal of reducing the ensemble defect below a user-specified stop condition. For a candidate sequence and a given target secondary structure, the ensemble defect is the average number of incorrectly paired nucleotides at equilibrium evaluated over the ensemble of unpseudoknotted secondary structures. To reduce the computational cost of accepting or rejecting mutations to a random initial sequence, candidate mutations are evaluated on the leaf nodes of a tree-decomposition of the target structure. During leaf optimization, defect-weighted mutation sampling is used to select each candidate mutation position with probability proportional to its contribution to the ensemble defect of the leaf. As subsequences are merged moving up the tree, emergent structural defects resulting from crosstalk between sibling sequences are eliminated via reoptimization within the defective subtree starting from new random subsequences. Using a Θ(N(3) ) dynamic program to evaluate the ensemble defect of a target structure with N nucleotides, this hierarchical approach implies an asymptotic optimality bound on design time: for sufficiently large N, the cost of sequence design is bounded below by 4/3 the cost of a single evaluation of the ensemble defect for the full sequence. Hence, the design algorithm has time complexity Ω(N(3) ). For target structures containing N ∈{100,200,400,800,1600,3200} nucleotides and duplex stems ranging from 1 to 30 base pairs, RNA sequence designs at 37$\,^{\circ}$C typically succeed in satisfying a stop condition with ensemble defect less than N/100. Empirically, the sequence design algorithm exhibits asymptotic optimality and the exponent in the time complexity bound is sharp.},
+	Author = {Zadeh, Joseph N and Wolfe, Brian R and Pierce, Niles A},
+	Date-Added = {2013-01-06 01:11:32 +0000},
+	Date-Modified = {2013-01-06 01:11:32 +0000},
+	Doi = {10.1002/jcc.21633},
+	Journal = {J Comput Chem},
+	Journal-Full = {Journal of computational chemistry},
+	Mesh = {Algorithms; Base Sequence; DNA; Molecular Sequence Data; Nucleic Acid Conformation; RNA},
+	Month = {Feb},
+	Number = {3},
+	Pages = {439-52},
+	Pmid = {20717905},
+	Pst = {ppublish},
+	Title = {Nucleic acid sequence design via efficient ensemble defect optimization},
+	Volume = {32},
+	Year = {2011},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1002/jcc.21633}}
+
+@article{Aguirre-Hernandez:2007kx,
+	Abstract = {BACKGROUND: We investigate the empirical complexity of the RNA secondary structure design problem, that is, the scaling of the typical difficulty of the design task for various classes of RNA structures as the size of the target structure is increased. The purpose of this work is to understand better the factors that make RNA structures hard to design for existing, high-performance algorithms. Such understanding provides the basis for improving the performance of one of the best algorithms for this problem, RNA-SSD, and for characterising its limitations. RESULTS: To gain insights into the practical complexity of the problem, we present a scaling analysis on random and biologically motivated structures using an improved version of the RNA-SSD algorithm, and also the RNAinverse algorithm from the Vienna package. Since primary structure constraints are relevant for designing RNA structures, we also investigate the correlation between the number and the location of the primary structure constraints when designing structures and the performance of the RNA-SSD algorithm. The scaling analysis on random and biologically motivated structures supports the hypothesis that the running time of both algorithms scales polynomially with the size of the structure. We also found that the algorithms are in general faster when constraints are placed only on paired bases in the structure. Furthermore, we prove that, according to the standard thermodynamic model, for some structures that the RNA-SSD algorithm was unable to design, there exists no sequence whose minimum free energy structure is the target structure. CONCLUSION: Our analysis helps to better understand the strengths and limitations of both the RNA-SSD and RNAinverse algorithms, and suggests ways in which the performance of these algorithms can be further improved.},
+	Author = {Aguirre-Hern{\'a}ndez, Rosal{\'\i}a and Hoos, Holger H and Condon, Anne},
+	Date-Added = {2013-01-06 01:11:12 +0000},
+	Date-Modified = {2013-01-06 01:11:12 +0000},
+	Doi = {10.1186/1471-2105-8-34},
+	Journal = {BMC Bioinformatics},
+	Journal-Full = {BMC bioinformatics},
+	Mesh = {Algorithms; Base Sequence; Computer Simulation; Models, Chemical; Models, Molecular; Molecular Sequence Data; Nucleic Acid Conformation; RNA; Sequence Analysis, RNA},
+	Pages = {34},
+	Pmid = {17266771},
+	Title = {Computational {RNA} secondary structure design: empirical complexity and improved methods},
+	Volume = {8},
+	Year = {2007},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1186/1471-2105-8-34}}
+
+@article{Busch:2006uq,
+	Abstract = {MOTIVATION: The structure of RNA molecules is often crucial for their function. Therefore, secondary structure prediction has gained much interest. Here, we consider the inverse RNA folding problem, which means designing RNA sequences that fold into a given structure. RESULTS: We introduce a new algorithm for the inverse folding problem (INFO-RNA) that consists of two parts; a dynamic programming method for good initial sequences and a following improved stochastic local search that uses an effective neighbor selection method. During the initialization, we design a sequence that among all sequences adopts the given structure with the lowest possible energy. For the selection of neighbors during the search, we use a kind of look-ahead of one selection step applying an additional energy-based criterion. Afterwards, the pre-ordered neighbors are tested using the actual optimization criterion of minimizing the structure distance between the target structure and the mfe structure of the considered neighbor. We compared our algorithm to RNAinverse and RNA-SSD for artificial and biological test sets. Using INFO-RNA, we performed better than RNAinverse and in most cases, we gained better results than RNA-SSD, the probably best inverse RNA folding tool on the market. AVAILABILITY: www.bioinf.uni-freiburg.de?Subpages/software.html.},
+	Author = {Busch, Anke and Backofen, Rolf},
+	Date-Added = {2013-01-06 01:11:08 +0000},
+	Date-Modified = {2013-01-06 01:11:08 +0000},
+	Doi = {10.1093/bioinformatics/btl194},
+	Journal = {Bioinformatics},
+	Journal-Full = {Bioinformatics (Oxford, England)},
+	Mesh = {Algorithms; Base Sequence; Computer Simulation; Models, Chemical; Models, Molecular; Molecular Sequence Data; Nucleic Acid Conformation; RNA; Sequence Alignment; Sequence Analysis, RNA; Software},
+	Month = {Aug},
+	Number = {15},
+	Pages = {1823-31},
+	Pmid = {16709587},
+	Title = {{INFO-RNA}--a fast approach to inverse {RNA} folding},
+	Volume = {22},
+	Year = {2006},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/bioinformatics/btl194}}
+
+@article{Hofacker:1994,
+	Author = {I. L. Hofacker and W. Fontana and P. F. Stadler and S. Bonhoeffer and M. Tacker and P. Schuster},
+	Date-Added = {2013-01-06 01:10:32 +0000},
+	Date-Modified = {2013-01-06 01:10:32 +0000},
+	Journal = {Monatshefte f\"{u}r Chemie},
+	Pages = {167--188},
+	Title = {Fast Folding and Comparison of {RNA} Secondary Structures},
+	Volume = 125,
+	Year = 1994}
+
+@article{Chang:2012uq,
+	Abstract = {The engineering of biological systems offers significant promise for advances in areas including health and medicine, chemical synthesis, energy production, and environmental sustainability. Realizing this potential requires tools that enable design of sophisticated genetic systems. The functional diversity of RNA makes it an attractive and versatile substrate for programming sensing, information processing, computation, and control functions. Recent advances in the design of synthetic RNA switches capable of detecting and responding to molecular and environmental signals enable dynamic modulation of gene expression through diverse mechanisms, including transcription, splicing, stability, RNA interference, and translation. Furthermore, implementation of these switches in genetic circuits highlights the potential for building synthetic cell systems targeted to applications in environmental remediation and next-generation therapeutics and diagnostics.},
+	Author = {Chang, Andrew L and Wolf, Joshua J and Smolke, Christina D},
+	Date-Added = {2013-01-05 22:38:59 +0000},
+	Date-Modified = {2013-01-05 22:38:59 +0000},
+	Doi = {10.1016/j.copbio.2012.01.005},
+	Journal = {Curr Opin Biotechnol},
+	Journal-Full = {Current opinion in biotechnology},
+	Month = {Oct},
+	Number = {5},
+	Pages = {679-88},
+	Pmc = {PMC3354030},
+	Pmid = {22305712},
+	Pst = {ppublish},
+	Title = {Synthetic RNA switches as a tool for temporal and spatial control over gene expression},
+	Volume = {23},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1016/j.copbio.2012.01.005}}
+
+@article{Rodrigo:2012fk,
+	Abstract = {A grand challenge in synthetic biology is to use our current knowledge of RNA science to perform the automatic engineering of completely synthetic sequences encoding functional RNAs in living cells. We report here a fully automated design methodology and experimental validation of synthetic RNA interaction circuits working in a cellular environment. The computational algorithm, based on a physicochemical model, produces novel RNA sequences by exploring the space of possible sequences compatible with predefined structures. We tested our methodology in Escherichia coli by designing several positive riboregulators with diverse structures and interaction models, suggesting that only the energy of formation and the activation energy (free energy barrier to overcome for initiating the hybridization reaction) are sufficient criteria to engineer RNA interaction and regulation in bacteria. The designed sequences exhibit nonsignificant similarity to any known noncoding RNA sequence. Our riboregulatory devices work independently and in combination with transcription regulation to create complex logic circuits. Our results demonstrate that a computational methodology based on first-principles can be used to engineer interacting RNAs with allosteric behavior in living cells.},
+	Author = {Rodrigo, Guillermo and Landrain, Thomas E and Jaramillo, Alfonso},
+	Date-Added = {2013-01-05 22:26:00 +0000},
+	Date-Modified = {2013-01-05 22:26:00 +0000},
+	Doi = {10.1073/pnas.1203831109},
+	Journal = {Proc Natl Acad Sci U S A},
+	Journal-Full = {Proceedings of the National Academy of Sciences of the United States of America},
+	Mesh = {Automation; Chemistry, Physical; Computational Biology; Escherichia coli; Evolution, Molecular; Flow Cytometry; Genes, Reporter; Genetic Engineering; Models, Genetic; Nucleic Acid Conformation; Plasmids; Promoter Regions, Genetic; RNA; RNA Processing, Post-Transcriptional; Spectrometry, Fluorescence; Synthetic Biology; Thermodynamics},
+	Month = {Sep},
+	Number = {38},
+	Pages = {15271-6},
+	Pmc = {PMC3458397},
+	Pmid = {22949707},
+	Pst = {ppublish},
+	Title = {De novo automated design of small RNA circuits for engineering synthetic riboregulation in living cells},
+	Volume = {109},
+	Year = {2012},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1073/pnas.1203831109}}
 
 @article{Quince:2009uq,
 	Abstract = {We present an algorithm, PyroNoise, that clusters the flowgrams of 454 pyrosequencing reads using a distance measure that models sequencing noise. This infers the true sequences in a collection of amplicons. We pyrosequenced a known mixture of microbial 16S rDNA sequences extracted from a lake and found that without noise reduction the number of operational taxonomic units is overestimated but using PyroNoise it can be accurately calculated.},
@@ -25,7 +219,8 @@
 	Pst = {ppublish},
 	Title = {Accurate determination of microbial diversity from 454 pyrosequencing data},
 	Volume = {6},
-	Year = {2009}}
+	Year = {2009},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1038/nmeth.1361}}
 
 @article{Li:2006fk,
 	Abstract = {MOTIVATION: In 2001 and 2002, we published two papers (Bioinformatics, 17, 282-283, Bioinformatics, 18, 77-82) describing an ultrafast protein sequence clustering program called cd-hit. This program can efficiently cluster a huge protein database with millions of sequences. However, the applications of the underlying algorithm are not limited to only protein sequences clustering, here we present several new programs using the same algorithm including cd-hit-2d, cd-hit-est and cd-hit-est-2d. Cd-hit-2d compares two protein datasets and reports similar matches between them; cd-hit-est clusters a DNA/RNA sequence database and cd-hit-est-2d compares two nucleotide datasets. All these programs can handle huge datasets with millions of sequences and can be hundreds of times faster than methods based on the popular sequence comparison and database search tools, such as BLAST.},
@@ -43,7 +238,8 @@
 	Pst = {ppublish},
 	Title = {Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences},
 	Volume = {22},
-	Year = {2006}}
+	Year = {2006},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/bioinformatics/btl158}}
 
 @manual{mpmath,
 	Author = {Fredrik Johansson and others},
@@ -63,7 +259,8 @@
 	Pages = {e1000124},
 	Title = {{Efficient Algorithms for Probing the RNA Mutation Landscape}},
 	Volume = {4},
-	Year = {2008}}
+	Year = {2008},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1371/journal.pcbi.1000124}}
 
 @article{Turner2010,
 	Abstract = {The Nearest Neighbor Database (NNDB, http://rna.urmc.rochester.edu/NNDB) is a web-based resource for disseminating parameter sets for predicting nucleic acid secondary structure stabilities. For each set of parameters, the database includes the set of rules with descriptive text, sequence-dependent parameters in plain text and html, literature references to experiments and usage tutorials. The initial release covers parameters for predicting RNA folding free energy and enthalpy changes.},
@@ -79,7 +276,8 @@
 	Pmid = {19880381},
 	Title = {{NNDB: the nearest neighbor parameter database for predicting stability of nucleic acid secondary structure.}},
 	Volume = {38},
-	Year = {2010}}
+	Year = {2010},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/nar/gkp892}}
 
 @article{Stombaugh2009,
 	Abstract = {Most of the hairpin, internal and junction loops that appear single-stranded in standard RNA secondary structures form recurrent 3D motifs, where non-Watson-Crick base pairs play a central role. Non-Watson-Crick base pairs also play crucial roles in tertiary contacts in structured RNA molecules. We previously classified RNA base pairs geometrically so as to group together those base pairs that are structurally similar (isosteric) and therefore able to substitute for each other by mutation without disrupting the 3D structure. Here, we introduce a quantitative measure of base pair isostericity, the IsoDiscrepancy Index (IDI), to more accurately determine which base pair substitutions can potentially occur in conserved motifs. We extract and classify base pairs from a reduced-redundancy set of RNA 3D structures from the Protein Data Bank (PDB) and calculate centroids (exemplars) for each base combination and geometric base pair type (family). We use the exemplars and IDI values to update our online Basepair Catalog and the Isostericity Matrices (IM) for each base pair family. From the database of base pairs observed in 3D structures we derive base pair occurrence frequencies for each of the 12 geometric base pair families. In order to improve the statistics from the 3D structures, we also derive base pair occurrence frequencies from rRNA sequence alignments.},
@@ -95,7 +293,8 @@
 	Pmid = {19240142},
 	Title = {{Frequency and isostericity of RNA base pairs.}},
 	Volume = {37},
-	Year = {2009}}
+	Year = {2009},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/nar/gkp011}}
 
 @article{Lari1990,
 	Author = {Lari, K and Young, SJ},
@@ -108,7 +307,8 @@
 	Pages = {35--56},
 	Title = {{The estimation of stochastic context-free grammars using the Inside-Outside algorithm}},
 	Volume = {4},
-	Year = {1990}}
+	Year = {1990},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1016/0885-2308(90)90022-X}}
 
 @article{Olsen1986,
 	Author = {Olsen, G J and Lane, D J and Giovannoni, S J and Pace, N R and Stahl, D a},
@@ -122,7 +322,8 @@
 	Pmid = {2430518},
 	Title = {{Microbial ecology and evolution: a ribosomal RNA approach.}},
 	Volume = {40},
-	Year = {1986}}
+	Year = {1986},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1146/annurev.mi.40.100186.002005}}
 
 @article{Olsen1993,
 	Author = {Olsen, GJ and Woese, CR},
@@ -145,7 +346,8 @@
 	Pages = {357--366},
 	Title = {{Molecules as documents of evolutionary history}},
 	Volume = {8},
-	Year = {1965}}
+	Year = {1965},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1016/0022-5193(65)90083-4}}
 
 @article{Turnbaugh2007,
 	Abstract = {A strategy to understand the microbial components of the human genetic and metabolic landscape and how they contribute to normal physiology and predisposition to disease.},
@@ -161,7 +363,8 @@
 	Pmid = {17943116},
 	Title = {{The Human Microbiome Project.}},
 	Volume = {449},
-	Year = {2007}}
+	Year = {2007},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1038/nature06244}}
 
 @article{Huse2007,
 	Abstract = {Massively parallel pyrosequencing systems have increased the efficiency of DNA sequencing, although the published per-base accuracy of a Roche GS20 is only 96\%. In genome projects, highly redundant consensus assemblies can compensate for sequencing errors. In contrast, studies of microbial diversity that catalogue differences between PCR amplicons of ribosomal RNA genes (rDNA) or other conserved gene families cannot take advantage of consensus assemblies to detect and minimize incorrect base calls.},
@@ -177,7 +380,8 @@
 	Pmid = {17659080},
 	Title = {{Accuracy and quality of massively parallel DNA pyrosequencing.}},
 	Volume = {8},
-	Year = {2007}}
+	Year = {2007},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1186/gb-2007-8-7-r143}}
 
 @article{Kunin2010,
 	Abstract = {Massively parallel pyrosequencing of the small subunit (16S) ribosomal RNA gene has revealed that the extent of rare microbial populations in several environments, the 'rare biosphere', is orders of magnitude higher than previously thought. One important caveat with this method is that sequencing error could artificially inflate diversity estimates. Although the per-base error of 16S rDNA amplicon pyrosequencing has been shown to be as good as or lower than Sanger sequencing, no direct assessments of pyrosequencing errors on diversity estimates have been reported. Using only Escherichia coli MG1655 as a reference template, we find that 16S rDNA diversity is grossly overestimated unless relatively stringent read quality filtering and low clustering thresholds are applied. In particular, the common practice of removing reads with unresolved bases and anomalous read lengths is insufficient to ensure accurate estimates of microbial diversity. Furthermore, common and reproducible homopolymer length errors can result in relatively abundant spurious phylotypes further confounding data interpretation. We suggest that stringent quality-based trimming of 16S pyrotags and clustering thresholds no greater than 97\% identity should be used to avoid overestimates of the rare biosphere.},
@@ -193,7 +397,8 @@
 	Pmid = {19725865},
 	Title = {{Wrinkles in the rare biosphere: pyrosequencing errors can lead to artificial inflation of diversity estimates.}},
 	Volume = {12},
-	Year = {2010}}
+	Year = {2010},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1111/j.1462-2920.2009.02051.x}}
 
 @article{Leontis2001,
 	Abstract = {Non-Watson-Crick base pairs mediate specific interactions responsible for RNA-RNA self-assembly and RNA-protein recognition. An unambiguous and descriptive nomenclature with well-defined and nonoverlapping parameters is needed to communicate concisely structural information about RNA base pairs. The definitions should reflect underlying molecular structures and interactions and, thus, facilitate automated annotation, classification, and comparison of new RNA structures. We propose a classification based on the observation that the planar edge-to-edge, hydrogen-bonding interactions between RNA bases involve one of three distinct edges: the Watson-Crick edge, the Hoogsteen edge, and the Sugar edge (which includes the 2'-OH and which has also been referred to as the Shallow-groove edge). Bases can interact in either of two orientations with respect to the glycosidic bonds, cis or trans relative to the hydrogen bonds. This gives rise to 12 basic geometric types with at least two H bonds connecting the bases. For each geometric type, the relative orientations of the strands can be easily deduced. High-resolution examples of 11 of the 12 geometries are presently available. Bifurcated pairs, in which a single exocyclic carbonyl or amino group of one base directly contacts the edge of a second base, and water-inserted pairs, in which single functional groups on each base interact directly, are intermediate between two of the standard geometries. The nomenclature facilitates the recognition of isosteric relationships among base pairs within each geometry, and thus facilitates the recognition of recurrent three-dimensional motifs from comparison of homologous sequences. Graphical conventions are proposed for displaying non-Watson-Crick interactions on a secondary structure diagram. The utility of the classification in homology modeling of RNA tertiary motifs is illustrated.},
@@ -216,59 +421,55 @@
 	Pages = {445--472},
 	Title = {{Origin and Evolution of Organisms as Deduced from 5s Ribosomal RNA Sequences}},
 	Volume = {4},
-	Year = {1987},}
+	Year = {1987}}
 
 @article{Medvedev2011,
-abstract = {The continuing improvements to high-throughput sequencing (HTS) platforms have begun to unfold a myriad of new applications. As a result, error correction of sequencing reads remains an important problem. Though several tools do an excellent job of correcting datasets where the reads are sampled close to uniformly, the problem of correcting reads coming from drastically non-uniform datasets, such as those from single-cell sequencing, remains open.},
-author = {Medvedev, Paul and Scott, Eric and Kakaradov, Boyko and Pevzner, Pavel},
-doi = {10.1093/bioinformatics/btr208},
-file = {:Users/zenon/Documents/Mendeley/Medvedev et al/2011/Bioinformatics (Oxford, England)/Medvedev et al.\_2011\_Error correction of high-throughput sequencing datasets with non-uniform coverage.pdf:pdf},
-issn = {1367-4811},
-journal = {Bioinformatics (Oxford, England)},
-keywords = {Algorithms,Escherichia coli,Escherichia coli: genetics,High-Throughput Nucleotide Sequencing,High-Throughput Nucleotide Sequencing: methods,Models, Statistical,Single-Cell Analysis,Single-Cell Analysis: methods},
-month = jul,
-number = {13},
-pages = {i137--41},
-pmid = {21685062},
-title = {{Error correction of high-throughput sequencing datasets with non-uniform coverage.}},
-volume = {27},
-year = {2011}
-}
-Automatically generated by Mendeley 1.6
-Any changes to this file will be lost if it is regenerated by Mendeley.
+	Abstract = {The continuing improvements to high-throughput sequencing (HTS) platforms have begun to unfold a myriad of new applications. As a result, error correction of sequencing reads remains an important problem. Though several tools do an excellent job of correcting datasets where the reads are sampled close to uniformly, the problem of correcting reads coming from drastically non-uniform datasets, such as those from single-cell sequencing, remains open.},
+	Author = {Medvedev, Paul and Scott, Eric and Kakaradov, Boyko and Pevzner, Pavel},
+	Doi = {10.1093/bioinformatics/btr208},
+	File = {:Users/zenon/Documents/Mendeley/Medvedev et al/2011/Bioinformatics (Oxford, England)/Medvedev et al.\_2011\_Error correction of high-throughput sequencing datasets with non-uniform coverage.pdf:pdf},
+	Issn = {1367-4811},
+	Journal = {Bioinformatics (Oxford, England)},
+	Keywords = {Algorithms,Escherichia coli,Escherichia coli: genetics,High-Throughput Nucleotide Sequencing,High-Throughput Nucleotide Sequencing: methods,Models, Statistical,Single-Cell Analysis,Single-Cell Analysis: methods},
+	Month = jul,
+	Number = {13},
+	Pages = {i137--41},
+	Pmid = {21685062},
+	Title = {{Error correction of high-throughput sequencing datasets with non-uniform coverage.}},
+	Volume = {27},
+	Year = {2011},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/bioinformatics/btr208}}
 
 @article{Quinlan2010,
-abstract = {Testing for correlations between different sets of genomic features is a fundamental task in genomics research. However, searching for overlaps between features with existing web-based methods is complicated by the massive datasets that are routinely produced with current sequencing technologies. Fast and flexible tools are therefore required to ask complex questions of these data in an efficient manner.},
-author = {Quinlan, Aaron R and Hall, Ira M},
-doi = {10.1093/bioinformatics/btq033},
-file = {:Users/zenon/Documents/Mendeley/Quinlan, Hall/2010/Bioinformatics (Oxford, England)/Quinlan, Hall\_2010\_BEDTools a flexible suite of utilities for comparing genomic features.pdf:pdf},
-issn = {1367-4811},
-journal = {Bioinformatics (Oxford, England)},
-keywords = {Genome,Genomics,Genomics: methods,Internet,Software},
-month = mar,
-number = {6},
-pages = {841--2},
-pmid = {20110278},
-title = {{BEDTools: a flexible suite of utilities for comparing genomic features.}},
-volume = {26},
-year = {2010}
-}
-Automatically generated by Mendeley 1.6
-Any changes to this file will be lost if it is regenerated by Mendeley.
+	Abstract = {Testing for correlations between different sets of genomic features is a fundamental task in genomics research. However, searching for overlaps between features with existing web-based methods is complicated by the massive datasets that are routinely produced with current sequencing technologies. Fast and flexible tools are therefore required to ask complex questions of these data in an efficient manner.},
+	Author = {Quinlan, Aaron R and Hall, Ira M},
+	Doi = {10.1093/bioinformatics/btq033},
+	File = {:Users/zenon/Documents/Mendeley/Quinlan, Hall/2010/Bioinformatics (Oxford, England)/Quinlan, Hall\_2010\_BEDTools a flexible suite of utilities for comparing genomic features.pdf:pdf},
+	Issn = {1367-4811},
+	Journal = {Bioinformatics (Oxford, England)},
+	Keywords = {Genome,Genomics,Genomics: methods,Internet,Software},
+	Month = mar,
+	Number = {6},
+	Pages = {841--2},
+	Pmid = {20110278},
+	Title = {{BEDTools: a flexible suite of utilities for comparing genomic features.}},
+	Volume = {26},
+	Year = {2010},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1093/bioinformatics/btq033}}
 
 @article{Quinlan2008,
-abstract = {Previously reported applications of the 454 Life Sciences pyrosequencing technology have relied on deep sequence coverage for accurate polymorphism discovery because of frequent insertion and deletion sequence errors. Here we report a new base calling program, Pyrobayes, for pyrosequencing reads. Pyrobayes permits accurate single-nucleotide polymorphism (SNP) calling in resequencing applications, even in shallow read coverage, primarily because it produces more confident base calls than the native base calling program.},
-author = {Quinlan, AR and Stewart, DA and Str\"{o}mberg, MP and Marth, GT},
-doi = {10.1038/nmeth.1172},
-file = {:Users/zenon/Documents/Mendeley/Quinlan et al/2008/Nature methods/Quinlan et al.\_2008\_Pyrobayes an improved base caller for SNP discovery in pyrosequences.pdf:pdf},
-issn = {1548-7105},
-journal = {Nature methods},
-keywords = {Algorithms,Automated,Automated: methods,Base Pairing,Base Pairing: genetics,Base Sequence,Bayes Theorem,DNA,DNA Mutational Analysis,DNA Mutational Analysis: methods,DNA: methods,Molecular Sequence Data,Pattern Recognition,Polymorphism,Sequence Analysis,Single Nucleotide,Single Nucleotide: genetics,Software},
-month = feb,
-number = {2},
-pages = {179--81},
-pmid = {18193056},
-title = {{Pyrobayes: an improved base caller for SNP discovery in pyrosequences}},
-volume = {5},
-year = {2008}
-}
+	Abstract = {Previously reported applications of the 454 Life Sciences pyrosequencing technology have relied on deep sequence coverage for accurate polymorphism discovery because of frequent insertion and deletion sequence errors. Here we report a new base calling program, Pyrobayes, for pyrosequencing reads. Pyrobayes permits accurate single-nucleotide polymorphism (SNP) calling in resequencing applications, even in shallow read coverage, primarily because it produces more confident base calls than the native base calling program.},
+	Author = {Quinlan, AR and Stewart, DA and Str\"{o}mberg, MP and Marth, GT},
+	Doi = {10.1038/nmeth.1172},
+	File = {:Users/zenon/Documents/Mendeley/Quinlan et al/2008/Nature methods/Quinlan et al.\_2008\_Pyrobayes an improved base caller for SNP discovery in pyrosequences.pdf:pdf},
+	Issn = {1548-7105},
+	Journal = {Nature methods},
+	Keywords = {Algorithms,Automated,Automated: methods,Base Pairing,Base Pairing: genetics,Base Sequence,Bayes Theorem,DNA,DNA Mutational Analysis,DNA Mutational Analysis: methods,DNA: methods,Molecular Sequence Data,Pattern Recognition,Polymorphism,Sequence Analysis,Single Nucleotide,Single Nucleotide: genetics,Software},
+	Month = feb,
+	Number = {2},
+	Pages = {179--81},
+	Pmid = {18193056},
+	Title = {{Pyrobayes: an improved base caller for SNP discovery in pyrosequences}},
+	Volume = {5},
+	Year = {2008},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1038/nmeth.1172}}
