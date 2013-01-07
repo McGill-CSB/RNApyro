@@ -25,32 +25,27 @@ We show how a modification of the dynamic programming scheme introduced in the p
 %\subsubsection{Energy contribution}
 \subsection{Definitions}
 
-%\subsubsection{Profile}
-%At every position, the nucleotide distribution is the same. 
-%It is first initialized equiprobably. A bisection scheme is then applied until the sampled sequences $\Cb+\Gb$ content is as desired. The probability
-%of a given nucleotide $a\in\B$ will be given by $\Prob(a)$ at every 
-%position.
+A targeted secondary structure $\Target$ is abstracted as a non-crossing arc-annotated sequence,  where 
+$\Target_i$ stands for the base-pairing position of position $i$ in $\Target$ if any (and, reciprocally, $\Target_{\Target_i}=i$), or $-1$ otherwise. 
+Let us denote by $\gc(s)$ the number of occurrences of \Gb and \Cb in an RNA sequence $s$.
 
-\subsubsection{Secondary structure}
-Todo...
-
-\subsubsection{Energy model}
+\subsubsection{Simplified energy model}
 The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, using individual values from the Turner 2004 model (retrieved from the NNDB~\cite{Turner2010}). Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
 \begin{align*}
   \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
 \end{align*}
 where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\Gb\Ub,\Ub\Gb,\Cb\Gb,\Gb\Cb, \Ab\Ub\text{ or }\Ub\Ab\}$). This latter parameter allows one to choose whether to simply penalize invalid base pairs ($\beta>0$), or forbid them altogether ($\beta = \infty$).
 
-\subsection{\GCContent weighted pseudo-Boltzmann ensemble and distribution}
+\subsubsection{\GCContent weighted pseudo-Boltzmann ensemble and distribution}
 
-In order to counterbalance the documented tendency of sampling methods to generate \Gb\Cb-rich sequences~\cite{Levin:2012kx}, let us introduce a parameter $x\in\mathbb{R}^+$, whose value will influence the \GCContent of generated sequences. Let $\Target$ be a targeted secondary structure and $\gc(s)$ be the number of occurrences of \Gb and \Cb in an RNA sequence $s$, then let us define the pseudo-Boltzmann factor $\B_{x}(s,S)$ of a sequence $s$ such that
+In order to counterbalance the documented tendency of sampling methods to generate \Gb\Cb-rich sequences~\cite{Levin:2012kx}, let us introduce a parameter $x\in\mathbb{R}^+$, whose value will influence the \GCContent of generated sequences. Let $\Target$ be a targeted secondary structure, then let us define the pseudo-Boltzmann factor $\B_{x}(s,S)$ of a sequence $s$ such that
 \begin{equation}
 \B_{x, \Target}(s) = e^{\frac{-\ES(s,\Target)}{RT}}\cdot x^{\gc(s)}
 \label{def:genBoltz}
 \end{equation}
 where $R$ is the Boltzmann constant and $T$ the temperature in Kelvin.
 
-Summing the pseudo-Boltzmann factor over all possible sequences of a given length $|\Target|$ gives the pseudo-partition function $\mathcal{Z}_{\Target,x}$, from which one defines the pseudo-Boltzmann probability $\Prob_{x,\Target}(s)$ of each sequence $s$, respectively such that 
+Summing the pseudo-Boltzmann factor over all possible sequences of a given length $|\Target|$ gives the pseudo-partition function $\mathcal{Z}_{x,\Target}$, from which one defines the pseudo-Boltzmann probability $\Prob_{x,\Target}(s)$ of each sequence $s$, respectively such that 
 \begin{align}\mathcal{Z}_{x,\Target} &= \sum_{\substack{|s|=|\Target|}}\B_{x,\Target}(s)& \text{and}&&
 \Prob_{x,\Target}(s) &= \frac{\B_{x,\Target}(s)}{\mathcal{Z}_{x,\Target}}.\label{def:distribution}\end{align}
 
@@ -114,14 +109,12 @@ Then one easily shows by induction that, starting from the complete interval $[0
 \end{itemize}
 The case of an empty sequence does not cause a recursive call and must not be verified.
 \end{cframed}
-Since, in any interval $[i,j]$ satisfying the property, the ending position $j$ is completely determined by $i$, then there exists at most $\Theta(|\Target|)$ intervals that need to be evaluated, and we conclude on the overall complexity with the remark that $a$, $b$, $a'$ and $b'$ vary over bounded ranges and only contribute to a constant in the complexity.
+Since, in any interval $[i,j]$ satisfying the property, the ending position $j$ is completely determined by $i$, then there exists at most $\Theta(|\Target|)$ intervals that need to be evaluated, and we conclude on the overall complexity with the remark that $a$, $b$, $a'$ and $b'$ vary over bounded ranges and only contribute to a constant factor in the complexity.
 \end{proof}
 
 
 \subsubsection{Stochastic backtrack}
-Once the pseudo-partition functions have been computed, a stochastic backtrack starts from the complete interval $[0,|\Target|-1]$ and, at each step, chooses a suitable assignment for one or several positions, using probabilities derived from the precomputation. One or several recursive calls over regions that are left unassigned are then performed, as described by Algorithm~\ref{alg:back}.
-
-Since, during each recursive call, the algorithm assigns at least one nucleotide to a -- previously unassigned -- position, and that the number of executions of the loops are bounded by a constant, then the complexity of the algorithm grows linearly on the targeted length. 
+Once the pseudo-partition functions have been memorized, a stochastic backtrack starts from the complete interval $[0,|\Target|-1]$ and, at each step, chooses a suitable assignment for one or several positions, using probabilities derived from the precomputation. One or several recursive calls over regions that are left unassigned are then performed, as described by Algorithm~\ref{alg:back}, and illustrated by Figure~\ref{fig:stochastic}.
 \begin{algorithm}[t]
 \DontPrintSemicolon
 	\SetAlgoLined
@@ -172,6 +165,14 @@ Since, during each recursive call, the algorithm assigns at least one nucleotide
 \caption{\protect\Backtrack$\left(i,j,a,b,\Target\right)$\label{alg:back}}
 \end{algorithm}
 
+Since, during each recursive call, the algorithm assigns at least one nucleotide to a -- previously unassigned -- position, and that the number of executions of the loops are bounded by a constant, then the complexity of the algorithm grows linearly on the targeted length. 
+
+\begin{figure}
+\resizebox{\textwidth}{!}{\input{FigStochasticBacktrack.pgf}}
+\caption{Three main cases in the stochastic backtrack procedure over an interval $[i,j]$: Either position $i$ is left unpaired (top), a base-pair $(i,j)$ is formed, stacking onto $(i+1,j-1)$ (middle), or $i$ is paired somewhere else, defining two regions on which subsequent recursive calls are needed (bottom). Positions indicated in red are assigned during at this stage of the backtrack.\label{fig:stochastic}}
+\end{figure}
+
+
 \subsubsection{Rejecting unsuitable candidates}
 
 Note that, although the parameter $x$ is introduced to match the expected \GCContent with the targeted one, nothing prevents Algorithm~\ref{alg:back} to generate sequences of arbitrary \GCContent. Therefore, we use a rejection-based approach~\cite{Bodini2010} previously used by the authors in a similar context~\cite{Waldispuhl2011}.
@@ -184,7 +185,7 @@ Consequently, for any targeted \GCContent $gc\in[0\%,100\%]$, there exists a uni
 
 
 \subsection{Redesigning unpaired regions: A local/global hybrid approach}
-
+Due to the simplification in our energy model, unpaired regions are not subject design constraints other than the \GCContent, leading to modest similarities of refolded design candidates with the targeted structure. To improve these performances and test the complementarity  of our global sampling approach with previous contributions based on local search, we used the \RNAinverse software to redesign unpaired regions, specifying a constraint mask to prevent stacking base-pairs from being modified.
 
 
 
