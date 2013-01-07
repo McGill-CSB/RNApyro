@@ -35,6 +35,11 @@
 
 \usepackage[noend,ruled,vlined]{algorithm2e}
 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
 
 \newcommand{\ourprog}{\texttt{RNA-MoIP}\xspace} 
 
@@ -52,6 +57,8 @@
 \newcommand{\RNAexinv}{\texttt{RNAexinv}\xspace}
 \newcommand{\rnaDesign}{\texttt{rnaDesign}\xspace}
 \newcommand{\RNAensign}{\texttt{RNA-ensign}\xspace}
+\newcommand{\GCContent}{\Gb\Cb-content\xspace}
+\newcommand{\SFold}{\texttt{SFold}\xspace}
 
 \newcommand{\red}[1]{{\color{red}#1}}
 \newcommand{\farna}{\texttt{FARNA}\xspace}
@@ -81,10 +88,19 @@
 \newcommand{\Kron}{\delta}
 \newcommand{\ub}{\bullet}
 
-\newcommand{\Ab}{{\sf{A}}}
-\newcommand{\Cb}{{\sf{C}}}
-\newcommand{\Gb}{{\sf{G}}}
-\newcommand{\Ub}{{\sf{U}}}
+\newcommand{\Ab}{{\sf{A}}\xspace}
+\newcommand{\Cb}{{\sf{C}}\xspace}
+\newcommand{\Gb}{{\sf{G}}\xspace}
+\newcommand{\Ub}{{\sf{U}}\xspace}
+
+\newcommand{\gc}{{\#\text{{\sf gc}}}}
+\newcommand{\PE}[1]{E(#1)}
+\newcommand{\EI}{\text{EI}}
+\newcommand{\ES}{\text{E{\sf s}}}
+\newcommand{\ISO}{\text{ISO}}
+\newcommand{\Prob}{\text{P}}
+\newcommand{\Target}{\text{\sf S}}
+
 
 \title{}
 \author{}

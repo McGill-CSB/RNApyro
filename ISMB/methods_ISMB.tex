@@ -2,16 +2,13 @@
 \section{Methods}
 \label{sec:methods}
 
-\newcommand{\PE}[1]{E(#1)}
-\newcommand{\EI}{\text{EI}}
-\newcommand{\ES}{\text{ES}}
-\newcommand{\ISO}{\text{ISO}}
-\newcommand{\Prob}{\text{P}}
 
-We introduce a probabilistic model, aiming to design RNA sequences with a 
-specific $\Gb+\Cb$ content, folding into a predefined 2D conformation.
-We use a Boltzmann weighted distribution based on a pseudo-energy function 
-$\ES(\cdot)$ taking into accounts stacked canonical base pairs free-energy. 
+
+We introduce a probabilistic model for the design of RNA sequences with a specific $\Gb+\Cb$ content and folding into a predefined secondary structure.
+For the sake of simplicity, we choose to base this proof-of-concept implementation on a simplified free-energy function $\ES(\cdot)$, which only considers the contributions of 
+stacked canonical base-pairs. 
+
+We show how a modification of the dynamic programming scheme introduced in the previously introduced \RNAmutants allow for the sampling of good and diverse design candidates in linear time and space complexities.
 
 
 %To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990}.
@@ -27,199 +24,156 @@ $\ES(\cdot)$ taking into accounts stacked canonical base pairs free-energy.
 %
 %\subsubsection{Energy contribution}
 \subsection{Definitions}
-\subsubsection{Profile}
-At every position, the nucleotide distribution is the same. 
-It is first initialized equiprobably. A bisection scheme is then applied until the sampled sequences $\Cb+\Gb$ content is as desired. The probability
-of a given nucleotide $a\in\B$ will be given by $\Prob(a)$ at every 
-position.
 
+%\subsubsection{Profile}
+%At every position, the nucleotide distribution is the same. 
+%It is first initialized equiprobably. A bisection scheme is then applied until the sampled sequences $\Cb+\Gb$ content is as desired. The probability
+%of a given nucleotide $a\in\B$ will be given by $\Prob(a)$ at every 
+%position.
 
-\subsubsection{Energetic model}
+\subsubsection{Secondary structure}
+Todo...
 
-The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, taking values from the Turner 2004 model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
-
+\subsubsection{Energy model}
+The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, using individual values from the Turner 2004 model (retrieved from the NNDB~\cite{Turner2010}). Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
 \begin{align*}
   \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
 \end{align*}
+where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\Gb\Ub,\Ub\Gb,\Cb\Gb,\Gb\Cb, \Ab\Ub\text{ or }\Ub\Ab\}$). This latter parameter allows one to choose whether to simply penalize invalid base pairs ($\beta>0$), or forbid them altogether ($\beta = \infty$).
 
+\subsection{\GCContent weighted pseudo-Boltzmann ensemble and distribution}
 
-where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\Gb\Ub,\Ub\Gb,\Cb\Gb,\Gb\Cb, \Ab\Ub\text{ or }\Ub\Ab\}$). This latter parameter allows to choose whether to simply penalize invalid base pairs, or forbid them altogether ($\beta = \infty$).
-
-
-%The loss of precision due to this simplification of the Turner model remains reasonable since the targeted secondary structure is fixed 
-%(e.g. multiloops do not account for base-specific contributions). Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
-%\subsubsection{Isostericity contribution}
-%The concept of isostericity score~\cite{Stombaugh2009} is based on the geometric discrepancy (superimposability) of two base-pairs, using individual additive contributions computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gap-free RNA alignment $\Omega$,  we define the contribution of the isostericity to the pseudo-energy as
-%\begin{align*}
-%  \ES(s,S,\Omega) &= \sum_{\substack{(i,j)\in S\\ \text{pairs}}}\EI^{\Omega}_{(i,j),s_i s_j}, & \text{where}&& 	\EI^{\Omega}_{(i,j),ab}:=
-%	\frac{
-%		\sum_{s'\in\Omega}
-%			\text{\ISO}((s_i',s_j'),(a,b))}
-%%-		\left(			\text{\ISO}((s_i',s_j'),(s_i,s_j))				\right)	
-%{		
-%		|\Omega|
-%	}
-%\end{align*}
-%is the average isostericity of a base-pair in the candidate sequence, compared with the reference alignment.
-%The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, with $0$ being assigned to a perfect isostericity, and a penalty of $10$ is used for missing entries.
-%The isostericity contribution will favor exponentially sequences that are likely to adopt a similar local conformation as the sequences contained in the alignment.
-%
-%\subsection{Mutational profile of sequences}
-%
-%
-%Let $s$ be an RNA sequence, $S$ a reference structure, and $m\geq 0$ a desired number of mutations. 
-%We are interested in  the probability that a given position contains a specific nucleotide, over all sequences having at most $m$ mutations from $s$
-%%  under the SCFG derivation $S$ 
-%(formally $\mathbb{P}(s_i = x\mid s,\Omega, S,m)$). 
-%We define a variant of the
-% \emph{Inside-Outside algorithm}~\cite{Lari1990}, allowing us to obtain the
-% desired probability,  the two  functions
-%$\mathcal{Z}_*^*$ and $\mathcal{Y}_*^*$. 
-%
-%The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec}, is analogous to the \emph{inside} algorithm.
-%It is the partition function, i.e. the sum of Boltzmann factors, over all sequences within $[i,j]$, 
-%knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$), within 
-%$m$ mutations of $s$. The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec},
-% computes the \emph{outside} algorithm, i.e.  
-%the partition function over sequences within $m$ mutations of $s$, restricted to two intervals $[0,i]\cup[j,n-1]$, and 
-%knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$). A suitable combination of these terms, given in Equation~\eqref{eq:combine}, gives the total weight, and in turn the probability, of seeing a specific base at a given position.
-%
-%%Drawing a parallel with stochastic context-free grammars (SCFG), for which the inside-outside algorithm was introduced, the set of sequences can be seen as the language of words having length $n$, generated from a stochastic context-free grammar.
-%%These rules would limit the number of mutations (i.e. )
-%% $S$ can be considered as constraining weighing on the shape of parse trees the derivations in a classic 
-%% of the {SCFG} generating  all  secondary structures of length  $|s|$. 
-%
-%
-%
-%
-%
-%Let $B:=\left\{\Ab,\Cb,\Gb,\Ub\right\}$ be the set of nucleotides.
-%Given $s\in B^n$ an RNA sequence, let $s_i$ be the nucleotide at position $i$. Let $\Omega$ be a set of un-gapped RNA sequences of
-%length $n$, and $S$ a secondary structure without pseudoknots. 
-%Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping extremities
-% $\{i,j\}\cap \{k,l\}=\varnothing$ and either the intersection is empty 
-% ($[i,j]\cap[k,l]=\varnothing$) or one is included in the other ($[k,l]\subset[i,j]$ or 
-% $[i,j]\subset[k,l])$. 
-%
-%Let us then remind a Hamming distance function $\delta: B^*\times B^* \to \mathbb{N}^+$, which takes two sequences $s'$ and $s''$ as input, $|s'|=|s''|$, and returns the number of differing positions.
-%Finally, let us denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contribution of a base-pair $(i,j)$ to the pseudo-energy, such that
-
-%\begin{equation}
-%  E_{(i,j),ab \to a'b'}^{\Omega,\beta}  = \alpha \cdot\ES^\beta_{a b \to a' b'}+(1-\alpha)\cdot\EI^{\Omega}_{(i,j),a'b'}.
-%\end{equation}
-%
-%
-%\subsubsection{Inside}
-%\begin{figure}
-%\resizebox{\textwidth}{!}{\input{FigDPInside.pgf}}
-%\caption{Principle of the inside computation (aka partition function). Any sequence with $m$ mutations over an interval $[i,j]$ 
-%can be decomposed as a sequence over $[i+1,j]$ preceded by a, possibly mutated, base at $i$ 
-%(Unpaired case), a sequence over $[i+1,j-1]$ surrounded by some base-pair (Stacking-pair case), 
-%or as two sequences over $[i+1,k-1]$ and $[k+1,j]$, completed by some base-pair (General base-pairing case). 
-%In each case, one has to investigate any possible ways to distribute mutations between the different sequences 
-%and locally instanciated bases.}
-%\end{figure}
-%
-%The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function, i.e. the sum of Boltzmann factors, over all sequences in the interval $[i,j]$, at distance $m$ of $s_{[i,j]}$, and having flanking nucleotides $a$ and $b$ (at positions $i-1$ and $j+1$ respectively). 
-%Such terms can be defined by rec.urrence, for which the following initial conditions holds:
-%
-
-Initial conditions 
+In order to counterbalance the documented tendency of sampling methods to generate \Gb\Cb-rich sequences~\cite{Levin:2012kx}, let us introduce a parameter $x\in\mathbb{R}^+$, whose value will influence the \GCContent of generated sequences. Let $\Target$ be a targeted secondary structure and $\gc(s)$ be the number of occurrences of \Gb and \Cb in an RNA sequence $s$, then let us define the pseudo-Boltzmann factor $\B_{x}(s,S)$ of a sequence $s$ such that
 \begin{equation}
-	\forall i \in [0,n-1]:\, \Z{i+1,i}{a,b}=1
+\B_{x, \Target}(s) = e^{\frac{-\ES(s,\Target)}{RT}}\cdot x^{\gc(s)}
+\label{def:genBoltz}
+\end{equation}
+where $R$ is the Boltzmann constant and $T$ the temperature in Kelvin.
+
+Summing the pseudo-Boltzmann factor over all possible sequences of a given length $|\Target|$ gives the pseudo-partition function $\mathcal{Z}_{\Target,x}$, from which one defines the pseudo-Boltzmann probability $\Prob_{x,\Target}(s)$ of each sequence $s$, respectively such that 
+\begin{align}\mathcal{Z}_{x,\Target} &= \sum_{\substack{|s|=|\Target|}}\B_{x,\Target}(s)& \text{and}&&
+\Prob_{x,\Target}(s) &= \frac{\B_{x,\Target}(s)}{\mathcal{Z}_{x,\Target}}.\label{def:distribution}\end{align}
+
+It was established~\cite{Waldispuhl2011} that, for each value of $x$, there exists constants $\mu_x$ and $\sigma_x$ such that the \GCContent distribution observed in sequences sampled with respect to the above distribution converges to a normal law of expectation in $\mu\cdot n\cdot(1+o(1))$ and standard deviation in $\sigma\cdot\sqrt{n}\cdot(1+o(1))$.
+Furthermore, it can easily be shown that the expected \GCContent is a continuous and strictly increasing monotonic  function of $x$, whose limits are $0$ when $x=0$ and $n$ when $x\to +\infty$. 
+
+Consequently, for any targeted \GCContent $gc\in[0\%,100\%]$, there exists a unique value $x_{gc}$ such that generated sequences feature, on the average, the right \GCContent. Such a value can be determined using any numerical recipe, and a simple bisection is used in our implementation. Furthermore, the concentration of the distribution, as asserted by the limited standard deviation, implies a growth in $\Theta(\sqrt{n})$ (resp. $\Theta(1)$, i.e. constant) for the expected number of attempts before generating a sequence having the exact targeted \GCContent  (resp. within $[gc-\kappa,gc+\kappa]$, where $\kappa\in\Theta(1/\sqrt n)$).
+
+\subsection{Sampling the pseudo-Boltzmann ensemble}
+
+Let us now describe a linear-time algorithm to sample sequences at random in the pseudo-Boltzmann distribution. This algorithm follows the general principles of the recursive approach to random generation~\cite{Wilf1977}, pioneered in the context of RNA by the \SFold algorithm~\cite{Ding2003}. The algorithm starts by precomputing the partition function restricted to each valid interval, and then performs a series of stochastic backtracks, using precomputed values to decide on the probability of each alternative.
+
+\subsubsection{Precomputation}
+Let us describe a dynamic programming algorithm to compute $\Z{i,j}{a,b}$, the pseudo-partition function restricted to an interval $[i,j]$, assuming its (previously chosen) flanking nucleotides are $a$ and $b$ respectively. 
+
+Since the only sequence over an empty interval is the empty sequence, having energy $0$, one has
+\begin{equation}
+	\forall i \in [0,n-1]:\, \Z{i+1,i}{a,b}=1.
 	\label{eq:Z_in}
 \end{equation}
-%In other words, the set of sequences at distance $m$ of the empty sequence is either empty if $m>0$, or restricted to the empty sequence, having energy $0$, if $m=0$. Since the energetic terms only depend on base pairs, they are not involved in the initial conditions. 
 
-The main recursion is composed of four terms:
-\begin{equation}
+
+The recursion consists in four terms, depending on the base-pairing status and context of $(i,j)$:
+\begin{equation*}
 	\Z{i,j}{a,b}:=\left\{
   \begin{array}{ll}
   		\displaystyle
       \sum_{a'\in \B}  
-      \Prob(a')
-      \cdot\Z{i+1,j}{a',b} & \text{If }S_{i}=-1\\
+      x^{\gc(a')}
+      \cdot\Z{i+1,j}{a',b} &\begin{array}{@{}l@{}}\text{If }\Target_{i}=-1\\ \text{\relsize{-1}Position $i$ unpaired,}\end{array}\\
       \displaystyle
       \sum_{a',b'\in \B^2}
-			 \Prob(a')
-			 \cdot\Prob(b')
+			 x^{\gc(a'.b')}
 			 \cdot e^{\frac{-\ES^{\beta}_{ab \to a'b'}}{RT}}
 			 \cdot \Z{i+1,j-1}{a',b'}&
-			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
+\begin{array}{@{}l@{}}\text{Elif }\Target_i=j \land \Target_{i-1}=j+1\\ \text{\relsize{-1}$(i,j)$ base-paired, stacked onto $(i$-$1,j$+$1)$,}\end{array}
+			 \\
 			 \displaystyle
       \sum_{a',b'\in \B^2}
-      \Prob(a')
-			\cdot\Prob(b')
+      x^{\gc(a'.b')}
 			\cdot e^{\frac{-\ES^{\beta}_{\varnothing\to a'b'}}{RT}}
       \cdot\Z{i+1,k-1}{a',b'}
-      \cdot\Z{k+1,j}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
+      \cdot\Z{k+1,j}{b',b} & 
+\begin{array}{@{}l@{}}\text{Elif }\Target_i=k \land i < k \leq j\\
+\text{\relsize{-1} Junction or bulge $\Rightarrow$ split, no stacking.}
+\end{array}
+\\
       0 &\text{Otherwise}
 	\end{array}\right.
 \label{eq:Z_rec}
-\end{equation}
-The cases can be broken down as follows:
-\begin{description}
-\item[$S_{i}=-1$:] If the nucleotide at position $i$ is unpaired, then 
-any sequence consists in a nucleotide $a'$ at position  $i$, 
-followed by a sequence over $[i+1,j]$ and having flanking nucleotides $a'$ and $b$.
-\item[$S_i=j$ and $S_{i-1}=j+1$:] Any sequence generated in $[i,j]$ consists of two nucleotides $a'$ and $b'$, flanking a sequence over $[i+1,j-1]$.
-Since positions $i$ and $i-1$ are paired with $j$ and $j+1$ respectively, 
-then a stacking energy contribution is added. 
-\item[$S_i=k$ and $i<k \leq j$:] If position $i$ is paired and not involved in a stacking, then the 
-only term contributing directly to the energy is the nucleotide distribution $\Prob(\cdot)$. 
-Any sequence on $[i,j]$ consists of two nucleotide $a'$ and $b'$ at positions $i$ and $k$ respectively, flanking a sequence over interval $[i+1,k-1]$ and preceding a (possibly empty) sequence interval $[k+1,j]$.
-\item[Else:] In any other case, we are in a derivation of the SCFG that does not correspond to the secondary structure $S$, and we return $0$.
-\end{description}
+\end{equation*}
+It is worth mentioning that, despite the appearances, this recurrence can be computed in linear $\Theta(|\Target|)$ time and space. Indeed, one can show that position $j$ is entirely determined by $i$ within subsequent recursive calls. 
+
+More precisely, let us consider the following predicate: {\em Let $(i',j')$ be the base-pair such that $i'<i<j'$ while minimizing $i-i'$, then TODO!!!!
+
+$j$ is the position preceding the end of the closest base-pair nesting position $i$ if such a base-pair exists, or the last position in the sequence otherwise.} Obviously, the predicate holds for $[0,n-1]$. Moreover, if $i$ is unpaired, then $i+1$ and $i$
+
+%The cases can be broken down as follows:
+%\begin{description}
+%\item[$S_{i}=-1$:] If the nucleotide at position $i$ is unpaired, then 
+%any sequence consists in a nucleotide $a'$ at position  $i$, 
+%followed by a sequence over $[i+1,j]$ and having flanking nucleotides $a'$ and $b$.
+%\item[$S_i=j$ and $S_{i-1}=j+1$:] Any sequence generated in $[i,j]$ consists of two nucleotides $a'$ and $b'$, flanking a sequence over $[i+1,j-1]$.
+%Since positions $i$ and $i-1$ are paired with $j$ and $j+1$ respectively, 
+%then a stacking energy contribution is added. 
+%\item[$S_i=k$ and $i<k \leq j$:] If position $i$ is paired and not involved in a stacking, then the 
+%only term contributing directly to the energy is the nucleotide distribution $\Prob(\cdot)$. 
+%Any sequence on $[i,j]$ consists of two nucleotide $a'$ and $b'$ at positions $i$ and $k$ respectively, flanking a sequence over interval $[i+1,k-1]$ and preceding a (possibly empty) sequence interval $[k+1,j]$.
+%\item[Else:] In any other case, we are in a derivation of the SCFG that does not correspond to the secondary structure $S$, and we return $0$.
+%\end{description}
 
 
-\subsection{Stochastic backtrack}
-
-\begin{algorithm}
+\subsubsection{Stochastic backtrack}
+Once the partition functions have been computed, a stochastic backtrack starts from the complete interval $[0,|\Target|-1]$ and, at each step, chooses a suitable assignment for one or several positions, as described in Algorithm~\ref{alg:back}. 
+\begin{algorithm}[t]
 	\SetAlgoLined
-	\lIf{$i>j$} \Return{$\varepsilon$};\tcp*[f]{Empty sequence}\\
-	rand $\leftarrow$ Random$\left(\Z{i,j}{a,b}\right)$\;
+\SetKwFunction{Backtrack}{Backtrack}
+\SetKwFunction{Random}{Random}
+	rand $\leftarrow$ \Random$\left(\Z{i,j}{a,b}\right)$\;
 	k $\leftarrow S_i$\;
 	\If(\tcp*[f]{Unpaired}){$k = -1$}{
 		\For{$a'\in\B$}{
-			rand $\leftarrow$ rand $- \Prob(a')\cdot \Z{i+1,j}{a',b}$\;
-			\lIf{$\text{rand}<0$}\Return{$a'\cdot\text{Backtrack}\left((i+1,j),(a',b),S\right)$}\;
+			rand $\leftarrow$ rand $- x^{\gc(a')}\cdot \Z{i+1,j}{a',b}$\;
+			\lIf{$\text{rand}<0$}\Return{$a'.\Backtrack\left((i+1,j),(a',b),S\right)$}\;
 		}
 	}
 	\Else{
-		\If(\tcp*[f]{Stack}){$k=j \land S_{i-1}=j+1$}{
+		\If(\tcp*[f]{Stacking pairs}){$k=j \land S_{i-1}=j+1$}{
 			\For{$(a',b')\in\B\times\B$}{
 				rand $\leftarrow$ rand $-
-			 	\Prob(a')
-			 	\cdot\Prob(b')
+			 	x^{\gc(a'.b')}
 			 	\cdot e^{\frac{-\ES^{\beta}_{ab \to a'b'}}{RT}}
 			 	\cdot \Z{i+1,j-1}{a',b'}	$\;
 				\If{$\text{rand}<0$}{
-					\Return{$a'\cdot\text{Backtrack}\left((i+1,j-1),(a',b'),S\right)\cdot b'$}\;		
+					\Return{$a'.\Backtrack\left((i+1,j-1),(a',b'),S\right). b'$}\;		
 				}
 			}
 		}
-		\Else(\tcp*[f]{Paired not stacked}){
-			\For{$(a',b')\in\B\times\B$}{
-				rand $\leftarrow$ rand $-
-				\Prob(a')
-				\cdot\Prob(b')
-				\cdot e^{\frac{-\ES^{\beta}_{\varnothing\to a'b'}}{RT}}
-  	    \cdot\Z{i+1,k-1}{a',b'}
-    	  \cdot\Z{k+1,j}{b',b}$\;	
- 				\If{$\text{rand}<0$}{
-					\Return{$a'
-					\cdot\text{Backtrack}\left((i+1,k-1),(a',b'),S\right)
-					\cdot b'
-					\cdot\text{Backtrack}\left((k+1,j),(b',b),S\right)
-					$}\;	
+		\Else{
+			\If(\tcp*[f]{Paired, not stacked}){$\Target_i=k \land i < k \leq j$}{
+				\For{$(a',b')\in\B\times\B$}{
+					rand $\leftarrow$ rand $-	
+       x^{\gc(a'.b')}
+					\cdot e^{\frac{-\ES^{\beta}_{\varnothing\to a'b'}}{RT}}
+  	    	\cdot\Z{i+1,k-1}{a',b'}
+	    	  \cdot\Z{k+1,j}{b',b}$\;	
+ 					\If{$\text{rand}<0$}{
+						\Return{$a'
+						.\Backtrack\left((i+1,k-1),(a',b'),S\right)
+						.b'
+						.\Backtrack\left((k+1,j),(b',b),S\right)
+						$}\;	
+					}
 				}
-			}
+		 }
+    \Else {\Return{$\varepsilon$};	\tcp*[f]{Empty sequence}}
 		}
 	}
-\caption{Backtrack$\left((i,j),(a,b),S\right)$\label{alg:back}}
+\caption{\protect\Backtrack$\left((i,j),(a,b),S\right)$\label{alg:back}}
 \end{algorithm}
 
 
+\subsection{Overall complexity}
 
 
 %\subsubsection{Outside}	
