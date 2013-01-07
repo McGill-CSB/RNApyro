@@ -48,6 +48,18 @@
   pmid = {17266771}
 }
 
+@ARTICLE{andronescu2008rna,
+  author = {Andronescu, M. and Bereg, V. and Hoos, H.H. and Condon, A.},
+  title = {RNA STRAND: the RNA secondary structure and statistical analysis
+	database},
+  journal = {BMC bioinformatics},
+  year = {2008},
+  volume = {9},
+  pages = {340},
+  number = {1},
+  publisher = {BioMed Central Ltd}
+}
+
 @ARTICLE{Avihoo:2011fk,
   author = {Avihoo, Assaf and Churkin, Alexander and Barash, Danny},
   title = {RNAexinv: An Extended Inverse RNA Folding from Shape and Physical
@@ -97,16 +109,36 @@
   pst = {aheadofprint}
 }
 
-@ARTICLE{DBLP:journals/corr/abs-1002-0046,
-  author = {Olivier Bodini and Yann Ponty},
-  title = {Multi-dimensional Boltzmann Sampling of context-free Languages},
-  journal = {CoRR},
+@INPROCEEDINGS{Bodini2010,
+  author = {Bodini, Olivier and Ponty, Yann},
+  title = {{Multi-dimensional Boltzmann Sampling of Languages}},
+  booktitle = {{DMTCS Proceedings}},
   year = {2010},
-  volume = {abs/1002.0046},
-  bdsk-url-1 = {http://arxiv.org/abs/1002.0046},
-  bibsource = {DBLP, http://dblp.uni-trier.de},
-  date-added = {2013-01-06 07:56:52 +0000},
-  date-modified = {2013-01-06 07:56:52 +0000}
+  number = {01 },
+  series = {AM },
+  pages = {49--64},
+  address = {Vienne, Autriche},
+  abstract = {{This paper addresses the uniform random generation of words from
+	a context-free language (over an alphabet of size $k$), while constraining
+	every letter to a targeted frequency of occurrence. Our approach
+	consists in a multidimensional extension of Boltzmann samplers\~\cite{Duchon2004}.
+	We show that, under mostly \emph{strong-connectivity} hypotheses,
+	our samplers return a word of size in $[(1-\varepsilon)n, (1+\varepsilon)n]$
+	and exact frequency in $\mathcal{O}(n^{1+k/2})$ expected time. Moreover,
+	if we accept tolerance intervals of width in $\Omega(\sqrt{n})$ for
+	the number of occurrences of each letters, our samplers perform an
+	approximate-size generation of words in expected $\mathcal{O}(n)$
+	time. We illustrate these techniques on the generation of Tetris
+	tessellations with uniform statistics in the different types of tetraminoes.}},
+  affiliation = {Laboratoire d'Informatique de Paris 6 - LIP6 , Laboratoire d'informatique
+	de l'{\'e}cole polytechnique - LIX , AMIB - INRIA Saclay - Ile de
+	France},
+  audience = {internationale },
+  hal_id = {hal-00450763},
+  keywords = {Random generation; Rational languages},
+  language = {Anglais},
+  pdf = {http://hal.archives-ouvertes.fr/hal-00450763/PDF/WeightedBoltzmann-Rational.pdf},
+  url = {http://hal.archives-ouvertes.fr/hal-00450763}
 }
 
 @ARTICLE{Busch:2006uq,
@@ -970,13 +1002,3 @@
   issn = {00225193}
 }
 
-@article{andronescu2008rna,
-  title={RNA STRAND: the RNA secondary structure and statistical analysis database},
-  author={Andronescu, M. and Bereg, V. and Hoos, H.H. and Condon, A.},
-  journal={BMC bioinformatics},
-  volume={9},
-  number={1},
-  pages={340},
-  year={2008},
-  publisher={BioMed Central Ltd}
-}
