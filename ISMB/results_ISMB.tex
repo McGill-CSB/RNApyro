@@ -5,10 +5,8 @@
 \subsection{Implementation}
 \label{sec:implementation}
 Our software, \texttt{Incarnation}, was implemented in Python2.7. We used
-\emph{RNAinverse} from the \textit{Vienna Package 2.0}~\cite{Hofacker:1994}.]
-
-TODO HARDWARE
-
+\emph{RNAinverse} from the \textit{Vienna Package 2.0}~\cite{Hofacker:1994}.
+All time benchmarks were run on a one AMD Opteron(tm) Processor 6278  at 2.4 GHz with cache of 512 KB.
  We used as parameter $\beta=15$, the penalty for an invalid base pair.
 
 
@@ -60,8 +58,11 @@ Those are known secondary structure from a variety of organisms with
  
 A first criterion is which percentage of sequences have as MFE the target
 secondary structures. We are also interested by the number of structures
-for which we can design at least one sequence with the desired MFE. We
-present in Fig.~\ref{fig:mfe_struct_solved} those results. We observe
+for which we can design at least one sequence with the desired MFE.
+We present in 
+ Fig.~\ref{fig:mfe_struct_solved_noinverse} these results when only
+ \texttt{Incarnation} is applied, and 
+in Fig.~\ref{fig:mfe_struct_solved} after processing by \RNAinverse. We observe
 that length is not a good predictor for the quality of the results. Instead,
 a high number of free nucleotides in the structure seems to be good measures of its design hardness. 
 On top of that, with a \texttt{G+C} content of $50\%$ and more, at least
@@ -71,8 +72,20 @@ designing sequences for targets with a high number of free nucleotides
 
 \begin{figure}[ht!]	
 	\centering
+	\includegraphics[scale=0.45]{Figures/mfe_struct_solve_nornainverse.png}
+	\caption{Quality of \texttt{Incarnation} results. The first row shows the percentage
+	of sampled sequences folding into the target. The second shows the 	
+	proportion	of structures for which at least one correct sequence was 
+	sampled.}
+	\label{fig:mfe_struct_solved_noinverse}	
+\end{figure}
+
+
+
+\begin{figure}[ht!]	
+	\centering
 	\includegraphics[scale=0.45]{Figures/mfe_struct_solved}
-	\caption{Quality of the results. The first row shows the percentage
+	\caption{Quality of \texttt{Incarnation+RNAinverse} results. The first row shows the percentage
 	of sampled sequences folding into the target. The second shows the 	
 	proportion	of structures for which at least one correct sequence was 
 	sampled.}
@@ -94,7 +107,7 @@ a much lower structural sensitivity.
 
 \begin{figure}[ht!]
  	\centering
-	\includegraphics[scale=0.45]{Figures/rnastrand_clustered_rnainverse_100samples_struct_sens.png}
+	\includegraphics[width=1\textwidth,height=0.16\textheight]{Figures/rnastrand_clustered_rnainverse_100samples_struct_sens.png}
 	\caption{Structural sensitivity (i.e. $\#$ well predicted base pairs / $\#$ base pairs in target) of the sampled sequences MFE. }
 	\label{fig:ss_sens}	
 \end{figure}
