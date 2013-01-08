@@ -11,9 +11,10 @@ All time benchmarks were run on a one AMD Opteron(tm) Processor 6278  at 2.4 GHz
 
 
 
-We present in Fig.~\ref{fig:time} the average times to generate one sequence
-with the required \texttt{C+G} content. As expected, the time grows linearly
-in function of the length of the structures.  A highly interesting feature
+We present the average times spent by \texttt{Incarnation} and \RNAinverse
+ to generate one sequence
+with the required \texttt{C+G} content in Fig.~\ref{fig:time}. As expected, the time grows linearly
+in function of the length of the structures for \texttt{Incarnation}.  A highly interesting feature
 is the huge decrease in time of computation when there is $15\%$ free 
 nucleotides inside the loops of the secondary structure.
 
@@ -31,13 +32,12 @@ nucleotides inside the loops of the secondary structure.
 
 
 \subsection{Dataset}
-To evaluate the quality of our method, we selected a subset of $50$ secondary
+To evaluate the quality of our method, we used secondary
 structures from the \textit{RNA STRNAD} database~\cite{andronescu2008rna}.
-Those are known secondary structure from a variety of organisms with 
- lengths between $20$ and $100$ nucleotides. 
- 
- TODO MORE INFO RNASTRAND???
- 
+Those are known secondary structure from a variety of organisms.
+We select the same subset of $50$ structures as in~\cite{Levin:2012kx}, 
+which have lengths between $20$ and $100$ nucleotides. 
+   
  To ease the visualization of the data, we clustered together the strucures
  in function of their length, stacks density and proportion of free 
  nucleotides in loops. We present in Fig.~\ref{fig:bins} the distribution
