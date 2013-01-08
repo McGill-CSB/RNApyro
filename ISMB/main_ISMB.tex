@@ -42,7 +42,7 @@
 \newtheorem{corollary}[theorem]{Corollary}
 
 
-\newcommand{\ourprog}{\texttt{RNA-MoIP}\xspace} 
+\newcommand{\ourprog}{\texttt{Incarnation}\xspace} 
 
 \usepackage[applemac]{inputenc} %for the encoding 
 
@@ -106,9 +106,9 @@
 \newcommand{\CFramed}[2][gray]{\begin{tcolorbox}[colframe=#1,title=To be included only if space allows\ldots,colback=white]#1\end{tcolorbox}}
 \renewcommand{\CFramed}[2][gray]{}
 
-\title{}
-\author{}
-\date{}
+\title{A glocal approach to designing RNA sequences with target secondary structure and nucleotide distribution}
+\author{Vladimir Reinharz$^1$, Yann Ponty$^{2,*}$, J\'er\^{o}me Waldisp\"{u}hl$^{1,*}$}
+\date{$^1$ School of Computer Science, McGill University, Montreal, Canada, $^2$ Laboratoire d'informatique, ƒcole Polytechnique, Palaiseau, France.\\Corresponding authors: \texttt{jeromew@cs.mcgill.ca}, \texttt{yann.ponty@lix.polytechnique.fr}}
 
 
 %Last thing before BEGIN DOC for links to appear in pdf
@@ -126,9 +126,15 @@
 %\section{}
 %\subsection{}
 \begin{abstract}
+\noindent
+\textbf{Motivations:} The design of RNA sequences folding into predefined secondary structures is a milestone for many synthetic biology and gene therapy studies. Most of the current software use similar local search strategies (i.e. a random seed is progressively adapted to acquire the desired folding propertues) and more importantly do not allow the user to control explicitly the nucleotide distribution such as the \gc~content in their sequences. However, the latter is an important criteria for large-scale applications as it could presumably be used to design sequences with better transcription rates and/or structural plasticity. We recently introduced a novel global sampling approach for the RNA secondary structure design problem.
 
 \noindent
-\textbf{Key words:} RNA, mutations, secondary structure
+\textbf{Results:}
+In this paper, we introduce \ourprog
+
+\noindent
+\textbf{Key words:} RNA, secondary structure, design, weighted sampling, GC-content.
 \end{abstract}
 
 \newpage
