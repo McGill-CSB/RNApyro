@@ -6,7 +6,7 @@ per structure with \RNAinverse. They yield for most parameters
 a high entropy. For all structures that have been solved 
 by the three methods, only \RNAinverse, only \texttt{Incarnation} and
 \texttt{Incarnation} followed by \RNAinverse,
-we present for every different concentration of \texttt{C+G}
+we present for every different concentration of \GCContent
 the average sample entropy and the average base pairs entropy.
 
 
@@ -14,7 +14,7 @@ the average sample entropy and the average base pairs entropy.
 	%\centering
 	\hspace{-5em}
 	\includegraphics[scale=0.4]{Figures/RNAinverse_data_100.png}
-	\caption{Entropy and \texttt{C+G} content for structures solved by
+	\caption{Entropy and \GCContent  for structures solved by
 	the 3 methods.}
 	\label{fig:rnainverse}
 \end{figure}
@@ -30,9 +30,9 @@ the average sample entropy and the average base pairs entropy.
 %	the \texttt{Incarnation} and \texttt{Incarnation}$+$\RNAinverse.}
 %	\label{fig:inc_rnainv}
 %\end{figure}
-\subsection{Impact of local search on the \gc~content of \ourprog output}
+\subsection{Impact of local search on the \GCContent of \ourprog output}
 
-These data demonstrate that the local search heuristic used to design nucleotides in loop regions has a very limited impact on the \gc content. For each class of \gc~content, we show in Table~\ref{table:impact_on_gc}, the observed \gc~content of the sequence sampled by \ourprog, and then we report the observed \gc~content after the \RNAinverse step (as defined in Section \ref{subsec:glocal_method}). Our results show that the \gc~content is relatively well conserved. 
+These data demonstrate that the local search heuristic used to design nucleotides in loop regions has a very limited impact on the \GCContent. For each class of \GCContent, we show in Table~\ref{table:impact_on_gc}, the observed \GCContent of the sequence sampled by \ourprog, and then we report the observed \GCContent after the \RNAinverse step (as defined in Section \ref{subsec:glocal_method}). Our results show that the \GCContent is relatively well conserved. 
 
 \begin{table}[h!]
 \begin{center}
@@ -48,6 +48,6 @@ target \gc & \ourprog & \ourprog + \RNAinverse \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Observed \gc~content of solutions returned by \ourprog (2nd column) and after the application of the local search heuristic (3rd column).}
+\caption{Observed \GCContent of solutions returned by \ourprog (2nd column) and after the application of the local search heuristic (3rd column).}
 \label{table:impact_on_gc}
 \end{table}
