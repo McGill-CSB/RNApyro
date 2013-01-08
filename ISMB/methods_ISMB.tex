@@ -101,14 +101,14 @@ Despite its apparent quadratic complexity, the recurrence described in Subsectio
 Consider the {\bf covering base-pair} $\CNBP{i}$ of a position $i$, defined as the base-pair $(i',j')$ such that $i'<i<j'$ and which minimizes $i-i'$. For the sake of simplicity, and without loss of generality, let us assume that there exists a virtual base-pair $(-1,n)$ in $\Target$, so that any position in $[0,n-1]$ has a covering base-pair.
 Then one easily shows by induction that, starting from the complete interval $[0,n-1]$, the recursive calls only evaluate $\mathcal{Z}$ over intervals $[i,j]$ such that $j=j'-1$, $\CNBP{i}=[i',j']$. 
 
-\begin{cframed}This property clearly holds initially for the complete interval $[0,n-1]$, owing to the virtual base-pair $(-1,n)$. Furthermore, if it holds for a given $(i,j)$, $\CNBP{i}=[i',j+1]$, then:
+\CFramed{This property clearly holds initially for the complete interval $[0,n-1]$, owing to the virtual base-pair $(-1,n)$. Furthermore, if it holds for a given $(i,j)$, $\CNBP{i}=[i',j+1]$, then:
 \begin{itemize} 
   \item If $i$ is unpaired (Case 1), then $\CNBP{i+1}=\CNBP{i}=[i',j+1]$, and the property is satisfied by the subsequent call over $[i+1,j]$. 
   \item If $i$ is paired with $j$ and stacking onto $(i-1,j+1)$ (Case 2), then one has $\CNBP{i+1}=[i,j]$ and the  subsequent call over $[i+1,j-1]$ satisfies the property.
   \item If $i$ is paired with some $k$ (Case 3), then $\CNBP{i+1}=[i,k]$ and $\CNBP{k+1}=[i',j+1]$. Therefore the subsequent calls, respectively over $[i+1,k-1]$ and $[k+1,j]$, both satisfy the property.
 \end{itemize}
 The case of an empty sequence does not cause a recursive call and must not be verified.
-\end{cframed}
+}
 Since, in any interval $[i,j]$ satisfying the property, the ending position $j$ is completely determined by $i$, then there exists at most $\Theta(|\Target|)$ intervals that need to be evaluated, and we conclude on the overall complexity with the remark that $a$, $b$, $a'$ and $b'$ vary over bounded ranges and only contribute to a constant factor in the complexity.
 \end{proof}
 
@@ -185,8 +185,8 @@ Consequently, for any targeted \GCContent $gc\in[0\%,100\%]$, there exists a uni
 
 
 \subsection{Redesigning unpaired regions: A local/global hybrid approach}
-Due to the simplification in our energy model, unpaired regions are not subject design constraints other than the \GCContent, leading to modest similarities of refolded design candidates with the targeted structure. To improve these performances and test the complementarity  of our global sampling approach with previous contributions based on local search, we used the \RNAinverse software to redesign unpaired regions, specifying a constraint mask to prevent stacking base-pairs from being modified.
-
+Due to the simplification in our energy model, unpaired regions are not subject to design constraints other than the \GCContent, leading to modest similarities of refolded design candidates with the targeted structure. To improve these performances and test the complementarity  of our global sampling approach with previous contributions based on local search, we used the \RNAinverse software to redesign unpaired regions, specifying a constraint mask to prevent stacking base-pairs from being modified.
+{\em todo: discuss evolution of \GCContent}
 
 
 
