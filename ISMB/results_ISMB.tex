@@ -127,7 +127,9 @@ diversity. Figure~\ref{fig:nb_sols_entropy} shows the number of correct
 solutions as their average entropy and base pair entropy, since 
 \ourprog  only influences the distribution of nucleotides inside 
 stacked base pairs. The most constraining factor for generating valid
- solutions seems to be  low \GCContent and the percentage of free nucleotides. Our method is able to generate 
+ solutions seems to be  low \GCContent and the percentage of free nucleotides. 
+
+%Our method is able to generate 
 
 Also, a critical properties in RNA sequence design is 
 the frequency of the MFE. 
@@ -152,18 +154,26 @@ at size of $100$ nucleotides.
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=\textwidth]{Figures/freq.png}
-	\caption{Average frequency of the MFE.}
+	\caption{Average Boltzmann probability of the MFE.}
 	\label{fig:freq}
 \end{figure}
 
 \subsection{Global sampling vs Local search vs Glocal approach}
-<<<<<<< HEAD
-Here, we are interested in estimating the impact of the design methodology on the performances. More precisely, we aim to determine the benefits of a global sampling approach (\ourprog), compared to both a glocal procedure (\ourprog + \RNAinverse) and a classical local search methodology (\RNAinverse). Thus, we compare our method to a pure local search procedure (see Section \ref{subsec:glocal_method}). Our results (See Fig. \ref{fig:rnainverse} in Supplementary data) show that \ourprog outperforms other strategies. In particular, the base pair entropy as well as diversity of sequences are favorable to \ourprog. This advantage is even more striking for low targeted \GCContent{}s regimes.
-=======
-Here, we are interested in estimating the impact of the design methodology on the performances. More precisely, we aim to what are the benefits of a global sampling approach (\ourprog), versus a glocal procedure (\ourprog + \RNAinverse) or the classical local search methodology (\RNAinverse). Thus, we compare our method to a pure local search procedure. In particular, here we compare to \RNAinverse as it is the program we used to do the local optimization (see Section \ref{subsec:glocal_method}). Our results (See Fig. \ref{fig:rnainverse} in Supplementary data) show that \ourprog overcome other strategies. In particular, the base pair entropy as well as diversity of sequences are favorable to \ourprog. This advantage is even more striking for low \GCContent regimes.
->>>>>>> bac85f3b6cf022d7b485ac16a605fafb9774b5b8
 
-To complete this benchmark, we added the results obtained with the glocal procedure (\ourprog + \RNAinverse). We note that the results are slightly lower than those of \ourprog alone. However, we must stress that the \ourprog data consider only the sample of \ourprog already satisfying the MFE criterion. In fact \RNAinverse enable to ``correct'' a lot of sample sampled by \ourprog but without the good folding properties. Hence, our conclusion here is that the glocal approach \ourprog + \RNAinverse enable us to conserve the same level of performance but to drastically improve the success rate of our methodology. 
+
+Here, we are interested in estimating the impact of the design methodology on the performances. More precisely, we aim to determine the merits of a global sampling approach (\ourprog), compared to a glocal procedure (\ourprog + \RNAinverse) and a local search methodology (\RNAinverse). 
+
+Our results (See Fig. \ref{fig:rnainverse} in Supplementary Material) indicate that a glocal approach produces sequences that are consistently more diverse than those obtained with both {\em pure} methods alone. Furthermore, while \ourprog outperforms \RNAinverse for extreme pressures on the \GCContent, \RNAinverse produces more entropic sequences than \ourprog for the central \GCContent regime ($30\%-70\%$). 
+
+It should be noted, however, than \RNAinverse produces sequences whose \GCContent is extremely concentrated (see Table~\ref{tab:nb_rnainv} in Supplementary Material), thereby requiring a large number of runs before producing a suitable \GCContent sequence. Therefore, a rejection algorithm based on \RNAinverse alone should not be considered a realistic solution for the design with constrained \GCContent. 
+
+
+
+
+
+
+% \ourprog outperforms other strategies for non-centered . In particular, the base pair entropy as well as diversity of sequences are favorable to \ourprog. This advantage is even more striking for low targeted \GCContent{}s regimes.
+%To complete this benchmark, we added the results obtained with the glocal procedure (\ourprog + \RNAinverse). We note that the results are slightly lower than those of \ourprog alone. However, we must stress that the \ourprog data consider only the sample of \ourprog already satisfying the MFE criterion. In fact \RNAinverse enable to ``correct'' a lot of sample sampled by \ourprog but without the good folding properties. Hence, our conclusion here is that the glocal approach enable us to conserve the same level of performance but to drastically improve the success rate of our methodology. 
 
 
 
