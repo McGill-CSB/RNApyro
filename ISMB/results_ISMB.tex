@@ -19,7 +19,7 @@ nucleotides inside the loops of the secondary structure.
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.45]{Figures/time_rnastrand_clustered_rnainverse_100samples_fix}
+	\includegraphics[width=\textwidth]{Figures/time_rnastrand_clustered_rnainverse_100samples_fix}
 	\caption{Average time in seconds to generate one sequence. We explicitly show 
 	the time spent by \texttt{Incarnation} (full line) and \texttt{RNAinverse} (dashed) for various \texttt{G+C} contents. The first plot is in function
 	of the length of the structures. The second is in function of the stack
@@ -32,7 +32,7 @@ nucleotides inside the loops of the secondary structure.
 
 \subsection{Dataset}
 To evaluate the quality of our method, we selected a subset of $50$ secondary
-structures from the \textit{RNA STRNAD} database~\cite{andronescu2008rna}.
+structures from the \textit{RNA STRAND} database~\cite{andronescu2008rna}.
 Those are known secondary structure from a variety of organisms with 
  lengths between $20$ and $100$ nucleotides. 
  
@@ -45,7 +45,7 @@ Those are known secondary structure from a variety of organisms with
  
  \begin{figure}[ht!]
  	\centering
-	\includegraphics[scale=0.45]{Figures/bins_distribution.png}
+	\includegraphics[width=\textwidth]{Figures/bins_distribution.png}
 	\caption{Number of secondary structures per bins.}
 	\label{fig:bins}
  \end{figure}
@@ -72,7 +72,7 @@ designing sequences for targets with a high number of free nucleotides
 
 \begin{figure}[ht!]	
 	\centering
-	\includegraphics[scale=0.45]{Figures/mfe_struct_solve_nornainverse.png}
+	\includegraphics[width=\textwidth]{Figures/mfe_struct_solve_nornainverse.png}
 	\caption{Quality of \texttt{Incarnation} results. The first row shows the percentage
 	of sampled sequences folding into the target. The second shows the 	
 	proportion	of structures for which at least one correct sequence was 
@@ -84,7 +84,7 @@ designing sequences for targets with a high number of free nucleotides
 
 \begin{figure}[ht!]	
 	\centering
-	\includegraphics[scale=0.45]{Figures/mfe_struct_solved}
+	\includegraphics[width=\textwidth]{Figures/mfe_struct_solved}
 	\caption{Quality of \texttt{Incarnation+RNAinverse} results. The first row shows the percentage
 	of sampled sequences folding into the target. The second shows the 	
 	proportion	of structures for which at least one correct sequence was 
@@ -107,7 +107,7 @@ a much lower structural sensitivity.
 
 \begin{figure}[ht!]
  	\centering
-	\includegraphics[scale=0.45]{Figures/rnastrand_clustered_rnainverse_100samples_struct_sens.png}
+	\includegraphics[width=\textwidth]{Figures/rnastrand_clustered_rnainverse_100samples_struct_sens.png}
 	%\includegraphics[width=1\textwidth,height=0.16\textheight]{Figures/rnastrand_clustered_rnainverse_100samples_struct_sens.png}
 	\caption{Structural sensitivity (i.e. $\#$ well predicted base pairs / $\#$ base pairs in target) of the sampled sequences MFE. }
 	\label{fig:ss_sens}	
@@ -125,7 +125,7 @@ solutions as their average entropy and base pair entropy, since \texttt{Incarnat
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.45]{Figures/nb_sols_entropy.png}
+	\includegraphics[width=\textwidth]{Figures/nb_sols_entropy.png}
 	\caption{Number of solutions generated and their average entropy. 
 	The last row presents only the entropy of the nucleotides inside base 
 	pairs.}
@@ -138,7 +138,7 @@ the MFE. Presented in Fig.~\ref{fig:freq}.
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.45]{Figures/freq.png}
+	\includegraphics[width=\textwidth]{Figures/freq.png}
 	\caption{Average frequency of the MFE.}
 	\label{fig:freq}
 \end{figure}
