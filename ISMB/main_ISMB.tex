@@ -108,7 +108,7 @@
 
 \title{A glocal approach to designing RNA sequences with target secondary structure and nucleotide distribution}
 \author{Vladimir Reinharz$^1$, Yann Ponty$^{2,*}$, J\'er\^{o}me Waldisp\"{u}hl$^{1,*}$}
-\date{$^1$ School of Computer Science, McGill University, Montreal, Canada, $^2$ Laboratoire d'informatique, ƒcole Polytechnique, Palaiseau, France.\\Corresponding authors: \texttt{jeromew@cs.mcgill.ca}, \texttt{yann.ponty@lix.polytechnique.fr}}
+\date{$^1$ School of Computer Science, McGill University, Montreal, Canada, $^2$ Laboratoire d'informatique, ƒcole Polytechnique, Palaiseau, France.\\ \small $^*$Corresponding authors: \texttt{jeromew@cs.mcgill.ca}, \texttt{yann.ponty@lix.polytechnique.fr}}
 
 
 %Last thing before BEGIN DOC for links to appear in pdf
@@ -127,12 +127,10 @@
 %\subsection{}
 \begin{abstract}
 \noindent
-\textbf{Motivations:} The design of RNA sequences folding into predefined secondary structures is a milestone for many synthetic biology and gene therapy studies. Most of the current software use similar local search strategies (i.e. a random seed is progressively adapted to acquire the desired folding propertues) and more importantly do not allow the user to control explicitly the nucleotide distribution such as the \gc~content in their sequences. However, the latter is an important criteria for large-scale applications as it could presumably be used to design sequences with better transcription rates and/or structural plasticity. We recently introduced a novel global sampling approach for the RNA secondary structure design problem.
-
+\textbf{Motivations:} The design of RNA sequences folding into predefined secondary structures is a milestone for many synthetic biology and gene therapy studies. Most of the current software use similar local search strategies (i.e. a random seed is progressively adapted to acquire the desired folding propertues) and more importantly do not allow the user to control explicitly the nucleotide distribution such as the \gc~content in their sequences. However, the latter is an important criteria for large-scale applications as it could presumably be used to design sequences with better transcription rates and/or structural plasticity.\\
 \noindent
 \textbf{Results:}
-In this paper, we introduce \ourprog
-
+In this paper, we introduce \ourprog, a novel algorithm to design RNA sequences folding into target secondary structures with a predefined nucleotide distribution.  \ourprog uses a global sampling approach and weighted sampling techniques. We show that our approach is fast (i.e. running time comparable or better than local search methods), seed-less (we remove the bias of the seed in local search heuristics), and successfully generates high-quality sequences (i.e. thermodynamically stable) for any \gc~content. To complete this study, we develop an hybrid method combining our global sampling approach with local search strategies. Remarkably, our glocal methodology overcomes both local and global approaches.\\
 \noindent
 \textbf{Key words:} RNA, secondary structure, design, weighted sampling, GC-content.
 \end{abstract}
