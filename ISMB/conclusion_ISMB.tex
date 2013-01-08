@@ -1,4 +1,10 @@
 %!TEX root = main_ISMB.tex
 \section{Conclusion}
+
 \label{sec:conclusion}
+
+In this article, we described a novel algorithm, \ourprog, for the RNA design problem, i.e. the design of an RNA sequence adopting a predefined secondary structure as minimal free-energy fold.
+Implementing a global sampling approach, it optimizes affinity towards the target secondary structure, while granting the user full control over the \GCContent of the resulting sequences.
+This extended control does not necessarily induce additional computational demands, and we showed the linear complexity of both the preprocessing stage and the generation of candidate sequences for the design, allowing for the design of larger and more complex secondary structures in a matter of minutes on a single processor. We evaluated the method on a benchmark composed of target secondary structures extracted from the \RNASTRAND database. We observed good overall success rate, with the notable exception of very low targeted \GCContent ($10\%$), and a good entropy within designed candidates.
+Finally, we implemented an hybrid approach, using the \RNAinverse software as a post-processing step for unpaired regions. This approach greatly increased the success rate of the method, allowing for the design of highly diverse candidates for almost all of the structures in our benchmark, while largely preserving the targeted \GCContent.
 

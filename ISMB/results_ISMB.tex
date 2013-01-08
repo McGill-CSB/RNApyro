@@ -4,14 +4,14 @@
 
 \subsection{Implementation}
 \label{sec:implementation}
-Our software, \texttt{Incarnation}, was implemented in {\tt Python~2.7}. We used
+Our software, \ourprog, was implemented in {\tt Python~2.7}. We used
 \RNAinverse from the \textit{Vienna Package 2.0}~\cite{Hofacker:1994}.
 All time benchmarks were run on a one AMD Opteron(tm) Processor 6278  at 2.4 GHz with cache of 512 KB.
  We used as parameter $\beta=15$, the penalty for an invalid base pair.
 
 
 
-We present the average times spent by \texttt{Incarnation} and \RNAinverse to generate one sequence
+We present the average runtimes observed for \texttt{Incarnation} and \RNAinverse to generate one sequence
 with the required \texttt{C+G} content in Figure~\ref{fig:time}. As expected, the time grows linearly
 in function of the length of the structures for \texttt{Incarnation}.  A highly interesting feature
 is the huge decrease in time of computation when there is $15\%$ free 
@@ -21,7 +21,7 @@ nucleotides inside the loops of the secondary structure.
 	\centering
 	\includegraphics[width=\textwidth]{Figures/time_rnastrand_clustered_rnainverse_100samples_fix}
 	\caption{Average time in seconds to generate one sequence. We explicitly show 
-	the time spent by \texttt{Incarnation} (full line) and \texttt{RNAinverse} (dashed) for various \texttt{C+G} contents. The first plot is in function
+	the time spent by \ourprog (full line) and \RNAinverse (dashed) for various \texttt{C+G} contents. The first plot is in function
 	of the length of the structures. The second is in function of the stack
 	density (i.e. $2\cdot\#stacks/length$) and the latter in function of 
 	the proportion of free nucleotides (i.e. not base paired) inside loops.}
@@ -58,16 +58,15 @@ which have lengths between $20$ and $100$ nucleotides.
 A first criterion is which percentage of sequences have as MFE the target
 secondary structures. We are also interested by the number of structures
 for which we can design at least one sequence with the desired MFE.
-We show the results when using only \texttt{Incarnation} in 
+We show the results when using only \ourprog in 
  Figure~\ref{fig:mfe_struct_solved_noinverse}. As mentioned earlier, the high rate of failure
 is due to the fact that no selection criterion is applied to
 unpaired nucleotides. A local strategy is thus needed.
-After processing \texttt{Incarnation} sequences with \RNAinverse to 
+After processing \ourprog sequences with \RNAinverse to 
 locally optimize the free nucleotides, we obtained the results 
 shown in Figure~\ref{fig:mfe_struct_solved}. We observed
-that length is not a good predictor for the quality of the results. Instead,
-a high number of free nucleotides in the structure seems to be a 
-good measure of its design hardness. 
+that length is, in general, not a good predictor for the quality of the results. Instead,
+a high number of free nucleotides in the structure seems to make the design difficult. 
 On top of that, with a \texttt{C+G} content of $50\%$ and more, at least
 one solutions was found for almost all structures. The difficulty of 
 designing sequences for targets with a high number of free nucleotides 
@@ -89,14 +88,14 @@ designing sequences for targets with a high number of free nucleotides
 \begin{figure}[ht!]	
 	\centering
 	\includegraphics[width=\textwidth]{Figures/mfe_struct_solved}
-	\caption{Quality of \texttt{Incarnation+RNAinverse} results. The first row shows the percentage
+	\caption{Quality of \ourprog+\RNAinverse results. The first row shows the percentage
 	of sampled sequences folding into the target. The second shows the 	
 	proportion	of structures for which at least one correct sequence was 
 	sampled.}
 	\label{fig:mfe_struct_solved}	
 \end{figure}
  
-To evaluate the global quality of \texttt{Incarnation} sequences, we show
+To evaluate the global quality of \ourprog sequences, we show
 in Figure~\ref{fig:ss_sens} the ratio of well predicted base pairs in the
 MFE structure of our sampled sequences. We can observe that, in all cases,
 the hardest sequence to design are those with an extremely low \texttt{C+G}
@@ -112,7 +111,7 @@ a much lower structural sensitivity.
 \begin{figure}[ht!]
  	\centering
 	\includegraphics[scale=0.45]{Figures/rnastrand_clustered_rnainverse_100samples_struct_sens.png}
-	\caption{Structural sensitivity (i.e. $\#$ well predicted base pairs / $\#$ base pairs in target) of the sampled sequences MFE. }
+	\caption{Structural sensitivity (i.e. $\#$well predicted base/$\#$base pairs in target) of the sampled sequences MFE. }
 	\label{fig:ss_sens}	
 \end{figure}
 
@@ -122,10 +121,10 @@ a much lower structural sensitivity.
 In this section, we further analyze the generated sequences that fold into the 
 target structure. 
 
-A desirable feature in sequence design, is to produce samples with a high
-diversity. We show in Figure~\ref{fig:nb_sols_entropy} the number of correct
+A desirable feature in sequence design, is to produce  highly
+diverse samples. Figure~\ref{fig:nb_sols_entropy} shows the number of correct
 solutions as their average entropy and base pair entropy, since 
-\texttt{Incarnation}  only influences the distribution of nucleotides inside 
+\ourprog  only influences the distribution of nucleotides inside 
 stacked base pairs. The most constraining factor for generating valid
  solutions seems to be  low \texttt{C+G} content and the percentage of free nucleotides. Our method is able to generate 
 
@@ -156,7 +155,7 @@ at size of $100$ nucleotides.
 	\label{fig:freq}
 \end{figure}
 
-\subsection{Global sampling, Local search and Glocal approach}
+%\subsection{Global sampling, Local search and Glocal approach}
 
 
 \label{fig:rnainverse}
