@@ -24,7 +24,7 @@ nucleotides inside the loops of the secondary structure.
 	the time spent by \texttt{Incarnation} (full line) and \texttt{RNAinverse} (dashed) for various \GCContent. The first plot is in function
 	of the length of the structures. The second is in function of the stack
 	density (i.e. $2\cdot\#stacks/length$) and the latter in function of 
-	the proportion of free nucleotides (i.e. not base paired) inside loops.}
+	the proportion of free nucleotides (i.e. unpaired bases) within loops.}
 	\label{fig:time}	
 \end{figure}
 
@@ -35,24 +35,22 @@ To evaluate the quality of our method, we used secondary
 structures from the \RNASTRAND database~\cite{andronescu2008rna}.
 Those are known secondary structure from a variety of organisms.
 We select the same subset of $50$ structures as in~\cite{Levin:2012kx}, 
-which have lengths between $20$ and $100$ nucleotides. 
+whose length ranges between $20$ and $100$ nucleotides. 
 
- To ease the visualization of the data, we clustered together the strucures
- in function of their length, stacks density and proportion of free 
- nucleotides in loops. We present in Figure~\ref{fig:bins} the distribution
- of the structures in the different bins.
+ To ease the visualization of the results, we clustered together strucures
+ having similar length, stacks density and proportion of free-nucleotides in loops. 
+  We present in Figure~\ref{fig:bins} the distribution of structures in each category.
  
  \begin{figure}[ht!]
  	\centering
 	\includegraphics[width=\textwidth]{Figures/bins_distribution.png}
-	\caption{Number of secondary structures per bins.}
+	\caption{Number of secondary structures per bin, according to our three clustering criteria.}
 	\label{fig:bins}
  \end{figure}
  
  
 \subsection{Design}
- To benchmark our method, we first started by sampling a minimum
- of $100$ sequence per structure. After correcting the free nucleotides with
+ To benchmark our method, we first started by sampling about $100$ sequences per structure. After correcting the free nucleotides with
  \texttt{RNAinverse} we computed their MFE with \texttt{RNAfold} from the \textit{Vienna Package 2.0}~\cite{Hofacker:1994}.
  
 A first criterion is which percentage of sequences have as MFE the target
@@ -65,8 +63,8 @@ unpaired nucleotides. A local strategy is thus needed.
 After processing \texttt{Incarnation} sequences with \RNAinverse to 
 locally optimize the free nucleotides, we obtained the results 
 shown in Figure~\ref{fig:mfe_struct_solved}. We observed
-that length is not a good predictor for the quality of the results. Instead,
-a high number of free nucleotides in the structure seems to be a 
+that length is, in general, not a good predictor for the hardness of designing a structure. 
+Instead, a high number of free nucleotides in the structure seems to be a 
 good measure of its design hardness. 
  The difficulty of 
 designing sequences for targets with a high number of free nucleotides 
@@ -125,7 +123,7 @@ In this section, we further analyze the generated sequences that fold into the
 target structure. 
 
 A desirable feature in sequence design, is to produce samples with a high
-diversity. We show in Figure~\ref{fig:nb_sols_entropy} the number of correct
+diversity. Figure~\ref{fig:nb_sols_entropy} shows the number of correct
 solutions as their average entropy and base pair entropy, since 
 \texttt{Incarnation}  only influences the distribution of nucleotides inside 
 stacked base pairs. The most constraining factor for generating valid
@@ -159,7 +157,7 @@ at size of $100$ nucleotides.
 \end{figure}
 
 \subsection{Global sampling vs Local search vs Glocal approach}
-Here, we are interested in estimating the impact of the design methodology on the performances. More precisely, we aim to what are the benefits of a global sampling approach (\ourprog), versus a glocal procedure (\ourprog + \RNAinverse) or the classical local search methodology (\RNAinverse). Thus, we compare our method to a pure local search procedure. In particular, here we compare to \RNAinverse as it is the program we used to do the local optimization (see Section \ref{subsec:glocal_method}). Our results (See Fig. \ref{fig:rnainverse} in Supplementary data) show that \ourprog overcome other strategies. In particular, the base pair entropy as well as diversity of sequences are favorable to \ourprog. This advantage is even more striking for low \gc~content regimes.
+Here, we are interested in estimating the impact of the design methodology on the performances. More precisely, we aim to determine the benefits of a global sampling approach (\ourprog), compared to both a glocal procedure (\ourprog + \RNAinverse) and a classical local search methodology (\RNAinverse). Thus, we compare our method to a pure local search procedure (see Section \ref{subsec:glocal_method}). Our results (See Fig. \ref{fig:rnainverse} in Supplementary data) show that \ourprog outperforms other strategies. In particular, the base pair entropy as well as diversity of sequences are favorable to \ourprog. This advantage is even more striking for low targeted \GCContent{}s regimes.
 
 To complete this benchmark, we added the results obtained with the glocal procedure (\ourprog + \RNAinverse). We note that the results are slightly lower than those of \ourprog alone. However, we must stress that the \ourprog data consider only the sample of \ourprog already satisfying the MFE criterion. In fact \RNAinverse enable to ``correct'' a lot of sample sampled by \ourprog but without the good folding properties. Hence, our conclusion here is that the glocal approach \ourprog + \RNAinverse enable us to conserve the same level of performance but to drastically improve the success rate of our methodology. 
 

@@ -52,6 +52,12 @@ Summing the pseudo-Boltzmann factor over all possible sequences of a given lengt
 Let us now describe a linear-time algorithm to sample sequences at random in the pseudo-Boltzmann distribution. This algorithm follows the general principles of the recursive approach to random generation~\cite{Wilf1977}, pioneered in the context of RNA by the \SFold algorithm~\cite{Ding2003}. The algorithm starts by precomputing the partition function restricted to each valid interval, and then performs a series of recursive stochastic backtracks, using precomputed values to decide on the probability of each alternative.
 
 \subsubsection{Precomputing the pseudo-partition function}\label{sec:pf}
+\begin{figure}
+\resizebox{\textwidth}{!}{\input{FigStochasticBacktrack.pgf}}
+\caption{Three main cases in the stochastic backtrack procedure over an interval $[i,j]$: Either position $i$ is left unpaired (top), a base-pair $(i,j)$ is formed, stacking onto $(i+1,j-1)$ (middle), or $i$ is paired somewhere else, defining two regions on which subsequent recursive calls are needed (bottom). Positions indicated in red are assigned during this stage of the backtrack.\label{fig:stochastic}}
+\end{figure}
+
+
 Firstly, a dynamic programming algorithm computes $\mathcal{Z}\substack{(i,j)\\ [a,b]}$ the pseudo-partition function restricted to an interval $[i,j]$, assuming its (previously chosen) flanking nucleotides are $a$ and $b$ respectively. 
 Since the only sequence over an empty interval is the empty sequence, having energy $0$, one has
 \begin{equation}
@@ -164,11 +170,6 @@ Once the pseudo-partition functions have been memorized, a stochastic backtrack 
 
 Since, on each recursive call, the algorithm assigns at least one nucleotide to a -- previously unassigned -- position, and that the number of executions of the loops are bounded by a constant, then the complexity of the algorithm grows linearly on the targeted length. 
 
-\begin{figure}
-\resizebox{\textwidth}{!}{\input{FigStochasticBacktrack.pgf}}
-\caption{Three main cases in the stochastic backtrack procedure over an interval $[i,j]$: Either position $i$ is left unpaired (top), a base-pair $(i,j)$ is formed, stacking onto $(i+1,j-1)$ (middle), or $i$ is paired somewhere else, defining two regions on which subsequent recursive calls are needed (bottom). Positions indicated in red are assigned during this stage of the backtrack.\label{fig:stochastic}}
-\end{figure}
-
 
 \subsubsection{Rejecting unsuitable candidates}
 
@@ -181,147 +182,8 @@ Consequently, for any targeted \GCContent $gc\in[0\%,100\%]$, there exists a uni
 
 
 
-\subsection{Postprocessing unpaired regions: A local/global hybrid approach}
+\subsection{Postprocessing unpaired regions: A local/global (glocal) hybrid approach}
 \label{subsec:glocal_method}
-Due to our simplified our energy model, unpaired regions are not subject to design constraints other than the \GCContent, leading to modest probabilities for refolded design candidates to match the targeted structure. To improve these performances and test the complementarity  of our global sampling approach with previous contributions based on local search, we used the \RNAinverse software to redesign unpaired regions. We specified a constraint mask to prevent stacking base-pairs from being modified and, whenever necessary, reetablished the content content a posteriori.
+Due to our simplified our energy model, unpaired regions are not subject to design constraints other than the \GCContent, leading to modest probabilities for refolded design candidates to match the targeted structure. To improve these performances and test the complementarity  of our global sampling approach with previous contributions based on local search, we used the \RNAinverse software to redesign unpaired regions. We specified a constraint mask to prevent stacking base-pairs from being modified and, whenever necessary, reetablished their content content a posteriori as \RNAinverse has been witnessed to take some liberties with constraints masks. As shown in Table~\ref{table:impact_on_gc} (Supplementary material), this postprocessing does not drastically alter the \GCContent, so the glocal approach reasonably addresses the contrained \GCContent design problem.
 
 
-
-%\subsubsection{Outside}	
-%\begin{figure}
-%\resizebox{\textwidth}{!}{\input{FigDPOutside.pgf}}
-%\caption{Principle of the outside computation. Note that the outside algorithm uses intermediate results from the inside algorithm, 
-%therefore its efficient implementation requires an implementation of the inside computation.}
-%\end{figure}
-%The \emph{Outside} function, $\mathcal Y$, is the partition function considering only the 
-%contributions of subsequences $[0,i]\cup[j,n-1]$ over the mutants of $s$ having exactly $m$ mutations between $[0,i]\cup[j,n-1]$ and whose nucleotide at position $i+1$ is $a$ 
-%(resp. in position $j-1$ it is $b$).
-%We define function $\Y{i,j}{m}{a,b}$ as a recurrence, and will use as initial conditions:
-%\begin{equation}
-%	\Y{-1,j}{m}{X,X}:=
-%		\displaystyle
-%	  \Z{j,n-1}{m}{X,X}
-%\label{eq:Y_in}
-%\end{equation}
-%The recurrence, as shown below, will increase the interval $[i,j]$ by decreasing $i$ when
-%it is not base paired. If it is with a position $k>j$, we increase $j$ to include it.
-% Thus, when we need
-%to evaluate an interval as $(-1,j)$, all stems between $(0,j)$ are taken into account and the
-%structure between $(j,n-1)$ must be a set of independent stems. Therefore,
-% all the outside energy between $[j,n-1]$ is
-%equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follows.
-%\begin{equation}
-%	\Y{i,j}{m}{a,b} = \left\{
-%  \begin{array}{ll}
-%		\displaystyle
-%    \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}
-%    \Y{i-1,j}{m- \Kron_{a',s_i}}{a',b} &
-%    \text{Elif }S_i=-1 \\
-%    \displaystyle
-%    \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
-%		 e^{\frac{-E_{(i,j),ab \to a'b'}^{\Omega,\beta}}{RT}}\cdot
-%    \Y{i-1,j+1}{m- \Kron_{a'b',s_is_j}}{a',b'} &
-%   	 \text{Elif }S_{i}=j \land S_{i+1}=j-1\\
-%		 \displaystyle
-%		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
-%		 \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
-%  		 e^{\frac{-E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
-%		 \cdot\Y{i-1,k+1}{m- \Kron_{a'b',s_is_k} - m'}{a',b'}
-%     \cdot\Z{j,k-1}{m'}{b,b'} &
-%		 \text{Elif }S_{i}=k \geq j\\
-%		 \displaystyle
-%		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{a'b',s_ks_i}\le m}}
-%		 \sum_{m'=0}^{m-\Kron_{a'b',s_ks_i}}
-%   	 e^{\frac{-E_{(k,i),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
-%		 \cdot\Y{k-1,j}{m- \Kron_{a'b',s_ks_i} - m'}{a',b}
-%     \cdot\Z{k+1,i-1}{m'}{a',b'} &
-%		 \text{Elif }-1 < S_{i}=k < i\\
-%		 0 & \text{Otherwise}
-%  \end{array}\right.
-%\label{eq:Y_rec}
-%\end{equation}
-%The five cases can be broked down as follows.
-%\begin{description}
-%\item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, then the value is the same
-%as if we decrease the lower interval bound by $1$ (i.e. $i-1$), and consider all possible
-%nucleotides $a'$ at position $i$, correcting the number of mutants
-%in function of $\Kron_{a',s_i}$.
-%\item[$S_{i}=j$ and $S_{i+1}=j-1$:] If nucleotide $i$ is paired with $j$ and nucleotide $i+1$ is
-%paired with $j-11$, we are in the only case were stacked base pairs can occur. We thus add
-%the energy of the stacking and of the isostericity of the base pair $(i,j)$. What is left
-%to compute is the \emph{outside} value for the interval $[i-1,j+1]$ over all possible nucleotides 
-%$a',b'\in B^2$ at positions $i$ and $j$ respectively.
-%\item[$S_{i}=k \geq j$:]If nucleotide $i$ is paired with position $k\geq j$, 
-%and is not stacked inside, the 
-%only term contributing directly to the energy is the isostericity of the base pair $(i,k)$. 
-%We can then consider the outside interval $[i-1,k+1]$ by multiplying it by the the \emph{inside}
-%value of the newly included interval (i.e. $[j,k-1]$), for 
-%all possible values $a',b'\in B^2$ for nucleotides at positions $i$ and $k$ respectively.
-%\item[$-1<S_{i}<i$:]As above but if position $i$ is to pairing with a lower value.
-%\item[Else:] In all other cases, we are in a derivation of the SCFG that does not correspond to the 
-%secondary structure $S$, and we return $0$.
-%
-%
-%\end{description}
-%
-%\subsubsection{Combining Inside and Outside values into point-wise mutations probabilities}
-%By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
-%be described in function of the \emph{inside} term as $\Z{0,n-1}{m}{X,X}$,
-% for any nucleotide $X\in B$ or
-%in function of the \emph{outside} term, for any unpaired position $k$:
-%$$
-%	\Z{0,n-1}{m}{X,X}
-%	\equiv
-%	\sum_{\substack{a\in \B,\\ \Kron_{a,s[k]}\le m}}	
-%	\Y{k-1,k+1}{m-\Kron_{a,s[k]}}{a,a}
-%$$
-%
-%We are now left to compute the probability that a given position is a given nucleotide.
-%We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
-%Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutations. 
-%\begin{align}
-%	\mathbb{P}(s_i = x\mid s,\Omega, S,M) &:= \frac{\mathcal{W}(i,x,s,\Omega,S,M)}{\sum_{m=0}^{M}\Z{0,n-1}{m}{X,X}}\label{eq:normalize}\\ 
-%\mathcal{W}(i,x,s,\Omega,S,M)&=
-% \left\{
-%	\begin{array}{ll}
-%			\sum_{m=0}^{M}
-%			\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}
-%		&\text{If }S_i = -1\\
-%			\displaystyle
-%			\sum_{m=0}^{M}
-%			\sum_{\substack{b\in B\\\Kron_{xb,s_is_k\leq m}}}
-%			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
-%     	 e^{\frac{-E_{(i,k),\varnothing\to xb}^{\Omega,\beta} }{RT}}
-%			\cdot\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
-%			\cdot\Z{i+1,k-1}{m'}{x,b}
-%		&\text{If }S_i=k>i\\
-%    \displaystyle
-%			\sum_{m=0}^{M}
-%			\sum_{\substack{b\in B\\\Kron_{bx,s_ks_i\leq m}}}
-%			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
-%     	 e^{\frac{-E^{\Omega, \beta}_{(k,i),\varnothing\to bx}}{RT}}
-%			\cdot\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
-%			\cdot\Z{k+1,i-1}{m'}{b,x}
-%		&\text{If }S_i=k<i
-%	\end{array}\right.\label{eq:combine}
-%\end{align}
-%
-%In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, 
-%for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
-%\begin{description}
-%\item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, we are concerned by the weights
-%over all sequences which have at position $i$ nucleotide $x$, which is exactly the sum
-%of the values of $\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}$, for all $m$ between $0$ and $M$.
-%\item[$S_i=k>i$:] Since we need to respect the derivation of the secondary structure $S$, if 
-%position $i$ is paired, we must consider the two partition functions. The \emph{outside} of the 
-%base pair, and the \emph{inside}, for all possible values for the nucleotide at position $k$, and
-%all possible distribution of the mutant positions between the inside and outside of the base pair. We also add the term of isostericity for this specific base pair.
-%\item[$S_i=k<i$:] Same as above, but with position $i$ pairing with a lower position.
-%\end{description}
-%
-%\subsection{Complexity considerations}
-%Equations~\eqref{eq:Z_rec} and~\eqref{eq:Y_rec} can be computed using dynamic programming. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and interval lengths, memorizing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ can be accessed in constant time thanks to a simple precomputation (not described)  of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations.
-%
-%In principle, $\Theta(m\cdot n^2)$ terms, identified by $(m,i,j)$ triplets, should be computed.
-%However, a close inspection of the recurrences reveals that the computation can be safely restricted to a subset of intervals $(i,j)$.
-%For instance, the inside algorithm only requires computing intervals $[i,j]$ that do not break any base-pair, and whose next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation, resulting in a drastic limitation of the combinatorics of required computations, dropping from $\Theta(n^2)$ to $\Theta(n)$ the number of terms that need to be computed and stored. Consequently the overall complexity of the algorithm is $\Theta(n\cdot(|\Omega|+m^2))$ arithmetic operations and $\Theta(n\cdot(|\Omega|+m))$ memory.
