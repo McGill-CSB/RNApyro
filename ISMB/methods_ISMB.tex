@@ -4,7 +4,7 @@
 
 
 
-We introduce a probabilistic model for the design of RNA sequences with a specific $\Gb+\Cb$ content and folding into a predefined secondary structure.
+We introduce a probabilistic model for the design of RNA sequences with a specific \GCContent and folding into a predefined secondary structure.
 For the sake of simplicity, we choose to base this proof-of-concept implementation on a simplified free-energy function $\ES(\cdot)$, which only considers the contributions of 
 stacked canonical base-pairs. We show how a modification of the dynamic programming scheme used in the \RNAmutants allows for the sampling of good and diverse design candidates, in linear time and space complexities.
 
@@ -166,7 +166,7 @@ Since, on each recursive call, the algorithm assigns at least one nucleotide to 
 
 \begin{figure}
 \resizebox{\textwidth}{!}{\input{FigStochasticBacktrack.pgf}}
-\caption{Three main cases in the stochastic backtrack procedure over an interval $[i,j]$: Either position $i$ is left unpaired (top), a base-pair $(i,j)$ is formed, stacking onto $(i+1,j-1)$ (middle), or $i$ is paired somewhere else, defining two regions on which subsequent recursive calls are needed (bottom). Positions indicated in red are assigned during at this stage of the backtrack.\label{fig:stochastic}}
+\caption{Three main cases in the stochastic backtrack procedure over an interval $[i,j]$: Either position $i$ is left unpaired (top), a base-pair $(i,j)$ is formed, stacking onto $(i+1,j-1)$ (middle), or $i$ is paired somewhere else, defining two regions on which subsequent recursive calls are needed (bottom). Positions indicated in red are assigned during this stage of the backtrack.\label{fig:stochastic}}
 \end{figure}
 
 
