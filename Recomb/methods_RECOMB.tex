@@ -111,9 +111,12 @@ Such terms can be defined by recurrence, for which the following initial conditi
 \end{equation}
 In other words, the set of sequences at distance $m$ of the empty sequence is either empty if $m>0$, or restricted to the empty sequence, having energy $0$, if $m=0$. Since the energetic terms only depend on base pairs, they are not involved in the initial conditions. 
 
-The main recursion is composed of four terms:
+The main recursion is composed of four terms:\\
+
 \begin{equation}
-	\Z{i,j}{m}{a,b}:=\left\{
+\label{eq:Z_rec}
+\resizebox{\textwidth}{!}{%
+	$\Z{i,j}{m}{a,b}:=\left\{
   \begin{array}{ll}
   		\displaystyle
       \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
@@ -130,9 +133,9 @@ The main recursion is composed of four terms:
       \cdot\Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
       \cdot\Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
       0 &\text{Otherwise}
-	\end{array}\right.
-\label{eq:Z_rec}
+	\end{array}\right.$}
 \end{equation}
+\
 The cases can be broken down as follows:
 \begin{description}
 \item[$S_{i}=-1$:] If the nucleotide at position $i$ is unpaired, then 
@@ -149,7 +152,7 @@ Any sequence on $[i,j]$ consists of two nucleotide $a'$ and $b'$ at positions $i
 \end{description}
 
 \subsubsection{Outside}	
-\begin{figure}
+\begin{figure}[t]
 \resizebox{\textwidth}{!}{\input{FigDPOutside.pgf}}
 \caption{Principle of the outside computation. Note that the outside algorithm uses intermediate results from the inside algorithm, 
 therefore its efficient implementation requires an implementation of the inside computation.}
@@ -172,7 +175,8 @@ structure between $(j,n-1)$ must be a set of independent stems. Therefore,
  all the outside energy between $[j,n-1]$ is
 equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follows.
 \begin{equation}
-	\Y{i,j}{m}{a,b} = \left\{
+\resizebox{\textwidth}{!}{%
+	$\Y{i,j}{m}{a,b} = \left\{
   \begin{array}{ll}
 		\displaystyle
     \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}
@@ -198,8 +202,8 @@ equal to $\Z{j,n-1}{m}{X,X}$, for any $X\in B$. The recursion itself is as follo
      \cdot\Z{k+1,i-1}{m'}{a',b'} &
 		 \text{Elif }-1 < S_{i}=k < i\\
 		 0 & \text{Otherwise}
-  \end{array}\right.
-\label{eq:Y_rec}
+  \end{array}\right.$
+}\label{eq:Y_rec}
 \end{equation}
 The five cases can be broked down as follows.
 \begin{description}
@@ -240,10 +244,13 @@ $$
 We are now left to compute the probability that a given position is a given nucleotide.
 We leverage the \emph{Inside-Outside} construction to immediately obtain the following $3$ cases.
 Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutations. 
-\begin{align}
-	\mathbb{P}(s_i = x\mid s,\Omega, S,M) &:= \frac{\mathcal{W}(i,x,s,\Omega,S,M)}{\sum_{m=0}^{M}\Z{0,n-1}{m}{X,X}}\label{eq:normalize}\\ 
-\mathcal{W}(i,x,s,\Omega,S,M)&=
- \left\{
+\begin{equation}
+	\mathbb{P}(s_i = x) := \frac{\mathcal{W}^M_{\substack{i, [x]}}}{\sum_{m=0}^{M}\Z{0,n-1}{m}{X,X}}\label{eq:normalize}
+\end{equation}
+where $\mathcal{W}{\substack{\ast\\ \ast}}$ is defined by:
+\begin{equation}
+\resizebox{\textwidth}{!}{%
+$ \mathcal{W}^M_{\substack{i, [x]}} =  \left\{
 	\begin{array}{ll}
 			\sum_{m=0}^{M}
 			\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}
@@ -264,8 +271,9 @@ Given $i\in[0,n-1],x\in B$, and $M\geq 0$ a bound on the number of allowed mutat
 			\cdot\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
 			\cdot\Z{k+1,i-1}{m'}{b,x}
 		&\text{If }S_i=k<i
-	\end{array}\right.\label{eq:combine}
-\end{align}
+	\end{array}\right.
+$}\label{eq:combine}
+\end{equation}
 
 In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, 
 for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
