@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/MacPorts 2012_1) (format=pdflatex 2012.8.9)  7 OCT 2012 19:57
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/MacPorts 2012_4) (format=pdflatex 2012.10.8)  9 JAN 2013 15:43
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -6,8 +6,10 @@ entering extended mode
 **main_RECOMB.tex
 (./main_RECOMB.tex
 LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, uk
-english, usenglishmax, basque, french, loaded.
+Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, cz
+ech, slovak, dutch, ukenglish, usenglishmax, basque, french, german-x-2012-05-3
+0, ngerman-x-2012-05-30, german, ngerman, swissgerman, italian, latin, polish, 
+portuguese, spanish, catalan, galician, loaded.
 (/opt/local/share/texmf-texlive-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/opt/local/share/texmf-texlive-dist/tex/latex/base/size11.clo
@@ -235,9 +237,6 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count103
 )
-(./natbibspacing.sty
-\bibspacing=\dimen122
-)
 (/opt/local/share/texmf-texlive-dist/tex/latex/todonotes/todonotes.sty
 Package: todonotes 2011/10/22 .dtx Todonotes source and documentation.
 Package: todonotes 2011/10/22
@@ -300,14 +299,14 @@ Package: pgfsys 2010/06/30 v2.10 (rcs-revision 1.37)
 (/opt/local/share/texmf/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
 \pgfkeys@tmptoks=\toks33
 ))
-\pgf@x=\dimen123
-\pgf@y=\dimen124
-\pgf@xa=\dimen125
-\pgf@ya=\dimen126
-\pgf@xb=\dimen127
-\pgf@yb=\dimen128
-\pgf@xc=\dimen129
-\pgf@yc=\dimen130
+\pgf@x=\dimen122
+\pgf@y=\dimen123
+\pgf@xa=\dimen124
+\pgf@ya=\dimen125
+\pgf@xb=\dimen126
+\pgf@yb=\dimen127
+\pgf@xc=\dimen128
+\pgf@yc=\dimen129
 \w@pgf@writea=\write3
 \r@pgf@reada=\read1
 \c@pgf@counta=\count105
@@ -341,7 +340,7 @@ Package: pgfcore 2010/04/11 v2.10 (rcs-revision 1.7)
 (/opt/local/share/texmf/tex/generic/pgf/math/pgfmathcalc.code.tex
 (/opt/local/share/texmf/tex/generic/pgf/math/pgfmathutil.code.tex)
 (/opt/local/share/texmf/tex/generic/pgf/math/pgfmathparser.code.tex
-\pgfmath@dimen=\dimen131
+\pgfmath@dimen=\dimen130
 \pgfmath@count=\count111
 \pgfmath@box=\box29
 \pgfmath@toks=\toks34
@@ -362,30 +361,30 @@ ex) (/opt/local/share/texmf/tex/generic/pgf/math/pgfmathfunctions.base.code.tex
 ))
 (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
 File: pgfcorepoints.code.tex 2010/04/09  (rcs-revision 1.20)
-\pgf@picminx=\dimen132
-\pgf@picmaxx=\dimen133
-\pgf@picminy=\dimen134
-\pgf@picmaxy=\dimen135
-\pgf@pathminx=\dimen136
-\pgf@pathmaxx=\dimen137
-\pgf@pathminy=\dimen138
-\pgf@pathmaxy=\dimen139
-\pgf@xx=\dimen140
-\pgf@xy=\dimen141
-\pgf@yx=\dimen142
-\pgf@yy=\dimen143
-\pgf@zx=\dimen144
-\pgf@zy=\dimen145
+\pgf@picminx=\dimen131
+\pgf@picmaxx=\dimen132
+\pgf@picminy=\dimen133
+\pgf@picmaxy=\dimen134
+\pgf@pathminx=\dimen135
+\pgf@pathmaxx=\dimen136
+\pgf@pathminy=\dimen137
+\pgf@pathmaxy=\dimen138
+\pgf@xx=\dimen139
+\pgf@xy=\dimen140
+\pgf@yx=\dimen141
+\pgf@yy=\dimen142
+\pgf@zx=\dimen143
+\pgf@zy=\dimen144
 )
 (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.te
 x
 File: pgfcorepathconstruct.code.tex 2010/08/03  (rcs-revision 1.24)
-\pgf@path@lastx=\dimen146
-\pgf@path@lasty=\dimen147
+\pgf@path@lastx=\dimen145
+\pgf@path@lasty=\dimen146
 ) (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
 File: pgfcorepathusage.code.tex 2008/04/22  (rcs-revision 1.12)
-\pgf@shorten@end@additional=\dimen148
-\pgf@shorten@start@additional=\dimen149
+\pgf@shorten@end@additional=\dimen147
+\pgf@shorten@start@additional=\dimen148
 ) (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
 File: pgfcorescopes.code.tex 2010/09/08  (rcs-revision 1.34)
 \pgfpic=\box30
@@ -395,14 +394,14 @@ File: pgfcorescopes.code.tex 2010/09/08  (rcs-revision 1.34)
 )
 (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2008/04/22  (rcs-revision 1.9)
-\pgflinewidth=\dimen150
+\pgflinewidth=\dimen149
 )
 (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransformations.code.
 tex
 File: pgfcoretransformations.code.tex 2009/06/10  (rcs-revision 1.11)
-\pgf@pt@x=\dimen151
-\pgf@pt@y=\dimen152
-\pgf@pt@temp=\dimen153
+\pgf@pt@x=\dimen150
+\pgf@pt@y=\dimen151
+\pgf@pt@temp=\dimen152
 ) (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
 File: pgfcorequick.code.tex 2008/10/09  (rcs-revision 1.3)
 )
@@ -417,7 +416,7 @@ File: pgfcorearrows.code.tex 2008/04/23  (rcs-revision 1.11)
 )
 (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
 File: pgfcoreshade.code.tex 2008/11/23  (rcs-revision 1.13)
-\pgf@max=\dimen154
+\pgf@max=\dimen153
 \pgf@sys@shading@range@num=\count114
 )
 (/opt/local/share/texmf/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
@@ -443,8 +442,8 @@ File: pgfmoduleplot.code.tex 2010/10/22  (rcs-revision 1.8)
 )
 (/opt/local/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
 Package: pgfcomp-version-0-65 2007/07/03 v2.10 (rcs-revision 1.7)
-\pgf@nodesepstart=\dimen155
-\pgf@nodesepend=\dimen156
+\pgf@nodesepstart=\dimen154
+\pgf@nodesepend=\dimen155
 )
 (/opt/local/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
 Package: pgfcomp-version-1-18 2007/07/23 v2.10 (rcs-revision 1.1)
@@ -454,8 +453,8 @@ Package: pgfcomp-version-1-18 2007/07/23 v2.10 (rcs-revision 1.1)
 (/opt/local/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex))
 (/opt/local/share/texmf/tex/generic/pgf/utilities/pgffor.code.tex
 Package: pgffor 2010/03/23 v2.10 (rcs-revision 1.18)
-\pgffor@iter=\dimen157
-\pgffor@skip=\dimen158
+\pgffor@iter=\dimen156
+\pgffor@skip=\dimen157
 \pgffor@stack=\toks37
 \pgffor@toks=\toks38
 ))
@@ -466,14 +465,14 @@ Package: tikz 2010/10/13 v2.10 (rcs-revision 1.76)
 ex
 File: pgflibraryplothandlers.code.tex 2010/05/31 v2.10 (rcs-revision 1.15)
 \pgf@plot@mark@count=\count115
-\pgfplotmarksize=\dimen159
+\pgfplotmarksize=\dimen158
 )
-\tikz@lastx=\dimen160
-\tikz@lasty=\dimen161
-\tikz@lastxsaved=\dimen162
-\tikz@lastysaved=\dimen163
-\tikzleveldistance=\dimen164
-\tikzsiblingdistance=\dimen165
+\tikz@lastx=\dimen159
+\tikz@lasty=\dimen160
+\tikz@lastxsaved=\dimen161
+\tikz@lastysaved=\dimen162
+\tikzleveldistance=\dimen163
+\tikzsiblingdistance=\dimen164
 \tikz@figbox=\box35
 \tikz@tempbox=\box36
 \tikztreelevel=\count116
@@ -500,8 +499,8 @@ File: tikzlibrarypositioning.code.tex 2008/10/06 v2.10 (rcs-revision 1.7)
 Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
 \calc@Acount=\count124
 \calc@Bcount=\count125
-\calc@Adimen=\dimen166
-\calc@Bdimen=\dimen167
+\calc@Adimen=\dimen165
+\calc@Bdimen=\dimen166
 \calc@Askip=\skip51
 \calc@Bskip=\skip52
 LaTeX Info: Redefining \setlength on input line 76.
@@ -519,12 +518,12 @@ Package: caption 2012/02/19 v3.2f Customizing captions (AR)
 
 (/opt/local/share/texmf-texlive-dist/tex/latex/caption/caption3.sty
 Package: caption3 2012/01/12 v1.4b caption3 kernel (AR)
-\captionmargin=\dimen168
-\captionmargin@=\dimen169
-\captionwidth=\dimen170
-\caption@indent=\dimen171
-\caption@parindent=\dimen172
-\caption@hangindent=\dimen173
+\captionmargin=\dimen167
+\captionmargin@=\dimen168
+\captionwidth=\dimen169
+\caption@indent=\dimen170
+\caption@parindent=\dimen171
+\caption@hangindent=\dimen172
 )
 \c@ContinuedFloat=\count128
 )
@@ -613,7 +612,7 @@ File: tikzlibraryarrows.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 
 (/opt/local/share/texmf/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
 File: pgflibraryarrows.code.tex 2008/10/27 v2.10 (rcs-revision 1.9)
-\arrowsize=\dimen174
+\arrowsize=\dimen173
 ))
 (/opt/local/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrar
 yfit.code.tex
@@ -622,14 +621,14 @@ File: tikzlibraryfit.code.tex 2008/06/21 v2.10 (rcs-revision 1.3)
 (/opt/local/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrar
 ydecorations.code.tex
 (/opt/local/share/texmf/tex/generic/pgf/modules/pgfmoduledecorations.code.tex
-\pgfdecoratedcompleteddistance=\dimen175
-\pgfdecoratedremainingdistance=\dimen176
-\pgfdecoratedinputsegmentcompleteddistance=\dimen177
-\pgfdecoratedinputsegmentremainingdistance=\dimen178
-\pgf@decorate@distancetomove=\dimen179
+\pgfdecoratedcompleteddistance=\dimen174
+\pgfdecoratedremainingdistance=\dimen175
+\pgfdecoratedinputsegmentcompleteddistance=\dimen176
+\pgfdecoratedinputsegmentremainingdistance=\dimen177
+\pgf@decorate@distancetomove=\dimen178
 \pgf@decorate@repeatstate=\count131
-\pgfdecorationsegmentamplitude=\dimen180
-\pgfdecorationsegmentlength=\dimen181
+\pgfdecorationsegmentamplitude=\dimen179
+\pgfdecorationsegmentlength=\dimen180
 )
 \tikz@lib@dec@box=\box57
 )
@@ -672,18 +671,18 @@ File: applemac.def 2008/03/30 v1.1d Input encoding file
 (./main_RECOMB.aux)
 \openout1 = `main_RECOMB.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 93.
-LaTeX Font Info:    ... okay on input line 93.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 93.
-LaTeX Font Info:    ... okay on input line 93.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 93.
-LaTeX Font Info:    ... okay on input line 93.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 93.
-LaTeX Font Info:    ... okay on input line 93.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 93.
-LaTeX Font Info:    ... okay on input line 93.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 93.
-LaTeX Font Info:    ... okay on input line 93.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -722,25 +721,25 @@ LaTeX Font Info:    ... okay on input line 93.
 (/opt/local/share/texmf-texlive-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count132
-\scratchdimen=\dimen182
+\scratchdimen=\dimen181
 \scratchbox=\box64
 \nofMPsegments=\count133
 \nofMParguments=\count134
 \everyMPshowfont=\toks41
 \MPscratchCnt=\count135
-\MPscratchDim=\dimen183
+\MPscratchDim=\dimen182
 \MPnumerator=\count136
 \makeMPintoPDFobject=\count137
 \everyMPtoPDFconversion=\toks42
 ) ABD: EveryShipout initializing macros
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for U+msa on input line 94.
+LaTeX Font Info:    Try loading font information for U+msa on input line 97.
 
 (/opt/local/share/texmf-texlive-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 94.
+LaTeX Font Info:    Try loading font information for U+msb on input line 97.
 
 (/opt/local/share/texmf-texlive-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
@@ -810,7 +809,7 @@ Missing character: There is no u in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no d in font nullfont!
 ) [4]
-Overfull \hbox (14.2291pt too wide) detected at line 139
+Overfull \hbox (14.2291pt too wide) detected at line 135
 \OMS/cmsy/m/n/10.95 Z[] \OT1/cmr/m/n/10.95 := []
  []
 
@@ -870,12 +869,12 @@ Missing character: There is no u in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no d in font nullfont!
 ) [6]
-Overfull \hbox (19.8396pt too wide) detected at line 212
+Overfull \hbox (19.8396pt too wide) detected at line 203
 \OMS/cmsy/m/n/10.95 Y[] \OT1/cmr/m/n/10.95 = []
  []
 
 [7]
-Overfull \hbox (29.7623pt too wide) in paragraph at lines 277--277
+Overfull \hbox (29.7623pt too wide) in paragraph at lines 268--268
 [] 
  []
 
@@ -912,12 +911,14 @@ Overfull \hbox (28.18515pt too wide) in paragraph at lines 74--75
 
 ) (./conclusion_RECOMB.tex [10 <./figures/ROC_6.pdf> <./figures/ROC_12.pdf
 
-pdfTeX warning: /opt/local/bin/pdflatex (file ./figures/ROC_12.pdf): PDF inclus
-ion: multiple pdfs with page group included in a single page
+pdfTeX warning: /opt/local/libexec/texlive/texbin/pdflatex (file ./figures/ROC_
+12.pdf): PDF inclusion: multiple pdfs with page group included in a single page
+
 > <./figures/ROC_24.pdf
 
-pdfTeX warning: /opt/local/bin/pdflatex (file ./figures/ROC_24.pdf): PDF inclus
-ion: multiple pdfs with page group included in a single page
+pdfTeX warning: /opt/local/libexec/texlive/texbin/pdflatex (file ./figures/ROC_
+24.pdf): PDF inclusion: multiple pdfs with page group included in a single page
+
 >]) (./acknowledgments_RECOMB.tex) [11] (./main_RECOMB.bbl
 Underfull \hbox (badness 7308) in paragraph at lines 43--48
 []\OT1/cmr/m/n/10.95 N B Leon-tis and E West-hof.  Ge-o-met-ric nomen-cla-ture 
@@ -932,12 +933,12 @@ Underfull \hbox (badness 4492) in paragraph at lines 43--48
 
 [12]) [13] (./main_RECOMB.aux) ) 
 Here is how much of TeX's memory you used:
- 16429 strings out of 494993
- 329310 string characters out of 3179410
- 448948 words of memory out of 3000000
- 19224 multiletter control sequences out of 15000+200000
- 16833 words of font info for 66 fonts, out of 3000000 for 9000
- 36 hyphenation exceptions out of 8191
+ 16419 strings out of 494754
+ 329154 string characters out of 3170917
+ 450528 words of memory out of 3000000
+ 19250 multiletter control sequences out of 15000+200000
+ 16460 words of font info for 63 fonts, out of 3000000 for 9000
+ 134 hyphenation exceptions out of 8191
  64i,20n,94p,681b,827s stack positions out of 5000i,500n,10000p,200000b,50000s
 </opt/local/share/texmf-texlive-dist/fonts/type
 1/public/amsfonts/cm/cmbx10.pfb></opt/local/share/texmf-texlive-dist/fonts/type
@@ -953,16 +954,16 @@ blic/amsfonts/cm/cmr12.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/pub
 lic/amsfonts/cm/cmr17.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/publ
 ic/amsfonts/cm/cmr6.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public
 /amsfonts/cm/cmr8.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/a
-msfonts/cm/cmr9.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/ams
-fonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/ams
-fonts/cm/cmsy6.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsf
-onts/cm/cmsy7.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsfo
-nts/cm/cmsy8.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsfon
-ts/cm/cmti10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsfon
-ts/cm/cmtt10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsfon
-ts/symbols/msbm10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/a
-msfonts/symbols/msbm7.pfb>
-Output written on main_RECOMB.pdf (13 pages, 365096 bytes).
+msfonts/cm/cmss10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/a
+msfonts/cm/cmsy10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/am
+sfonts/cm/cmsy7.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/ams
+fonts/cm/cmsy8.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsf
+onts/cm/cmti10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsf
+onts/cm/cmtt10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public/amsf
+onts/symbols/msbm10.pfb></opt/local/share/texmf-texlive-dist/fonts/type1/public
+/amsfonts/symbols/msbm7.pfb>
+Output written on main_RECOMB.pdf (13 pages, 358384 bytes).
 PDF statistics:
  283 PDF objects out of 1000 (max. 8388607)
  140 compressed objects within 2 object streams
