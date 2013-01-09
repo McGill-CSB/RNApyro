@@ -1,4 +1,4 @@
-
+%!TEX root = main_RECOMB.tex
 \begin{tikzpicture}
 
   \newcommand{\BSep}{9pt}
@@ -33,11 +33,11 @@ line after snake=0pt,
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=2pt,draw,fit=(a-1.west)(a-2.east) (c1) (c2)] (r1) {};
-  \path[block]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90] (r1.north west) to (r1.south west) ;
+  \path[block]   (r1.south west) to  (r1.south east) to (r1.north east) to[out=90,in=90] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
 
 
-\begin{scope}[xshift=\HSep,yshift=100pt]
+\begin{scope}[xshift=\HSep,yshift=110pt]
   \node[base] (a-1) at (0,0) {\color{red}$a'$};
   \node[basesmall,right=\BSep of a-1] (a-1b)  {};
   \node[basesmall] (a-2) at (5,0) {};
@@ -50,18 +50,18 @@ line after snake=0pt,
   \node[below=3pt of a-1b, inner sep=0] (c1) {$i+1$};
   \node[below=3pt of a-2, inner sep=0] (c2) {$j$};
 
-  \node[right=3em of a-3,anchor=west] {\relsize{+2}[Position $i$ unpaired]};
   \node[xshift=-2pt] at (a-0.west) (y1) {};
 
 \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=2pt,draw,fit=(a-1b.west)(a-2.east) (c1) (c2)] (r1) {};
-  \path[block]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=.7] (r1.north west) to (r1.south west) ;
+  \path[block]   (r1.south west) to  (r1.south east) to (r1.north east) to[out=90,in=90,looseness=.7] (r1.north west) to (r1.south west) ;
+  \path (a-0) to node[midway,yshift=-3.5em] {\relsize{+2}[Position $i$ unpaired]} (a-3);
 
   \end{pgfonlayer}{background}
 
 \end{scope}
 
-\begin{scope}[xshift=\HSep,yshift=-100pt]
+\begin{scope}[xshift=\HSep,yshift=-90pt]
   \node[base] (a-1) at (0,0) {\color{red}$a'$};
   \node[base] (a-p) at (3,0) {\color{red}$b'$};
 
@@ -73,8 +73,7 @@ line after snake=0pt,
   \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
   \node[right=\BSep of a-2, basephantom] (a-3) {$b$};
 
-  \node[right=3em of a-3,anchor=west] {\relsize{+2}[Position $i$ paired anywhere else]};
-
+  
   \path[linez] (a-1b) -- node[pos=.5,above=5pt,text width = 5em,text centered] (lbl1) {$m-m'$ $-\delta_{a'b',s_i s_k}$} (a-pb);
   \path[linez] (a-pa) -- node[pos=.5,above=5pt] (lbl2) {$m'$} (a-2);
 
@@ -101,6 +100,7 @@ line after snake=0pt,
   \node[rectangle,inner sep=2pt,draw,fit=(a-pa.west)(a-2.east) (c4) (c5)] (r2) {};
   \path[block]   (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=1.8] (r2.north west) to (r2.south west) ;
 
+  \path (a-0) to node[midway,yshift=-3.5em] {\relsize{+2}[Position $i$ paired anywhere else]} (a-3);
   \end{pgfonlayer}{background}
 
 \end{scope}
@@ -127,12 +127,14 @@ line after snake=0pt,
 
   \draw[bp,looseness=1.1]  (a-1) to (a-2);
   \draw[bp,looseness=1.1]  (a-0) to (a-3);
-  \node[right=3em of a-3,anchor=west] {\relsize{+2}[Paired ends + Stacking pairs]};
   \node[xshift=-2pt] at (a-0.west) (y3) {};
+
+
 
 \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=2pt,draw,fit=(a-1b.west)(a-2b.east) (c1) (c2)] (r1) {};
-  \path[block]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=.9] (r1.north west) to (r1.south west) ;
+  \path[block]   (r1.south west) to  (r1.south east) to (r1.north east) to[out=90,in=90,looseness=.9] (r1.north west) to (r1.south west) ;
+  \path (a-0) to node[midway,yshift=-3.5em] {\relsize{+2}[Paired ends + Stacking pairs]} (a-3);
   \end{pgfonlayer}{background}
 
 \end{scope}
