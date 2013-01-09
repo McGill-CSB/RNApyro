@@ -9,7 +9,7 @@
 We introduce a probabilistic model, which aims at capturing both the stability of the folded RNA and its ability to adopt a predefined 3D conformation.
 To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990}.
 
-\subsection{Probabilistic model}
+\subsection{Probabilistic Model}
 Let $\Omega$ be an gap-free RNA alignment sequence, $S$ its associated secondary structure, 
 then any sequence $s$ is assigned a probability proportional to its Boltzmann factor
 \begin{align*}
@@ -18,7 +18,7 @@ then any sequence $s$ is assigned a probability proportional to its Boltzmann fa
 where $R$ is the Boltzmann constant, $T$ the temperature in Kelvin, $\ES(s)$ and $\EI(s,S,\Omega)$ 
 are the free-energy and isostericity contributions respectively (further described below), and $\alpha\in[0,1]$ is an arbitrary parameter that sets the relative weight for both contributions.
 
-\subsubsection{Energy contribution}
+\subsubsection{Energy Contribution}
 The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, taking values from the Turner 2004 model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
 \begin{align*}
   \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
@@ -26,7 +26,7 @@ The free-energy contribution in our pseudo-energy model corresponds to an additi
 where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. not in $\{\Gb\Ub,\Ub\Gb,\Cb\Gb,\Gb\Cb, \Ab\Ub\text{ or }\Ub\Ab\}$). This latter parameter allows to choose whether to simply penalize invalid base pairs, or forbid them altogether ($\beta = \infty$).
 The loss of precision due to this simplification of the Turner model remains reasonable since the targeted secondary structure is fixed 
 (e.g. multiloops do not account for base-specific contributions). Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
-\subsubsection{Isostericity contribution}
+\subsubsection{Isostericity Contribution}
 The concept of isostericity score~\cite{Stombaugh2009} is based on the geometric discrepancy (superimposability) of two base-pairs, using individual additive contributions computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gap-free RNA alignment $\Omega$,  we define the contribution of the isostericity to the pseudo-energy as
 \begin{align*}
   \ES(s,S,\Omega) &= \sum_{\substack{(i,j)\in S\\ \text{pairs}}}\EI^{\Omega}_{(i,j),s_i s_j}, & \text{where}&& 	\EI^{\Omega}_{(i,j),ab}:=
@@ -42,7 +42,7 @@ is the average isostericity of a base-pair in the candidate sequence, compared w
 The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, with $0$ being assigned to a perfect isostericity, and a penalty of $10$ is used for missing entries.
 The isostericity contribution will favor exponentially sequences that are likely to adopt a similar local conformation as the sequences contained in the alignment.
 
-\subsection{Mutational profile of sequences}
+\subsection{Mutational Profile of Sequences}
 
 
 Let $s$ be an RNA sequence, $S$ a reference structure, and $m\geq 0$ a desired number of mutations. 
@@ -225,7 +225,7 @@ secondary structure $S$, and we return $0$.
 
 \end{description}
 
-\subsubsection{Combining Inside and Outside values into point-wise mutations probabilities}
+\subsubsection{Combining Inside and Outside Values into Point-Wise Mutations Probabilities}
 By construction, the partition function over all sequences at exactly $m$ mutations of $s$ can 
 be described in function of the \emph{inside} term as $\Z{0,n-1}{m}{X,X}$,
  for any nucleotide $X\in B$ or
@@ -280,7 +280,7 @@ all possible distribution of the mutant positions between the inside and outside
 \item[$S_i=k<i$:] Same as above, but with position $i$ pairing with a lower position.
 \end{description}
 
-\subsection{Complexity considerations}
+\subsection{Complexity Considerations}
 Equations~\eqref{eq:Z_rec} and~\eqref{eq:Y_rec} can be computed using dynamic programming. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and interval lengths, memorizing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ can be accessed in constant time thanks to a simple precomputation (not described)  of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations.
 
 In principle, $\Theta(m\cdot n^2)$ terms, identified by $(m,i,j)$ triplets, should be computed.
