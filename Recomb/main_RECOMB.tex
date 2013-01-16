@@ -13,6 +13,15 @@
 \usepackage[numbers]{natbib}
 \usepackage[colorinlistoftodos]{todonotes}
 
+\makeatletter
+\renewcommand\bibsection%
+{
+  \section*{\refname
+    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
+}
+\makeatother
+
+
 %\usepackage{subfig} %Subfigures
 %\usepackage{subcaption} %Subfigures
 
@@ -77,8 +86,11 @@
 \newcommand{\Gb}{{\sf{G}}}
 \newcommand{\Ub}{{\sf{U}}}
 
+\newcommand{\SpaceCheating}{\vspace{-0em}}
+
+
 %\title{An inside-outside algorithms for mutant RNAs with applications to error detections in structured RNAs}
-\title{A Linear Inside-Outside Algorithm for Correcting Sequencing Errors in Structured RNA}
+\title{A Linear Inside-Outside Algorithm for Correcting Sequencing Errors in Structured RNAs}
 \author{Vladimir Reinharz\inst{1}, Yann Ponty\inst{2}$^{*}$ \and J\'er\^{o}me Waldisp\"{u}hl\inst{1}$^*$}
 \date{}
 \institute{School of Computer Science, McGill University, Montreal, Canada.
@@ -95,6 +107,7 @@
 %              linkcolor=black%
 %              urlcolor=black%
 %              pdftex}
+
 
 \begin{document}
 \maketitle
@@ -116,7 +129,7 @@ tools in the NGS error-correction pipeline.
 \textbf{Key words:} RNA, mutations, secondary structure
 \end{abstract}
 
-\newpage
+%\newpage
 
 \input{introduction_RECOMB.tex}
 
@@ -127,8 +140,7 @@ tools in the NGS error-correction pipeline.
 \input{conclusion_RECOMB.tex}
 
 \input{acknowledgments_RECOMB.tex}
-
-\newpage
+%\newpage
 
 \bibliographystyle{splncs}
 \bibliography{RNApyro}

@@ -14,20 +14,23 @@ Since typical use-cases of \RNApyro require
  both the sequences and the target secondary structure were generated at random.
 
 \begin{table}[t]
-\begin{tabular}{cp{27em}}
-\begin{tabular}{lccc}
-$|s|$&\multicolumn{3}{c}{\#mutations}\\\cline{2-4}
+\begin{minipage}{.4\textwidth}
+\begin{tabular}{rccc}
+Length &\multicolumn{3}{c}{\#mutations}\\\cline{2-4}
 		 			  & 6   &  12  & 24\\\cline{2-4}
 100  				& 35s  & 238s & 1023s\\
 300  			& 135s & 594s &2460s\\\cline{2-4}
 		 						& 25   &    &	50		\\\cline{2-4}
 500         & 5400s&       &  21003s    \\
-\end{tabular}&
-\caption{Time to compute all probabilities. The first column indicates the length and  the column indexes indicate the number
+\end{tabular}
+\end{minipage}
+\begin{minipage}{.59\textwidth}
+\caption{Time required by the computation of probabilities. First column indicates the length and  the column indexes indicate the number
  of mutations. $\alpha$ is
 set at $0.5$,  $\beta$ to $15$ and $|\Omega|=44$.}
-\end{tabular}
 \label{tab:time}
+\end{minipage}
+\SpaceCheating
 \end{table}
 
 
@@ -51,16 +54,16 @@ Similarly, we also investigated the impact of an under- and over- estimate of th
 To evaluate our method, we computed a ROC curve representing the performance of a classifier based on the mutational probabilities computed
 by \RNApyro. More specifically, we fixed a threshold $\lambda \in [0,1]$, and predicted an error at position $i$ in sequence $\omega$ if and only if the
 probability $P(i,x)$ of a nucleotide $x \in \{ A,C,G,U \}$ exceeds this threshold. To correct the errors we used the set of nucleotides having probability
-greated than $\lambda$, that is  $$C(i) = \{ x \; | \;  x \in \{ A,C,G,U \} \mbox{ and } P(i,x) > \lambda \mbox{ and }  n \neq \omega[i] \},$$ where $\omega[i]$ is
+greated than $\lambda$, that is  $C(i) = \{ x \; | \;  x \in \{ A,C,G,U \} \mbox{ and } P(i,x) > \lambda \mbox{ and }  n \neq \omega[i] \},$ where $\omega[i]$ is
 the nucleotide at position $i$ in the input sequence. We note that, for lower thresholds, multiple nucleotides may be available in $C(i)$ to correct
 the sequence. Here, we remind that our aim is to estimate the potential of error-correction of \RNApyro, and not to develop a full-fledged error-correction pipe-line, which  
 shall be the subject of further studies. Finally, we progressively varied $\lambda$ between $0$ and $1$ to calculate the ROC curve and the area
 under the curve (AUC). Our results are reported in Figure~\ref{fig:ROCall}. 
 
 \begin{figure}
-\begin{center}
-	\includegraphics[width=\textwidth]{subfigs_perform.png}
-\end{center}
+\centering
+	\includegraphics[width=\textwidth]{subfigs_perform.png}\\
+
 %\begin{subfigure}[b]{0.3\textwidth}
 %\includegraphics[width=1.2\textwidth]{figures/ROC_6.pdf}
 %\caption{6 mutations}
@@ -81,7 +84,7 @@ under the curve (AUC). Our results are reported in Figure~\ref{fig:ROCall}.
 \caption{Performance of error-correction. Subfigures show accuracy with under-estimated error rates (6 mutations), exact estimates (12 mutations) and over estimates 
 (24 mutations). We also analyze the impact of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores and use values 
 ranging of $\alpha=\{0,0.5,0.8,1.0\}$. The AUC is indicated in the legend of the figures. Each individual ROC curve represent the average performance over the 10 experiments.}
-\label{fig:ROCall}
+\label{fig:ROCall}\SpaceCheating
 \end{figure}
 
 Our data demonstrates that our algorithm exhibits interesting potential for error-correction applications. First, the AUC values (up to $0.86$) indicate that a
