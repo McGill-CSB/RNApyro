@@ -358,7 +358,7 @@ def energy((a,b),(a2,b2),alpha):
 
 def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   if not ref_seq:
-    return 1
+    return 1.
   #isostericity of going from original base pair to (a,b)
   iso_mut = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)
   iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
@@ -688,11 +688,91 @@ def display_all_probabilities(results):
   for i, x in enumerate(results):
     print i, '\t'.join(str(y) for y in x)
 
-def help():
-    print """You need at least three arguments, the file path,
-    the nb of mutants allowed and the value of alpha, between 0 and 1
-    An optional 4th argument can be given if you want to change the max penality for an invalid 
-    base pair
+def verify_file_name(file_name):
+  if not os.path.isfile(file_name):
+    help(file_name=True)
+    sys.exit(1)
+  return parse_fasta(file_name) 
+     
+def verify_mutants(m):
+  try:
+    m = int(m)
+  except ValueError:
+    help(mutants=True)
+    sys.exit(1)
+  if m < 0:
+    help(mutants=True)
+    sys.exit(1)
+  return m
+
+def verify_alpha(a):
+  try:
+    a = float(a)
+  except ValueError:
+    help(alpha=True)
+    sys.exit(1)
+  if a < 0 or a > 1:
+    help(alpha=True)
+    sys.exit(1)
+  return a
+
+def verify_penality(z):
+  global STACKING_ENERGY
+  try:
+    z = float(opts[4])
+    for x in STACKING_ENERGY:
+      if STACKING_ENERGY[x] == sys.maxint:
+        STACKING_ENERGY[x] = z
+  except ValueError:
+    print help(penality=True)
+    sys.exit(1)
+  return None
+
+def verify_nb_backtrack(b):
+  try:
+    b = int(b)
+  except ValueError:
+    help(nb_backtrack=True)
+    sys.exit(1)
+  return b
+
+def help(file_name=False,
+         mutants=False,
+         alpha=False,
+         penality=False,
+         nb_backtrack=False):
+  if file_name:
+    print """The location of the file does not exist, please enter
+    a valid path\n"""
+ 
+  if mutants:
+    print """The number of mutants should be an integer bigger than 0\n"""
+
+  if alpha:
+    print """The weight to the MSE/SecStruct match should be a 
+    float between 0 and 1\n"""
+
+  if penality:
+    print """The penality argument should be a float\n"""
+
+  if nb_backtrack:
+    print """The number of backtracked sequence should be an int\n"""
+
+  print """Required:
+      -f <file_path>  Path to the file containing the reference
+                      sequence, the MSE (optional) and the secondary
+                      structure. The FIRST sequence in the file
+                      will be used as reference
+      -m <int>        The numbers of mutants required
+      -a <float>    The weight given to match the MSE or the secondary
+                    structure, between [0,1]. A weight of 1 will only
+                    take into account the secondary structure, 0 only
+                    the MSE
+    Optional:
+      -p <float>    The penality for a non canonical base pair (default
+                    sys.maxint)
+      -b <int>      Backtrack stochastic, number of sequences to output
+      -no_profile   Do no output the resultant profile
     """
 
 if __name__ == "__main__":
@@ -701,6 +781,20 @@ if __name__ == "__main__":
   f_nb_backtrack = 0
 
   opts = sys.argv
+  for i,opt in enumerate(opts):
+    if opt == '-f':
+      ref_seq,seq,struct =  verify_file_name(opts[i+1])
+    elif opt == '-m':
+      m = verify_mutants(opts[i+1])
+    elif opt == '-a':
+      alpha = verify_alpha(opts[i+1])
+    elif opt == '-p':
+      verify_penality(opts[i+1])
+    elif opt == '-b':
+      f_nb_backtrack = verify_nb_backtrack(opts[i+1])
+    elif opt == '-no_profile':
+      f_no_profile = True
+  """
   if len(opts) < 4:
     help()
     sys.exit(1)
@@ -737,16 +831,19 @@ if __name__ == "__main__":
         f_nb_backtrack = int(opts[i+1])
       except IndexError,ValueError:
         print 'Number backtrack sequences missing'
-
-
-
   ref_seq,seq,struct = parse_fasta(file_name)
+  """
+  if len(seq) < m:
+    print "The number of mutants is bigger than the length of the seq."
+    help()
+    sys.exit(1)
 
+  n = len(seq)
   if not f_no_profile:
     results = all_probabilities(seq,ref_seq,struct,m,alpha)
     display_all_probabilities(results)
   else:
-    n = len(seq)
     forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
-    for i in range(f_nb_backtrack):
-      print backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha)
+
+  for i in range(f_nb_backtrack):
+    print backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha)
