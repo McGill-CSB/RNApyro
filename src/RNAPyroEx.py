@@ -658,7 +658,7 @@ def test():
   testSingleSequence(seq,ref_seq,struct,m,alpha)
 
 def parse_fasta(file_name):
-  #first seq is reference, second seq in starting point, one struct only
+  #first seq is reference, other MSE, one struct only
   seq = []
   struct = []
   with open(file_name) as f:
@@ -672,7 +672,7 @@ def parse_fasta(file_name):
       if all(x in '(.)' for x in line):
         struct.append(line)
         continue
-  return seq[:-1],seq[-1], parseStruct(struct[0])
+  return seq[1:],seq[0], parseStruct(struct[0])
 
 def all_probabilities(seq,ref_seq, stuct, m, alpha):
   n = len(seq)
@@ -794,45 +794,7 @@ if __name__ == "__main__":
       f_nb_backtrack = verify_nb_backtrack(opts[i+1])
     elif opt == '-no_profile':
       f_no_profile = True
-  """
-  if len(opts) < 4:
-    help()
-    sys.exit(1)
-  file_name = opts[1]
-  if not os.path.isfile(file_name):
-    help()
-    sys.exit(1)
-  try:
-    m = int(opts[2])
-  except ValueError:
-    help()
-    sys.exit(1)
-  try:
-    alpha = float(opts[3])
-  except ValueError:
-    help()
-    sys.exit(1)
-  if not 0 <= alpha <= 1:
-    help()
-    sys.exit(1)
-  if len(opts) == 5:
-    try:
-      z = float(opts[4])
-      for x in STACKING_ENERGY:
-        if STACKING_ENERGY[x] == sys.maxint:
-          STACKING_ENERGY[x] = z
-    except ValueError:
-      pass
-  for i in range(5,len(opts)):
-    if opts[i] == '-noProfile':
-      f_no_profile = True
-    if opts[i] == '-nb_backtrack':
-      try:
-        f_nb_backtrack = int(opts[i+1])
-      except IndexError,ValueError:
-        print 'Number backtrack sequences missing'
-  ref_seq,seq,struct = parse_fasta(file_name)
-  """
+
   if len(seq) < m:
     print "The number of mutants is bigger than the length of the seq."
     help()
