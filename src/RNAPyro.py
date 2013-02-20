@@ -1,5 +1,5 @@
 ###############################################################################
-#Copyright (c) 2012, Vladimir Reinharz, Yann Ponty & Jerome Waldispuhl        #
+#Copyright (c) 2013, Vladimir Reinharz, Yann Ponty & Jerome Waldispuhl        #
 #All rights reserved.                                                         #
 #                                                                             #
 #Redistribution and use in source and binary forms, with or without           #
