@@ -1,4 +1,30 @@
-import os,sys
+###############################################################################
+#Copyright (c) 2012, Vladimir Reinharz, Yann Ponty & Jerome Waldispuhl        #
+#All rights reserved.                                                         #
+#                                                                             #
+#Redistribution and use in source and binary forms, with or without           #
+#modification, are permitted provided that the following conditions are met:  #
+#* Redistributions of source code must retain the above copyright             #
+#notice, this list of conditions and the following disclaimer.                #
+#* Redistributions in binary form must reproduce the above copyright          #
+#notice, this list of conditions and the following disclaimer in the          #
+#documentation and/or other materials provided with the distribution.         #
+#* Neither the name of the <organization> nor the                             #
+#names of its contributors may be used to endorse or promote products         #
+#derived from this software without specific prior written permission.        #
+#                                                                             #
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  #
+#AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    #
+#IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   #
+#ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY       #
+#DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES   #
+#(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; #
+#LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND  #
+#ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT   #
+#(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS#
+#SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE                  #
+###############################################################################
+fimport os,sys
 import itertools
 import random
 import math
@@ -358,7 +384,7 @@ def energy((a,b),(a2,b2),alpha):
 
 def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   if not ref_seq:
-    return 1
+    return 1.
   #isostericity of going from original base pair to (a,b)
   iso_mut = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)
   iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
@@ -658,7 +684,7 @@ def test():
   testSingleSequence(seq,ref_seq,struct,m,alpha)
 
 def parse_fasta(file_name):
-  #first seq is reference, second seq in starting point, one struct only
+  #first seq is reference, other MSE, one struct only
   seq = []
   struct = []
   with open(file_name) as f:
@@ -672,7 +698,7 @@ def parse_fasta(file_name):
       if all(x in '(.)' for x in line):
         struct.append(line)
         continue
-  return seq[:-1],seq[-1], parseStruct(struct[0])
+  return seq[1:],seq[0], parseStruct(struct[0])
 
 def all_probabilities(seq,ref_seq, stuct, m, alpha):
   n = len(seq)
@@ -688,11 +714,91 @@ def display_all_probabilities(results):
   for i, x in enumerate(results):
     print i, '\t'.join(str(y) for y in x)
 
-def help():
-    print """You need at least three arguments, the file path,
-    the nb of mutants allowed and the value of alpha, between 0 and 1
-    An optional 4th argument can be given if you want to change the max penality for an invalid 
-    base pair
+def verify_file_name(file_name):
+  if not os.path.isfile(file_name):
+    help(file_name=True)
+    sys.exit(1)
+  return parse_fasta(file_name) 
+     
+def verify_mutants(m):
+  try:
+    m = int(m)
+  except ValueError:
+    help(mutants=True)
+    sys.exit(1)
+  if m < 0:
+    help(mutants=True)
+    sys.exit(1)
+  return m
+
+def verify_alpha(a):
+  try:
+    a = float(a)
+  except ValueError:
+    help(alpha=True)
+    sys.exit(1)
+  if a < 0 or a > 1:
+    help(alpha=True)
+    sys.exit(1)
+  return a
+
+def verify_penality(z):
+  global STACKING_ENERGY
+  try:
+    z = float(opts[4])
+    for x in STACKING_ENERGY:
+      if STACKING_ENERGY[x] == sys.maxint:
+        STACKING_ENERGY[x] = z
+  except ValueError:
+    print help(penality=True)
+    sys.exit(1)
+  return None
+
+def verify_nb_backtrack(b):
+  try:
+    b = int(b)
+  except ValueError:
+    help(nb_backtrack=True)
+    sys.exit(1)
+  return b
+
+def help(file_name=False,
+         mutants=False,
+         alpha=False,
+         penality=False,
+         nb_backtrack=False):
+  if file_name:
+    print """The location of the file does not exist, please enter
+    a valid path\n"""
+ 
+  if mutants:
+    print """The number of mutants should be an integer bigger than 0\n"""
+
+  if alpha:
+    print """The weight to the MSE/SecStruct match should be a 
+    float between 0 and 1\n"""
+
+  if penality:
+    print """The penality argument should be a float\n"""
+
+  if nb_backtrack:
+    print """The number of backtracked sequence should be an int\n"""
+
+  print """Required:
+      -f <file_path>  Path to the file containing the reference
+                      sequence, the MSE (optional) and the secondary
+                      structure. The FIRST sequence in the file
+                      will be used as reference
+      -m <int>        The numbers of mutants required
+      -a <float>    The weight given to match the MSE or the secondary
+                    structure, between [0,1]. A weight of 1 will only
+                    take into account the secondary structure, 0 only
+                    the MSE
+    Optional:
+      -p <float>    The penality for a non canonical base pair (default
+                    sys.maxint)
+      -b <int>      Backtrack stochastic, number of sequences to output
+      -no_profile   Do no output the resultant profile
     """
 
 if __name__ == "__main__":
@@ -701,52 +807,31 @@ if __name__ == "__main__":
   f_nb_backtrack = 0
 
   opts = sys.argv
-  if len(opts) < 4:
-    help()
-    sys.exit(1)
-  file_name = opts[1]
-  if not os.path.isfile(file_name):
-    help()
-    sys.exit(1)
-  try:
-    m = int(opts[2])
-  except ValueError:
-    help()
-    sys.exit(1)
-  try:
-    alpha = float(opts[3])
-  except ValueError:
-    help()
-    sys.exit(1)
-  if not 0 <= alpha <= 1:
-    help()
-    sys.exit(1)
-  if len(opts) == 5:
-    try:
-      z = float(opts[4])
-      for x in STACKING_ENERGY:
-        if STACKING_ENERGY[x] == sys.maxint:
-          STACKING_ENERGY[x] = z
-    except ValueError:
-      pass
-  for i in range(5,len(opts)):
-    if opts[i] == '-noProfile':
+  for i,opt in enumerate(opts):
+    if opt == '-f':
+      ref_seq,seq,struct =  verify_file_name(opts[i+1])
+    elif opt == '-m':
+      m = verify_mutants(opts[i+1])
+    elif opt == '-a':
+      alpha = verify_alpha(opts[i+1])
+    elif opt == '-p':
+      verify_penality(opts[i+1])
+    elif opt == '-b':
+      f_nb_backtrack = verify_nb_backtrack(opts[i+1])
+    elif opt == '-no_profile':
       f_no_profile = True
-    if opts[i] == '-nb_backtrack':
-      try:
-        f_nb_backtrack = int(opts[i+1])
-      except IndexError,ValueError:
-        print 'Number backtrack sequences missing'
 
+  if len(seq) < m:
+    print "The number of mutants is bigger than the length of the seq."
+    help()
+    sys.exit(1)
 
-
-  ref_seq,seq,struct = parse_fasta(file_name)
-
+  n = len(seq)
   if not f_no_profile:
     results = all_probabilities(seq,ref_seq,struct,m,alpha)
     display_all_probabilities(results)
   else:
-    n = len(seq)
     forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
-    for i in range(f_nb_backtrack):
-      print backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha)
+
+  for i in range(f_nb_backtrack):
+    print backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha)
