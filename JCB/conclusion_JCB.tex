@@ -1,0 +1,33 @@
+%!TEX root = main_RNAPyro_JCB.tex
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this article we presented a new and efficient way of exploring the mutational landscape of an RNA under structural constraints,
+and apply our techniques to identify and fix sequencing errors. In addition, we introduce a new
+scoring scheme combining the nearest-neighbour energy model to new isostericity matrices in order to account for geometrical
+discrepancies occurring during base pair replacements.
+The algorithm runs in  $\Theta(n\cdot(|\Omega|+m^2))$ time and $\Theta(n\cdot(|\Omega|+m))$ memory, where $n$ is the length of the RNA,
+$m$ the number of mutations and $\Omega$ the size of the multiple sequence alignment.
+
+
+By combining  into \texttt{RNApyro} these two approaches,  the 
+mutational landscape exploration and the pseudo energy model,
+ we created a tool predicting the positions
+ yielding point-wise sequencing error and correcting them.
+We validated our model with the 5s rRNA,
+as presented in Sec.~\ref{sec:results}.
+We observed that the models
+with larger weights on the
+isostericity seems to hold a higher accuracy on the estimation of errors.
+This indicates that an exploitable signal is captured by the isostericity.
+Importantly, the implementation is fast enough for practical applications. 
+
+
+We must recall that our approach is restricted to
+ the correction of point-wise error in structured regions (i.e. base paired nucleotides).
+ Nonetheless it should supplement well existing tools, by using previously discarded
+information holding, as shown, a strong signal.
+
+Further research, given the potential of error-correction of \texttt{RNApyro}, 
+will evaluate its impact over large datasets with different existing
+  NGS error-correction pipe-line.

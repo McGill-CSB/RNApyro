@@ -1,0 +1,51 @@
+%!TEX root = main_RNAPyro_JCB.tex
+\section{Introduction}
+\label{sec:introduction}
+
+Ribonucleic acids (RNAs) are found in every living organism, and exhibit a broad range of functions, ranging from catalyzing
+chemical reactions, as the RNase P or the group II introns, hybridizing  messenger RNA to regulate gene expressions,
+to ribosomal RNA (rRNA) synthesizing proteins. Those functions  require specific structures,  encoded in their nucleotide
+sequence. Although the functions, and thus the structures, need to be preserved through various organisms, the sequences
+can greatly differ from one organism to another. This sequence diversity coupled with the structural conservation is a fundamental
+asset for evolutionary studies. To this end, algorithms to analyze the relationship between RNA mutants and structures are required.
+
+For half a century, biological molecules have been studied as a proxy to understand evolution~\cite{Zuckerkandl1965}, and due
+to their fundamental functions and remarkably conserved structures, rRNAs have always been a prime candidate for phylogenetic
+studies~\cite{Olsen1986, Olsen1993}. In recent years, studies as the \emph{Human Microbiome Project}~\cite{Turnbaugh2007} benefited
+of new technologies such as the NGS techniques to sequence as many new organisms as possible and extract an unprecedented flow of new information. 
+Nonetheless, these high-throughput techniques typically have high error rates that make their applications to metagenomics (a.k.a. environmental
+genomics) studies challenging. For instance, pyrosequencing as implemented by Roche's 454 produces may have an error rate raising up to 10\%.
+Because there is no cloning step, resequencing to increase accuracy is not possible and it is therefore vital to disentangle noise from true sequence
+diversity in this type of data \cite{Quince:2009uq}. Errors can be significantly reduced  when large multiple sequence alignments with close homologs
+are available, but in studies of new or not well known organisms, such information is rather sparse. In particular, it is common that there is not enough  similarity to 
+differentiate between the sequencing errors and the natural polymorphisms that we want to observe, often leading to artificially inflated diversity estimates~\cite{Kunin2010}.
+A few techniques have been developed to remedy to this problem~\cite{Quinlan2008,Medvedev2011} but they do not take
+into account all the available information. It is therefore essential to develop methods that can exploit any type of signal available to correct errors.  
+
+In this paper, we introduce \RNApyro, a novel algorithm that enables us to calculate precisely mutational probabilities in RNA sequences with a
+conserved consensus secondary structure. We show how our techniques can exploit the structural information embedded in physics-based energy models, 
+covariance models and isostericity scales to identify and correct point-wise errors in RNA molecules with conserved secondary structure. In particular, we 
+hypothesize that  conserved consensus secondary structures combined with sequence profiles  provide an information that allow us to identify and fix sequencing errors.
+
+Here, we expand the range of algorithmic techniques previously introduced with \RNAmutants~\cite{Waldispuhl2008}.
+Instead of exploring the full conformational landscape and sample mutants, we develop an inside-outside algorithm that enables us
+to explore the complete mutational landscape with a \emph{fixed} secondary structure and to calculate exactly mutational probability values. In addition
+to a gain into the numerical precision, this strategy allows us to drastically reduce the computational complexity ($\mathcal{O}(n^3 \cdot m^2)$ for the
+original version of  \RNAmutants to $\mathcal{O}(n \cdot m^2)$ for \RNApyro, where $n$ is the size of the sequence and $m$ the number of mutations).
+
+We design a new scoring scheme combining nearest-neighbor models \cite{Turner2010} to isostericity metrics \cite{Stombaugh2009}.
+Classical approaches use a Boltzmann distribution whose weights are estimated using a nearest-neighbour energy model~\cite{Turner2010}. However, the
+latter only accounts for  canonical and wobble, base pairs. As was shown by Leontis and Westhof~\cite{Leontis2001},
+the diversity of base pairs observed in tertiary structures is much larger, albeit their energetic contribution remains unknown. To quantify geometrical discrepancies, 
+an isostericity distance has been designed \cite{Stombaugh2009}, increasing as two base pairs geometrically differ from each other in space. Therefore, we 
+incorporate these scores in the Boltzmann weights used by \RNApyro.
+ 
+We illustrate and benchmark our techniques for point-wise error corrections on the 5S ribosomal RNA. We choose the latter since it has been extensively
+used for phylogenetic reconstructions~\cite{Hori1987} and its sequence has been recovered for over 712 species (in the Rfam seed alignment with id
+\texttt{RF00001}). Using a leave one out strategy, we perform random distributed mutations on a sequence. While our methodology is restricted to the correction of 
+point-wise error in structured regions (i.e. with base pairs), we show that \texttt{RNApyro} can successfully extract a signal that can be used to reconstruct the 
+original sequence with an excellent accuracy. This suggests that \RNApyro is a promising algorithm to complement existing tools in the NGS error-correction 
+pipeline.
+
+The algorithm and the scoring scheme are presented in Sec.~\ref{sec:methods}. Details of the implementation and benchmarks are in Sec.~\ref{sec:results}. 
+Finally, we discuss future developments and applications in Sec.~\ref{sec:conclusion}.
