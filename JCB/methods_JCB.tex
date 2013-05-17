@@ -75,10 +75,13 @@ knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$). A suitable
 Let $B:=\left\{\Ab,\Cb,\Gb,\Ub\right\}$ be the set of nucleotides.
 Given $s\in B^n$ an RNA sequence, let $s_i$ be the nucleotide at position $i$. Let $\Omega$ be a set of un-gapped RNA sequences of
 length $n$, and $S$ a secondary structure without pseudoknots. 
+\TODOYann{Move above, define secondary structure and add fancy VARNA illustration}
+
 Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping extremities
  $\{i,j\}\cap \{k,l\}=\varnothing$ and either the intersection is empty 
  ($[i,j]\cap[k,l]=\varnothing$) or one is included in the other ($[k,l]\subset[i,j]$ or 
  $[i,j]\subset[k,l])$. 
+
 
 Let us then remind the Hamming distance function $\delta: B^*\times B^* \to \mathbb{N}^+$, which takes two sequences $s'$ and $s''$ as input, $|s'|=|s''|$, and returns the number of differing positions.
 Finally, let us denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contribution of a base-pair $(i,j)$ to the pseudo-energy, such that
@@ -285,8 +288,8 @@ $ \mathcal{W}^M_{\substack{i, [x]}} =  \left\{
 $}\label{eq:combine}
 \end{equation}
 
-\TODOYann{}
-\TODOVlad{Add illustration from RECOMB presentation}
+\TODOYann{Rephrase as tree constructs}
+\TODOVlad{Add illustration of Inside/Outside combination (adapted from RECOMB presentation??)}
 In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, 
 for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
 \begin{description}

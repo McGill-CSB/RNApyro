@@ -12,6 +12,8 @@ The time benchmarks were performed on a MacMini 2010, 2.3GHz dual-core Intel Cor
 Since typical use-cases of \RNApyro require
  efficiency and scalability, we present in Table~\ref{tab:time} typical runtimes required to compute the probabilities for  every nucleotide at every positions for a vast set of parameters. For those tests,
  both the sequences and the target secondary structure were generated at random.
+\TODOVlad{Add more extensive time benchmark, as a plot}
+
 
 \begin{table}[t]
 \begin{minipage}{.4\textwidth}
@@ -34,7 +36,7 @@ set at $0.5$,  $\beta$ to $15$ and $|\Omega|=44$.}
 \end{table}
 
 
-\subsection{Error Correction in 5s rRNA}
+\subsection{Error Correction in 5s rRNAs}
 
 To illustrate the potential of our algorithm, we applied our techniques to identify and correct point-wise errors in RNA sequences
 with conserved secondary structures. More precisely, we used \RNApyro to reconstruct 5s rRNA sequences with randomly distributed
