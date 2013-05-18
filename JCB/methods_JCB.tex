@@ -1,11 +1,8 @@
 %!TEX root = main_RNAPyro_JCB.tex
+
 \section{Methods}
 \label{sec:methods}
 
-\newcommand{\PE}[1]{E(#1)}
-\newcommand{\EI}{\text{EI}}
-\newcommand{\ES}{\text{ES}}
-\newcommand{\ISO}{\text{ISO}}
 We introduce a probabilistic model, which aims at capturing both the stability of the folded RNA and its ability to adopt a predefined 3D conformation.
 To that purpose, a Boltzmann weighted distribution is used, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990}.
 
@@ -74,7 +71,7 @@ knowing  that position $i+1$ is composed of $a$ (resp. $j-1$ is $b$). A suitable
 \subsubsection{Definitions.}
 Let $B:=\left\{\Ab,\Cb,\Gb,\Ub\right\}$ be the set of nucleotides.
 Given $s\in B^n$ an RNA sequence, let $s_i$ be the nucleotide at position $i$. Let $\Omega$ be a set of un-gapped RNA sequences of
-length $n$, and $S$ a secondary structure without pseudoknots. 
+length $n$, and $\Struct$ a secondary structure without pseudoknots. 
 \TODOYann{Move above, define secondary structure and add fancy VARNA illustration}
 
 Formally, if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping extremities
@@ -90,17 +87,12 @@ Finally, let us denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contri
 \end{equation}
 \subsubsection{Inside computation.}
 \begin{figure}[t]
-\begin{minipage}{0.60\textwidth}
 \resizebox{\textwidth}{!}{\input{FigDPInside.pgf}}
-\end{minipage}
-\begin{minipage}{0.38\textwidth}
 \caption{Principle of the inside computation (partition function). Any sequence with mutations  
 can be decomposed as a sequence preceded by a, possibly mutated, base 
 (Unpaired case), a sequence surrounded by some base-pair (Stacking-pair case), 
 or as two sequences segregated by some base-pair (General base-pairing case), and mutations must be distributed between sub-sequences 
 and instantiated bases.}
-\end{minipage}
-\SpaceCheating
 \end{figure}
 
 The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function, i.e. the sum of Boltzmann factors over all sequences in the interval $[i,j]$, at distance $m$ of $s_{[i,j]}$, and having flanking nucleotides $a$ and $b$ (at positions $i-1$ and $j+1$ respectively). 
@@ -122,22 +114,24 @@ The main recursion itself is composed of four terms:\\
 \label{eq:Z_rec}
 \resizebox{.93\textwidth}{!}{%
 	$\Z{i,j}{m}{a,b}:=\left\{
-  \begin{array}{ll}
+  \begin{array}{l}
   		\displaystyle
       \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
-      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} & \text{If }S_{i}=-1\\
+      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} \\
+       \text{[If }S_{i}=-1\text{]}\\
       \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
 			 e^{\frac{-E_{(i,j),ab \to a'b'}^{\Omega,\beta}}{RT}}
-			 \cdot \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
-			 \text{Elif }S_i=j \land S_{i-1}=j+1\\
+			 \cdot \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}\\
+			 \text{[Else if }S_i=j \land S_{i-1}=j+1\text{]}\\
 			 \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
       \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
    		 e^{\frac{-E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
       \cdot\Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
-      \cdot\Z{k+1,j}{m'}{b',b} & \text{Elif }S_i=k \land i < k \leq j\\
-      0 &\text{Otherwise}
+      \cdot\Z{k+1,j}{m'}{b',b} \\
+       \text{[Elif }S_i=k \land i < k \leq j\text{]}\\
+      0 \\\text{[Otherwise]}
 	\end{array}\right.$}
 \end{equation}
 \TODOYann{Rephrase in term of tree, as in Incarnation??}
