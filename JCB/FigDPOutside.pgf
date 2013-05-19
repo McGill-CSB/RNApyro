@@ -5,28 +5,42 @@
   \definecolor{rougeForbP}{HTML}{6d1515ff}
 
   \newcommand{\BSep}{9pt}
-  \newcommand{\HSep}{400pt}
+  \newcommand{\HSep}{350pt}
   \newcommand{\RelPosA}{0pt}
   \newcommand{\RelPosB}{-130pt}
   \newcommand{\RelPosC}{-260pt}
   \newcommand{\RelPosD}{-390pt}
   \newcommand{\FitSep}{3.5pt}
 
+  \newcommand{\LabSepB}{15pt}
 
-  \tikzstyle{base}=[circle,draw,thick,inner sep=0,minimum width=17pt,fill=white,font=\relsize{+2}]
-  \tikzstyle{basesmall}=[base,minimum width=10pt]
-  \tikzstyle{basephantom}=[base,dashed]
+
+  \newcommand{\CaptionTxtA}{{\bf Case 1}: Next leftward position is unpaired.}
+  \newcommand{\CaptionTxtB}{{\bf Case 2}: Paired extremal positions, nesting another base-pair, forming a stacking base-pair.}
+  \newcommand{\CaptionTxtC}{{\bf Case 3}: Next leftward position is paired to the right, but no stacking pairs.}
+  \newcommand{\CaptionTxtD}{{\bf Case 4}: Next leftward position is paired to the left.}
+
+
+  \tikzstyle{caption}=[%fill=gray!20,draw=gray!60,thick,inner sep=4pt,rounded corners=6pt,
+font=\relsize{+3}\sffamily,anchor=north west,xshift=-40pt]
+
+
+  \tikzstyle{basebase}=[circle,draw,thick,inner sep=0,minimum width=18pt,fill=white,font=\relsize{+2}]
+
+  \tikzstyle{base}=[basebase]
+  \tikzstyle{basesmall}=[basebase,minimum width=10pt]
+  \tikzstyle{basephantom}=[basebase,dashed]
   \tikzstyle{linez}=[draw,snake=zigzag, segment aspect=.2,%
-line after snake=0pt, 
+line after snake=0pt,  
         segment length=10pt,thick]
   \tikzstyle{lined}=[linez,draw,snake=none,thick]
   \tikzstyle{line}=[linez,draw,snake=none,thick]
-  \tikzstyle{lineh}=[line,dashed]
+  \tikzstyle{lineh}=[linez]
   \tikzstyle{bp}=[in=90,out=90,draw,line width=1.5pt,blue,looseness=1.7]
-  \tikzstyle{blockin}=[trapezium,trapezium angle=83,  fill=blue!20, draw=blue!20!gray,line width=1.5pt, inner sep=0]
-  \tikzstyle{blockout}=[blockin,draw=red!80!white!55!gray,fill=red!30!white!95!gray,line width=1.5pt]
-  \tikzstyle{lbl}=[inner sep=0]
-  \tikzstyle{arr}=[line width=1.3pt,->]
+  \tikzstyle{blockin}=[trapezium,trapezium angle=83,  fill=blue!20, draw=blue!20!gray,line width=1.5pt, inner sep=0,drop shadow]
+  \tikzstyle{blockout}=[blockin,draw=red!80!white!55!gray,fill=red!40!white!95!gray,line width=1.5pt, drop shadow]
+  \tikzstyle{lbl}=[inner sep=0,font=\relsize{+3}]
+  \tikzstyle{arr}=[-open triangle 60,line width=1.5pt]
 
 
  %%%%%%% Unpaired %%%%%%%
@@ -40,7 +54,7 @@ line after snake=0pt,
   \node[basesmall] (n-end) at (8,0) {};
   \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
   \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
-  \path[lineh] (a-1) --  node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m$}  (a-2);
+  \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
   \path[linez] (n-beg) -- (a-0b);
@@ -54,21 +68,24 @@ line after snake=0pt,
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3.west)] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
+
+\node[below= \LabSepB of n-beg, caption] {\CaptionTxtA};
+
   \end{scope}
  %%%%%%% /LHS %%%%%%%
 
 
 
   \node[basesmall] (n-beg) at (0,0) {};
-  \node[base] (a-0) at (2,0) {\color{red}$a'$};
+  \node[base, drop shadow] (a-0) at (2,0) {\color{StressColor}$a'$};
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
   \node[basesmall] (a-3) at (6,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$a$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$b$};
-  \path[lineh] (a-1) --  node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m-\delta_{a',s_i}$}  (a-2);
+  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
+  \path[lineh] (a-1) --  node[lbl,pos=.5,above=40pt] (lbl1) {$m-{\color{StressColor}\delta_{a,a'}}$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
   \path[lined] (a-0) -- (a-0b);
@@ -76,16 +93,19 @@ line after snake=0pt,
   \path[linez] (a-3) -- (n-end);
 
 
-  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Position $i$ unpaired]} (n-end);
 
   \node[left=5pt of n-beg] (y1) {};
+
+  \path (x) edge[arr]    (y1);
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0b.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3.west)] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
   \end{scope}
+
+
 
  %%%%%%% /Unpaired %%%%%%%
 
@@ -103,7 +123,7 @@ line after snake=0pt,
   \node[basesmall] (n-end) at (8,0) {};
   \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
   \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
-  \path[lineh] (a-1) --  node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m$}  (a-2);
+  \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
   \path[linez] (n-beg) -- (a-0b);
@@ -120,21 +140,24 @@ line after snake=0pt,
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3.west)] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
   \end{scope}
+
+\node[below= \LabSepB of n-beg, caption] {\CaptionTxtB};
+
  %%%%%%% /LHS %%%%%%%
 
 
   \node[basesmall] (n-beg) at (0,0) {};
-  \node[base] (a-0) at (2,0) {\color{red}$a'$};
+  \node[base, drop shadow] (a-0) at (2,0) {\color{StressColor}$a'$};
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
-  \node[base] (a-3) at (6,0) {\color{red}$d'$};
+  \node[base, drop shadow] (a-3) at (6,0) {\color{StressColor}$d'$};
   \node[basesmall,right=\BSep of a-3] (a-3b) {};
   \node[basesmall] (n-end) at (8,0) {};
   \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
   \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
-  \path[lineh] (a-1) --  node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m-\delta_{a'b',s_is_j}$}  (a-2);
+  \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m-{\color{StressColor}\delta_{ad,a'd'}}$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
   \path[lined] (a-0) -- (a-0b);
@@ -145,20 +168,22 @@ line after snake=0pt,
   \draw[bp,looseness=.8] (a-0) to (a-3);
 
 
-  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Paired ends + Stacking pairs]} (n-end);
 
 
   \node[left=5pt of n-beg] (y2) {};
 
+  \path (x) edge[arr]    (y2);
+
+
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0b.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3b.west) ] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
   \end{scope}
- %%%%%%% Stacking %%%%%%%
+ %%%%%%% /Stacking %%%%%%%
 
- %%%%%%% BP Right %%%%%%%
+ %%%%%%% BPRight %%%%%%%
 
 
   \begin{scope}[yshift=\RelPosC]
@@ -166,63 +191,75 @@ line after snake=0pt,
  %%%%%%% LHS %%%%%%%
   \begin{scope}[xshift=-\HSep]
   \node[basesmall] (n-beg) at (0,0) {};
-  \node[base] (a-0) at (2,0) {$s_i$};
-  \node[base] (a-3) at (6,0) {$s_j$};
+  \node[base] (a-0) at (1.3,0) {$a$};
+  \node[basesmall] (a-3) at (4.5,0) {};
+  \node[basesmall] (a-4b) at (5.8,0) {};
+  \node[base] (a-4) at (6.4,0) {$d$};
+  \node[basesmall] (a-4t) at (7,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$a$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$b$};
-  \path[lineh] (a-1) --  node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m$}  (a-2);
+  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
+  \path (n-beg) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (n-end);
+  \path[lineh] (a-1) --   (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
   \path[linez] (n-beg) -- (a-0);
-  \path[linez] (a-3) -- (n-end);
+  \path[linez] (a-3) -- (a-4b);
+  \path[line] (a-4b) -- (a-4);
+  \path[line] (a-4) -- (a-4t);
+  \path[linez] (a-4t) -- (n-end);
+
+  \draw[bp,looseness=.7] (a-0) to (a-4);
+  \draw[bp,looseness=.9,dashed] (a-1) to (a-2);
+
 
   \node[right=5pt of n-end] (x) {};
-
-
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3.west) ] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
   \end{scope}
+
+\node[below= \LabSepB of n-beg, caption] {\CaptionTxtC};
+
  %%%%%%% /LHS %%%%%%%
 
   \node[basesmall] (n-beg) at (0,0) {};
-  \node[base] (a-0) at (1.8,0) {\color{red}$a'$};
+  \node[base,drop shadow] (a-0) at (1.8,0) {\color{StressColor}$a'$};
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
-  \node[base] (a-3) at (6.25,0) {\color{red}$b'$};
+  \node[base,drop shadow] (a-3) at (6.25,0) {\color{StressColor}$d'$};
   \node[basesmall] (b-1) at (4.0,0) {};
   \node[basesmall,left=\BSep of a-3] (b-2){};
   \node[basesmall,right=\BSep of a-3] (a-3b) {};
   \node[basesmall] (n-end) at (8,0) {};
   %\node[right=\BSep of a-0, basephantom] (a-1) {$a$};
-  \node[left=\BSep of b-1, basephantom] (a-2) {$b$};
+  \node[left=\BSep of b-1, basephantom] (a-2) {$c$};
   \path[lineh] (a-0) --   (a-2);
   \path[lined] (a-2) -- (b-1);
-  \path[linez] (b-1) -- node[pos=.5,above=8pt] (lbl1) {\relsize{+2}$m'$}  (b-2);
-  \path (n-beg) -- node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m-\delta_{a'b',s_is_k}-m'$}  (n-end);
+  \path[linez] (b-1) -- node[lbl,pos=.5,above=8pt] (lbl1) {$m'$}  (b-2);
+  \path (n-beg) -- node[lbl,pos=.5,above=46pt] (lbl1) {$m-m'-{\color{StressColor}\delta_{ad,a'd'}}$}  (n-end);
   \path[lined] (b-2) -- (a-3);
   \path[lined] (a-0) -- (a-0b);
   \path[lined] (a-3b) -- (a-3);
   \path[linez] (n-beg) -- (a-0b);
   \path[linez] (a-3b) -- (n-end);
   \draw[bp,looseness=.8] (a-0) to (a-3);
-  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Position $i$ paired to the right]} (n-end);
 
   \node[left=5pt of n-beg] (y3) {};
+  \path (x) edge[arr]    (y3);
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0b.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3b.west) ] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
 
   \node[rectangle,inner sep=\FitSep,draw,fit=(b-1)(b-2) ] (r3) {};
   \path[blockin]   (r3.south west) to (r3.south east) to (r3.north east) to[out=90,in=90,looseness=1.4] (r3.north west) to (r3.south west) ;
   \end{pgfonlayer}{background}
   \end{scope}
- %%%%%%% /BP Right %%%%%%%
+ %%%%%%% /BPRight %%%%%%%
 
 
  %%%%%%% BP Left %%%%%%%
@@ -231,45 +268,60 @@ line after snake=0pt,
  %%%%%%% LHS %%%%%%%
   \begin{scope}[xshift=-\HSep]
   \node[basesmall] (n-beg) at (0,0) {};
-  \node[base] (a-0) at (2,0) {$s_i$};
-  \node[base] (a-3) at (6,0) {$s_j$};
+  \node[basesmall] (a-w) at (1.1,0) {};
+  \node[base] (a-x) at (1.7,0) {$a$};
+  \node[basesmall] (a-y) at (2.3,0) {};
+  \node[basesmall] (a-z) at (3.3,0) {};
+  \node[base] (a-0) at (3.9,0) {$b$};
+  \node[basesmall] (a-3) at (7,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$a$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$b$};
-  \path[lineh] (a-1) --  node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m$}  (a-2);
+  \node[right=\BSep of a-0, basephantom] (a-1) {$c$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$d$};
+  \path[lineh] (a-1) --  (a-2);
+  \path (n-beg) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (n-end);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
-  \path[linez] (n-beg) -- (a-0);
+  \path[linez] (n-beg) -- (a-w);
+  \path[line] (a-w) -- (a-x);
+  \path[linez] (a-x) -- (a-y);
+  \path[linez] (a-y) -- (a-z);
+  \path[line] (a-z) -- (a-0);
   \path[linez] (a-3) -- (n-end);
 
   \node[right=5pt of n-end] (x) {};
+
+  \draw[bp,looseness=1.05] (a-x) to (a-0);
+  \draw[bp,looseness=.9,dashed] (a-1) to (a-2);
 
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3.west) ] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
   \end{scope}
- %%%%%%% /LHS %%%%%%%
+ 
+\node[below= \LabSepB of n-beg, caption] {\CaptionTxtD};
+
+
+%%%%%%% /LHS %%%%%%%
 
   \node[basesmall] (n-beg) at (0,0) {};
-  \node[base] (a-0) at (1.8,0) {\color{red}$b'$};
+  \node[base, drop shadow] (a-0) at (1.8,0) {\color{StressColor}$a'$};
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
-  \node[base] (a-3) at (4.8,0) {\color{red}$a'$};
+  \node[base, drop shadow] (a-3) at (4.5,0) {\color{StressColor}$b'$};
   \node[basesmall,right=\BSep of a-0] (b-1)  {};
   \node[basesmall,left=\BSep of a-3] (b-2){};
   \node[basesmall] (a-3b)  at (6.75,0) {};
-  \node[basephantom,left=\BSep of a-3b] (a-3c){$b$};
+  \node[basephantom,left=\BSep of a-3b] (a-3c){$d$};
   \node[basesmall] (n-end) at (8,0) {};
-  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Position $i$ paired to the left]} (n-end);
 
 
   %\node[right=\BSep of a-0, basephantom] (a-1) {$a$};
   %\node[left=\BSep of b-1, basephantom] (a-2) {$b$};
   \path[lined] (b-1) -- (a-0);
-  \path[linez] (b-1) -- node[pos=.5,above=8pt] (lbl1) {\relsize{+2}$m'$}  (b-2);
-  \path (n-beg) -- node[pos=.5,above=40pt] (lbl1) {\relsize{+2}$m-\delta_{a'b',s_is_k}-m'$}  (n-end);
+  \path[linez] (b-1) -- node[lbl,pos=.5,above=8pt] (lbl1) {$m'$}  (b-2);
+  \path (n-beg) -- node[lbl,pos=.5,above=43pt] (lbl1) {$m-m'-{\color{StressColor} \delta_{ab,a'b'}}$}  (n-end);
   \path[lined] (a-3b) -- (a-3c);
   \path[lined] (a-0) -- (a-0b);
   \path[lined] (b-2) -- (a-3);
@@ -279,11 +331,13 @@ line after snake=0pt,
   \draw[bp,looseness=1.05] (a-0) to (a-3);
 
   \node[left=5pt of n-beg] (y4) {};
+  \path (x) edge[arr]    (y4);
+
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0b.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3b.west) ] (r2) {};
-  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.8] (r1.north west) to (r1.south west) ;
+  \path[blockout]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=0.8] (r2.north west) to (r2.south west) to (r2.south east) to (r2.north east) to[out=90,in=90,looseness=0.9] (r1.north west) to (r1.south west) ;
 
   \node[rectangle,inner sep=\FitSep,draw,fit=(b-1)(b-2)] (r3) {};
   \path[blockin]   (r3.south west) to (r3.south east) to (r3.north east) to[out=90,in=90,looseness=1.4] (r3.north west) to (r3.south west) ;

@@ -86,8 +86,8 @@ Finally, let us denote by $E_{(i,j),ab \to ab'}^{\Omega,\beta}$ the local contri
   E_{(i,j),ab \to a'b'}^{\Omega,\beta}  = \alpha \cdot\ES^\beta_{a b \to a' b'}+(1-\alpha)\cdot\EI^{\Omega}_{(i,j),a'b'}.
 \end{equation}
 \subsubsection{Inside computation.}
-\begin{figure}[t]
-\resizebox{\textwidth}{!}{\input{FigDPInside.pgf}}
+\begin{figure}[t]\centering
+\includegraphics[scale=\ScaleDP]{FigDPInsideWrapper}
 \caption{Principle of the inside computation (partition function). Any sequence with mutations  
 can be decomposed as a sequence preceded by a, possibly mutated, base 
 (Unpaired case), a sequence surrounded by some base-pair (Stacking-pair case), 
@@ -112,8 +112,7 @@ The main recursion itself is composed of four terms:\\
 
 \begin{equation}
 \label{eq:Z_rec}
-\resizebox{.93\textwidth}{!}{%
-	$\Z{i,j}{m}{a,b}:=\left\{
+	\Z{i,j}{m}{a,b}:=\left\{
   \begin{array}{l}
   		\displaystyle
       \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
@@ -132,7 +131,7 @@ The main recursion itself is composed of four terms:\\
       \cdot\Z{k+1,j}{m'}{b',b} \\
        \text{[Elif }S_i=k \land i < k \leq j\text{]}\\
       0 \\\text{[Otherwise]}
-	\end{array}\right.$}
+	\end{array}\right.
 \end{equation}
 \TODOYann{Rephrase in term of tree, as in Incarnation??}
 The cases can be broken down as follows:
@@ -151,15 +150,10 @@ Any sequence on $[i,j]$ consists of two nucleotide $a'$ and $b'$ at positions $i
 \end{description}
 
 \subsubsection{Outside computation.}	
-\begin{figure}[t]
-\begin{minipage}{0.79\textwidth}
-\resizebox{\textwidth}{!}{\input{FigDPOutside.pgf}}
-\end{minipage}
-\begin{minipage}{0.20\textwidth}
+\begin{figure}[t]\centering
+\includegraphics[scale=\ScaleDP]{FigDPOutsideWrapper}
 \caption{Principle of the outside computation. Note that the outside algorithm uses intermediate results from the inside algorithm, 
 therefore its efficient implementation requires a precomputation of the inside contributions.}
-\end{minipage}
-\SpaceCheating
 \end{figure}
 
 The \emph{Outside} function, $\mathcal Y$, is the partition function considering only the 
