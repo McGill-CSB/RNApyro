@@ -43,8 +43,8 @@ def reverse_sens(seq):
     dic = {'A':'U','U':'A','C':'G','G':'C'}
     return ''.join(dic[x] for x in reversed(seq))
 
-def clean_align(raw_align,seq):
-    l = len(seq)
+def clean_align(raw_align,l_seq):
+    l = l_seq
     d_clean = {}
 
     for i,x in enumerate(raw_align):
@@ -79,22 +79,22 @@ def merge_reads(d_clean_align,d_nt_probs):
     first_pos = d_clean_align[l_names_sorted[0]]['start']
     seq = d_clean_align[l_names_sorted[0]]['seq']
     d_seq_probs = {'start':first_pos,
-                   'probs':[{x:[d_nt_probs[l_names_sorted[0]][i]] for i,x in enumerate(seq)}]
+                   'probs':{i+first_pos:{x:[d_nt_probs[l_names_sorted[0]][i]]} for i,x in enumerate(seq)}
                   }
-
+    
     for name in l_names_sorted[1:]:
         seq = d_clean_align[name]['seq']
         start = d_clean_align[name]['start']
 
         for i,x in enumerate(seq):
             i = i + start
-            if i < len(d_seq_probs['probs']):
+            if i in d_seq_probs['probs']:
                 if x in d_seq_probs['probs'][i]:
                     d_seq_probs['probs'][i][x].append(d_nt_probs[name][i-start])
                 else:
                     d_seq_probs['probs'][i][x] = [d_nt_probs[name][i-start]]
             else:
-                d_seq_probs['probs'].append({x:[d_nt_probs[name][i-start]]})
+                d_seq_probs['probs'][i] = {x:[d_nt_probs[name][i-start]]}
 
 
     return d_seq_probs
@@ -108,12 +108,58 @@ def get_nt_probs(raw_reads):
 
     return d_nt_probs
 
+def get_max_vote(d_merge_probs):
+    seq = []
+    for pos in sorted(d_merge_probs['probs'].keys()):
+        t = tuple((x,len(d_merge_probs['probs'][pos][x])) 
+                  for x in d_merge_probs['probs'][pos])
+        nt = sorted(t, key=lambda z:z[1])[-1][0] 
+        if pos > len(seq):
+            seq.extend(['-']*(pos-len(seq)))
+        elif pos < len(seq):
+             print "problem get_max_vote order probs"
+             sys.exit(1)
+        seq.append(nt)
+    return ''.join(seq)
+
 def main(seq,l_reads,fold):
+    seq = seq.upper().replace('U','T')
+    if any(x not in ('ACGT') for x in seq):
+        print help()
+        sys.exit(0)
     raw_reads, raw_align = get_raw_data(seq,l_reads,fold) 
-    d_clean_align = clean_align(raw_align,seq)
+    seq = seq.replace('T','U')
+    l_seq = len(seq)
+    d_clean_align = clean_align(raw_align,l_seq)
     d_nt_probs = get_nt_probs(raw_reads)
     d_merge_probs = merge_reads(d_clean_align,d_nt_probs)
+    max_vote_seq = get_max_vote(d_merge_probs)
+    print seq
+    print max_vote_seq
 
+
+def help():
+    print """ 
+        mandatory arguments:
+            -s <string AGC(U|T)> Sequence (DNA or RNA)
+
+            -l <int> length of reads
+                re-calibrated:
+                    36
+                    44
+                    50
+                    75
+            -f <int> average number of fold
+
+
+        ATTENTION the first few and last nuclotides might
+        not be sequenced
+
+        OUTPUT:
+            penultimate line: input sequence (as RNA)
+            ultimate line   : simulated merge reads (already 
+                aligned, majority call, can be incomplete!!!!)
+          """
 
 if __name__ == '__main__':
     opts = sys.argv
@@ -129,6 +175,11 @@ if __name__ == '__main__':
             seq = opts[i+1].upper().replace('U','T')
         elif x == '-f':
             fold = opts[i+1]
+
+    if not seq or not l_reads or not fold:
+        print seq, l_reads,fold
+        help()
+        sys.exit(1)
 
     main(seq,l_reads,fold)
     
