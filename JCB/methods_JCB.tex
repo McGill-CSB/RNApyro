@@ -95,40 +95,39 @@ or as two sequences segregated by some base-pair (General base-pairing case), an
 and instantiated bases.}
 \end{figure}
 
-The \emph{Inside} function $\Z{i,j}{m}{a,b}$ is the partition function, i.e. the sum of Boltzmann factors over all sequences in the interval $[i,j]$, at distance $m$ of $s_{[i,j]}$, and having flanking nucleotides $a$ and $b$ (at positions $i-1$ and $j+1$ respectively). 
+The \emph{Inside} function $\Z{\Struct}{m}{x,y}$ is simply the partition function, i.e. the sum of Boltzmann factors over all sequences for a substructure $\Struct$, featuring $m$ mutations/errors compared to $s$, and having flanking nucleotides $x$ and $y$. 
 \TODOYann{Reformat inside Figure as in Incarnation.}
-Such terms can be defined by recurrence, for which the following initial conditions holds:
-
+Such terms can be computed by recurrence, whose initial values are:
 \begin{equation}
-	\forall i \in [0,n-1]:\, \Z{i+1,i}{m}{a,b}=\left\{
+	\forall x,y\in B\times B, m\in [0,M]:\, \Z{\varepsilon}{m}{x,y}=\left\{
 	\begin{array}{ll}
 		1 &\text{If } m = 0\\
 		0 &\text{Otherwise.}
 	\end{array}\right.
 \label{eq:Z_in}
 \end{equation}
-In other words, the set of sequences at distance $m$ of the empty sequence is either empty if $m>0$, or restricted to the empty sequence, having energy $0$, if $m=0$. Since the energetic terms only depend on base pairs, they are not involved in the initial conditions. 
+In other words, either there is no sequence at distance $m>0$ of the empty sequence, or the only allowed sequence is the empty sequence ($m=0$), having energy $0$. Since the energetic terms only depend on base pairs, they are not involved in the initial conditions. 
 The main recursion itself is composed of four terms:\\
 
 \begin{equation}
 \label{eq:Z_rec}
 	\Z{i,j}{m}{a,b}:=\left\{
-  \begin{array}{l}
+  \begin{array}{ll}
   		\displaystyle
       \sum_{\substack{a'\in \B,\\ \Kron_{a',s_i}\le m}}  
-      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} \\
+      \Z{i+1,j}{m-\Kron_{a',s_i}}{a',b} &
        \text{[If }S_{i}=-1\text{]}\\
       \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_j}\le m}}
 			 e^{\frac{-E_{(i,j),ab \to a'b'}^{\Omega,\beta}}{RT}}
-			 \cdot \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}\\
+			 \cdot \Z{i+1,j-1}{m-\Kron_{a'b',s_is_j}}{a',b'}&
 			 \text{[Else if }S_i=j \land S_{i-1}=j+1\text{]}\\
 			 \displaystyle
       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{a'b',s_is_k}\le m}}
       \sum_{m'=0}^{m-\Kron_{a'b',s_is_k}}
    		 e^{\frac{-E_{(i,k),\varnothing\to a'b'}^{\Omega,\beta}}{RT}}
       \cdot\Z{i+1,k-1}{m-\Kron_{a'b',s_is_k}-m'}{a',b'}
-      \cdot\Z{k+1,j}{m'}{b',b} \\
+      \cdot\Z{k+1,j}{m'}{b',b} &
        \text{[Elif }S_i=k \land i < k \leq j\text{]}\\
       0 \\\text{[Otherwise]}
 	\end{array}\right.

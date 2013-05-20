@@ -35,11 +35,11 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 %% Unpaired case %%%%%%%%%%
 
 \begin{scope}[yshift=\VSepUp]
-  \node[base] (a-1) at (0,0) {$b$};
+  \node[base] (a-1) at (0,0) {$a$};
   \node[basesmall] (a-1b) at (.8,0) {};
   \node[basesmall] (a-2) at (4,0) {};
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$c$}; 
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$}; 
   \node[right=0 of a-3] (x1) {};
 
 
@@ -61,12 +61,12 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 \node[below= \LabSepA of a-1, caption] {{\bf Case 1:} First position is unpaired.};
 
 \begin{scope}[xshift=\HSep,yshift=\VSepUp]
-  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$b'$};
+  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};
   \node[basesmall,right=\BSep of a-1] (a-1b)  {};
   \node[basesmall] (a-2) at (5,0) {};
   \node[left=\BSep of a-1, basephantom] (a-0) {}; 
-  \node[right=\BSep of a-2, basephantom] (a-3) {$c$};
-  \path[linez] (a-1b) -- node (xy1) {} node[cap2,yshift=-6pt] {$m-{\color{StressColor}\Kron_{b,b'}}$}  (a-2);
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
+  \path[linez] (a-1b) -- node (xy1) {} node[cap2,yshift=-6pt] {$m-{\color{StressColor}\Kron_{a,a'}}$}  (a-2);
   \path[line] (a-1) -- (a-1b);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
@@ -87,12 +87,12 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 
 %%% Stacking case %%%
 \begin{scope}[yshift=0]
-  \node[base] (a-1) at (0,0) {$b$};
-  \node[base] (a-2) at (4,0) {$c$};
+  \node[base] (a-1) at (0,0) {$a$};
+  \node[base] (a-2) at (4,0) {$b$};
 
 
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
   \node[right=0 of a-3] (x2) {};
 
   \path[linez] (a-1) -- node (xx2) {} node[cap2,yshift=-4pt] (s2) {$m$}  (a-2);
@@ -114,16 +114,16 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 \node[below= \LabSepB of a-1, caption] {{\bf Case 2:} Extremities are paired, surrounded by another base-pair, forming a stacking base-pair.};
 
 \begin{scope}[xshift=\HSep,yshift=00pt]
-  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$b'$};
-  \node[base,drop shadow] (a-2) at (5,0) {\color{StressColor}$c'$};
+  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};
+  \node[base,drop shadow] (a-2) at (5,0) {\color{StressColor}$b'$};
 
   \node[basesmall,right=\BSep of a-1] (a-1b) {};
   \node[basesmall,left=\BSep of a-2] (a-2b)  {};
 
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
 
-  \path[linez] (a-1b) -- node (xy2) {}  node[cap2,yshift=-10pt]  {$m-{\color{StressColor}\Kron_{bc,b'c'}}$}  (a-2b);
+  \path[linez] (a-1b) -- node (xy2) {}  node[cap2,yshift=-10pt]  {$m-{\color{StressColor}\Kron_{ab,a'b'}}$}  (a-2b);
 
   \path[line] (a-1) -- (a-1b);
   \path[line] (a-2) -- (a-2b);
@@ -145,12 +145,12 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
   \path (x2) edge[arr] (y2);
 %%% Junction case %%%%
 \begin{scope}[yshift=\VSepDown] 
-  \node[base] (a-1) at (0,0) {$b$};
+  \node[base] (a-1) at (0,0) {$a$};
   \node[basesmall] (a-2) at (4,0) {};
-  \node[base] (a-2k) at (2,0) {$c$};
+  \node[base] (a-2k) at (2,0) {$b$};
 
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
   \node[right=0 of a-3] (x3) {};
 
 
@@ -179,8 +179,8 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 \node[below= \LabSepC of a-1, caption] {{\bf Case 3:} First position in paired to some position, but not involved in a stacking pair.};
 
 \begin{scope}[xshift=\HSep,yshift=\VSepDown]
-  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$b'$};
-  \node[base,drop shadow] (a-p) at (3,0) {\color{StressColor}$c'$};
+  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};
+  \node[base,drop shadow] (a-p) at (3,0) {\color{StressColor}$b'$};
 
   \node[basesmall,right=\BSep of a-1] (a-1b) {};
   \node[basesmall,left=\BSep of a-p] (a-pb)  {};
@@ -188,7 +188,7 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 
   \node[basesmall] (a-2) at (5,0) {};
   \node[left=\BSep of a-1, basephantom] (a-0) {};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
 
   \path[linez] (a-1b) -- node (xy3) {} node[cap2,yshift=-7pt] {$m'$} (a-pb);
   \path[linez] (a-pa) -- node (xz3) {} node[cap2,yshift=-7pt] (xyx) {} (a-2);
@@ -236,7 +236,7 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
  \node[below=\CapSep of xy3.center,cap3] {$\Struct'$};
  \node[below=\CapSep of xz3.center,cap3] {$\Struct''$};
 
-  \node[cap3, above=28pt of xyx,xshift=23pt, inner sep=3pt] (tre) {$m-m'-{\color{StressColor}\Kron_{bc,b'c'}}$};
+  \node[cap3, above=28pt of xyx,xshift=23pt, inner sep=3pt] (tre) {$m-m'-{\color{StressColor}\Kron_{ab,a'b'}}$};
   \draw[arr] (tre) -- (xyx.center);
 
 }
