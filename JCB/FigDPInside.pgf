@@ -111,7 +111,7 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
   \path[block]   (r1.south west) to   (r1.south east) to (r1.north east) to[out=90,in=90,looseness=1.1] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
 \end{scope}
-\node[below= \LabSepB of a-1, caption] {{\bf Case 2:} Extremities are paired, surrounded by another base-pair, forming a stacking base-pair.};
+\node[below= \LabSepB of a-1, caption] {{\bf Case 2:} Extremities are paired, nested within a consecutive base-pair, forming a stacking base-pair.};
 
 \begin{scope}[xshift=\HSep,yshift=00pt]
   \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};

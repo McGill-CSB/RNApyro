@@ -15,8 +15,8 @@
   \newcommand{\LabSepB}{15pt}
 
 
-  \newcommand{\CaptionTxtA}{{\bf Case 1}: Next leftward position is unpaired.}
-  \newcommand{\CaptionTxtB}{{\bf Case 2}: Paired extremal positions, nesting another base-pair, forming a stacking base-pair.}
+  \newcommand{\CaptionTxtA}{{\bf Case 1}: Left innermost position is unpaired.}
+  \newcommand{\CaptionTxtB}{{\bf Case 2}: Paired innermost positions, nesting a consecutive base-pair, forming stacking base-pairs.}
   \newcommand{\CaptionTxtC}{{\bf Case 3}: Next leftward position is paired to the right, but no stacking pairs.}
   \newcommand{\CaptionTxtD}{{\bf Case 4}: Next leftward position is paired to the left.}
 
@@ -52,8 +52,8 @@ line after snake=0pt,
   \node[base] (a-0) at (2,0) {$a$};
   \node[basesmall] (a-3) at (6,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
+  \node[right=\BSep of a-0, basephantom] (a-1) {$x$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$y$};
   \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
@@ -83,8 +83,8 @@ line after snake=0pt,
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
   \node[basesmall] (a-3) at (6,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
+  \node[right=\BSep of a-0, basephantom] (a-1) {$x$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$y$};
   \path[lineh] (a-1) --  node[lbl,pos=.5,above=40pt] (lbl1) {$m-{\color{StressColor}\delta_{a,a'}}$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
@@ -118,11 +118,11 @@ line after snake=0pt,
   \node[basesmall] (n-beg) at (0,0) {};
   \node[basesmall] (a-0b) at (1.4,0) {};
   \node[base] (a-0) at (2,0) {$a$};
-  \node[base] (a-3) at (6,0) {$d$};
+  \node[base] (a-3) at (6,0) {$b$};
   \node[basesmall] (a-3b) at (6.6,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
+  \node[right=\BSep of a-0, basephantom] (a-1) {$x$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$y$};
   \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
@@ -152,12 +152,12 @@ line after snake=0pt,
   \node[basesmall] (n-beg) at (0,0) {};
   \node[base, drop shadow] (a-0) at (2,0) {\color{StressColor}$a'$};
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
-  \node[base, drop shadow] (a-3) at (6,0) {\color{StressColor}$d'$};
-  \node[basesmall,right=\BSep of a-3] (a-3b) {};
+  \node[base, drop shadow] (a-3) at (6,0) {\color{StressColor}$b'$};
+  \node[basesmall,right=\BSep of a-3] (a-3b) {};b
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
-  \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m-{\color{StressColor}\delta_{ad,a'd'}}$}  (a-2);
+  \node[right=\BSep of a-0, basephantom] (a-1) {$x$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$y$};
+  \path[lineh] (a-1) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m-{\color{StressColor}\delta_{ab,a'b'}}$}  (a-2);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
   \path[lined] (a-0) -- (a-0b);
@@ -194,11 +194,11 @@ line after snake=0pt,
   \node[base] (a-0) at (1.3,0) {$a$};
   \node[basesmall] (a-3) at (4.5,0) {};
   \node[basesmall] (a-4b) at (5.8,0) {};
-  \node[base] (a-4) at (6.4,0) {$d$};
+  \node[base] (a-4) at (6.4,0) {$b$};
   \node[basesmall] (a-4t) at (7,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$b$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$c$};
+  \node[right=\BSep of a-0, basephantom] (a-1) {$x$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$y$};
   \path (n-beg) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (n-end);
   \path[lineh] (a-1) --   (a-2);
   \path[lined] (a-0) -- (a-1);
@@ -229,17 +229,17 @@ line after snake=0pt,
   \node[basesmall] (n-beg) at (0,0) {};
   \node[base,drop shadow] (a-0) at (1.8,0) {\color{StressColor}$a'$};
   \node[basesmall,left=\BSep of a-0] (a-0b) {};
-  \node[base,drop shadow] (a-3) at (6.25,0) {\color{StressColor}$d'$};
+  \node[base,drop shadow] (a-3) at (6.25,0) {\color{StressColor}$b'$};
   \node[basesmall] (b-1) at (4.0,0) {};
   \node[basesmall,left=\BSep of a-3] (b-2){};
   \node[basesmall,right=\BSep of a-3] (a-3b) {};
   \node[basesmall] (n-end) at (8,0) {};
   %\node[right=\BSep of a-0, basephantom] (a-1) {$a$};
-  \node[left=\BSep of b-1, basephantom] (a-2) {$c$};
+  \node[left=\BSep of b-1, basephantom] (a-2) {$y$};
   \path[lineh] (a-0) --   (a-2);
   \path[lined] (a-2) -- (b-1);
   \path[linez] (b-1) -- node[lbl,pos=.5,above=8pt] (lbl1) {$m'$}  (b-2);
-  \path (n-beg) -- node[lbl,pos=.5,above=46pt] (lbl1) {$m-m'-{\color{StressColor}\delta_{ad,a'd'}}$}  (n-end);
+  \path (n-beg) -- node[lbl,pos=.5,above=46pt] (lbl1) {$m-m'-{\color{StressColor}\delta_{ab,a'b'}}$}  (n-end);
   \path[lined] (b-2) -- (a-3);
   \path[lined] (a-0) -- (a-0b);
   \path[lined] (a-3b) -- (a-3);
@@ -275,8 +275,8 @@ line after snake=0pt,
   \node[base] (a-0) at (3.9,0) {$b$};
   \node[basesmall] (a-3) at (7,0) {};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=\BSep of a-0, basephantom] (a-1) {$c$};
-  \node[left=\BSep of a-3, basephantom] (a-2) {$d$};
+  \node[right=\BSep of a-0, basephantom] (a-1) {$x$};
+  \node[left=\BSep of a-3, basephantom] (a-2) {$y$};
   \path[lineh] (a-1) --  (a-2);
   \path (n-beg) --  node[lbl,pos=.5,above=45pt] (lbl1) {$m$}  (n-end);
   \path[lined] (a-0) -- (a-1);
@@ -313,7 +313,7 @@ line after snake=0pt,
   \node[basesmall,right=\BSep of a-0] (b-1)  {};
   \node[basesmall,left=\BSep of a-3] (b-2){};
   \node[basesmall] (a-3b)  at (6.75,0) {};
-  \node[basephantom,left=\BSep of a-3b] (a-3c){$d$};
+  \node[basephantom,left=\BSep of a-3b] (a-3c){$y$};
   \node[basesmall] (n-end) at (8,0) {};
 
 
