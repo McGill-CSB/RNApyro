@@ -382,13 +382,23 @@ def energy((a,b),(a2,b2),alpha):
   E = STACKING_ENERGY[a,a2,b2,b]
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
+def isGapChar(c):
+  return c=="." or c=="-"
+
 def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   if not ref_seq:
     return 1.
   #isostericity of going from original base pair to (a,b)
-  iso_mut = sum(ISO[(ref[i],ref[j]),(a,b)] for ref in ref_seq)
-  iso_start = sum(ISO[(ref[i],ref[j]),(seq[i],seq[j])] for ref in ref_seq)
-  iso = mpf(iso_mut-iso_start)/len(ref_seq)
+  iso_delta = 0.
+  nb_correct = 0
+  for ref in ref_seq:
+    if not (isGapChar(ref[i]) or isGapChar(ref[j])):
+      iso_delta += ISO[(ref[i],ref[j]),(a,b)]-ISO[(ref[i],ref[j]),(seq[i],seq[j])]
+      nb_correct += 1
+  if nb_correct>0:
+    iso = mpf(iso_delta)/nb_correct
+  else:
+    iso = mpf(0.)
   return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
