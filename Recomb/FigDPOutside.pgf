@@ -1,3 +1,4 @@
+%!TEX root = main_RECOMB.tex
 
 \begin{tikzpicture}
   \definecolor{rougeForb}{HTML}{eb23238f}
@@ -68,7 +69,7 @@ line after snake=0pt,
   \node[lbl,below=3pt of a-3] (c2) {$j$};
   \node[lbl,below=3pt of n-end] (c3) {$n-1$};
 
-  \node[right=3em of n-end,anchor=west] {\relsize{+2}[Position $i$ unpaired]};
+  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Position $i$ unpaired]} (n-end);
 
   \node[left=5pt of n-beg] (y1) {};
 
@@ -103,7 +104,8 @@ line after snake=0pt,
   \node[lbl,below=3pt of a-3b] (c2) {$j+1$};
   \node[lbl,below=3pt of n-end] (c3) {$n-1$};
 
-  \node[right=3em of n-end,anchor=west] {\relsize{+2}[Paired ends + Stacking pairs]};
+  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Paired ends + Stacking pairs]} (n-end);
+
 
   \node[left=5pt of n-beg] (y2) {};
 
@@ -135,7 +137,7 @@ line after snake=0pt,
   \path[linez] (n-beg) -- (a-0b);
   \path[linez] (a-3b) -- (n-end);
   \draw[bp,looseness=.8] (a-0) to (a-3);
-  \node[right=3em of n-end,anchor=west] {\relsize{+2}[Position $i$ paired to the right]};
+  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Position $i$ paired to the right]} (n-end);
 
   \node[lbl,below=3pt of n-beg] (c0) {$0$};
   \node[lbl,below=3pt of a-0b] (c1) {$i-1$};
@@ -166,7 +168,7 @@ line after snake=0pt,
   \node[basesmall] (a-3b)  at (6.75,0) {};
   \node[basephantom,left=\BSep of a-3b] (a-3c){$b$};
   \node[basesmall] (n-end) at (8,0) {};
-  \node[right=3em of n-end,anchor=west] {\relsize{+2}[Position $i$ paired to the left]};
+  \path (n-beg) to node[midway,yshift=-3em] {\relsize{+2}[Position $i$ paired to the left]} (n-end);
 
 
   %\node[right=\BSep of a-0, basephantom] (a-1) {$a$};

@@ -1,20 +1,29 @@
-\documentclass[11pt]{article}
-\usepackage[top=1in, bottom=1in,right=1in,left=1in]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
-\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+\documentclass{llncs}
+%\usepackage[top=1in, bottom=1in,right=1in,left=1in]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+%\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
 %\geometry{landscape}                % Activate for for rotated page geometry
 %\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{amsthm} %pour les newtheorem
+%\usepackage{amsthm} %pour les newtheorem
 \usepackage{epstopdf}
 \usepackage{xspace}
 \usepackage{relsize}
 \usepackage[numbers]{natbib}
 \usepackage[colorinlistoftodos]{todonotes}
 
+\makeatletter
+\renewcommand\bibsection%
+{
+  \section*{\refname
+    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
+}
+\makeatother
+
+
 %\usepackage{subfig} %Subfigures
-\usepackage{subcaption} %Subfigures
+%\usepackage{subcaption} %Subfigures
 
 \usepackage{tikz}
 \usepackage{amsmath}
@@ -77,10 +86,16 @@
 \newcommand{\Gb}{{\sf{G}}}
 \newcommand{\Ub}{{\sf{U}}}
 
+\newcommand{\SpaceCheating}{\vspace{-0em}}
+
+
 %\title{An inside-outside algorithms for mutant RNAs with applications to error detections in structured RNAs}
-\title{A linear inside-outside algorithm for correcting sequencing errors in structured RNA}
-\author{Vladimir Reinharz, Yann Ponty$^{*}$, J\'er\^{o}me Waldisp\"{u}hl$^*$}
+\title{A Linear Inside-Outside Algorithm for Correcting Sequencing Errors in Structured RNAs}
+\author{Vladimir Reinharz\inst{1}, Yann Ponty\inst{2}$^{*}$ \and J\'er\^{o}me Waldisp\"{u}hl\inst{1}$^*$}
 \date{}
+\institute{School of Computer Science, McGill University, Montreal, Canada.
+	\and  Laboratoire d'informatique, \'Ecole Polytechnique, Palaiseau, France.
+	 \\\email{jeromew@cs.mcgill.ca}, \email{yann.ponty@lix.polytechnique.fr}}
 
 
 %Last thing before BEGIN DOC for links to appear in pdf
@@ -92,6 +107,7 @@
 %              linkcolor=black%
 %              urlcolor=black%
 %              pdftex}
+
 
 \begin{document}
 \maketitle
@@ -113,7 +129,7 @@ tools in the NGS error-correction pipeline.
 \textbf{Key words:} RNA, mutations, secondary structure
 \end{abstract}
 
-\newpage
+%\newpage
 
 \input{introduction_RECOMB.tex}
 
@@ -124,10 +140,9 @@ tools in the NGS error-correction pipeline.
 \input{conclusion_RECOMB.tex}
 
 \input{acknowledgments_RECOMB.tex}
+%\newpage
 
-\newpage
-
-\bibliographystyle{plainnat}
+\bibliographystyle{splncs}
 \bibliography{RNApyro}
 
 

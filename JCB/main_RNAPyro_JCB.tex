@@ -1,0 +1,111 @@
+\documentclass{llncs}
+\usepackage[top=1.5in, bottom=1.5in,right=1.5in,left=1.5in]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+%\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+%\usepackage{jcompbio}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{amsthm} %pour les newtheorem
+\usepackage{epstopdf}
+\usepackage{xspace}
+\usepackage{relsize}
+\usepackage{bbm}
+\usepackage[numbers]{natbib}
+\usepackage[colorinlistoftodos,textsize=small]{todonotes}
+
+\makeatletter
+\renewcommand\bibsection%
+{
+  \section*{\refname
+    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
+}
+\makeatother
+
+
+%\usepackage{subfig} %Subfigures
+%\usepackage{subcaption} %Subfigures
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{ifthen}
+\usepackage{relsize}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes}
+\usetikzlibrary{arrows}
+\usetikzlibrary{fit}
+\usetikzlibrary{decorations}
+\usetikzlibrary{snakes}
+\usetikzlibrary{shadows}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{backbackground}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{backbackground,background,main,foreground}
+
+\input{macros.tex}
+
+
+%\title{An inside-outside algorithms for mutant RNAs with applications to error detections in structured RNAs}
+\title{Using structural and evolutionary information to correct RNA pyrosequencing errors in non-coding RNAs}
+\author{Vladimir Reinharz\inst{1}, Yann Ponty\inst{2}$^{*}$ \and J\'er\^{o}me Waldisp\"{u}hl\inst{1}$^*$}
+\date{}
+\institute{School of Computer Science, McGill University, Montreal, Canada.
+	\and  Laboratoire d'informatique, \'Ecole Polytechnique, Palaiseau, France.
+	 \\\email{jeromew@cs.mcgill.ca}, \email{yann.ponty@lix.polytechnique.fr}}
+
+
+%Last thing before BEGIN DOC for links to appear in pdf
+
+%  \usepackage{hyperref}
+%  \hypersetup{colorlinks}
+%              citecolor=black,
+%              filecolor=black%
+%              linkcolor=black%
+%              urlcolor=black%
+%              pdftex}
+
+
+\begin{document}
+
+\ShowTODO{\setcounter{tocdepth}{1}
+\listoftodos} 
+\maketitle
+%\section{}
+%\subsection{}
+\begin{abstract}
+Analysis of the sequence-structure relationship in RNA molecules are essential to evolutionary studies but also to 
+concrete applications such as error-correction methodologies in sequencing technologies. The prohibitive sizes of the
+mutational and conformational landscapes combined with the volume of data to proceed require efficient algorithms 
+to compute sequence-structure properties. More specifically, here we aim to calculate which mutations increase the most the 
+likelihood of a sequence to a given structure and RNA family.\\
+In this paper, we introduce \RNApyro, an efficient linear-time and space inside-outside algorithm that computes exact mutational
+probabilities under secondary structure and evolutionary constraints given as a multiple sequence alignment with a consensus structure.
+We develop a scoring scheme combining classical stacking base pair energies to novel isostericity scales, and apply our techniques
+to correct point-wise errors in 5s rRNA sequences. Our results suggest that \RNApyro is a promising algorithm to complement existing
+tools in the NGS error-correction pipeline. 
+
+\noindent
+\textbf{Key words:} RNA, mutations, secondary structure
+\end{abstract}
+
+%\newpage
+
+\input{introduction_JCB.tex}
+
+\input{methods_JCB.tex}
+
+\input{results_JCB.tex}
+
+\input{conclusion_JCB.tex}
+
+\input{acknowledgments_JCB.tex}
+%\newpage
+
+\bibliographystyle{jcompbiol}
+\bibliography{RNApyro}
+
+
+\end{document}  

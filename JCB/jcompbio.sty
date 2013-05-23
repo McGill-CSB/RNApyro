@@ -1,0 +1,163 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal of Computational Biology manuscript guidelines
+%
+% o Manuscript must be double spaced.
+% o At least 1 inch margins on the top, bottom, and sides.
+% o Paginate the manuscript at the bottom center of each page, except
+%   for the title page.
+% o Font size must be no smaller than 10 points.
+% o Use underlines only for words or letter you with to italicized.
+% o Clearly identify unusual or handwritten symbols and Greek letters.
+% o The position of each table and figure must be margin in the margin at
+%   the location it should appear. Use: \marginpar{}
+% o References should be cited by author and date (Smith 1976), never 
+%   numbered. If more than two authors, use, the first author, the et al.
+%   References should be typed in alphabetical order and follow the
+%   acknowledgments. Journal names should be abbreviated according to
+%   World List of Scientific Periodicals. Use: \citep and \citet with
+%   \bibliographystyle{plainnat}.
+% o Begin each section on a separate page.
+%
+% Authors: Henrik Bengtsson <hb@maths.lth.se>
+%          Modified by J.-M. Lasgouttes <Jean-Marc.Lasgouttes@inria.fr>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{hb-jcb}[2004/12/09 v0.93 LaTeX2e package for typesetting a manuscript to the Journal of Computational Biology. Author: Henrik Bengtsson .hb@maths.lth.se.]
+
+% Package 'endfloat' places all figures (and tables) *after* the document. 
+% Note that all if there is a endfloat.cfg, it is automatically loaded.
+\RequirePackage{endfloat}
+
+% Package 'titling' defines \theauthor to 'grab' value set in \author.
+% Note that JCB only wants the first author, but this is a little bit
+% more difficult to do.
+\RequirePackage{titling}                     % \theauthor, \thetitle, ...
+
+% Package 'titlesec' makes it possible to define \sectionbreak.
+\RequirePackage{titlesec}                    % \sectionbreak
+
+% Package 'ulem' provides underlining with line wrapping. Note that
+% \underline will *not* wrap lines.
+\RequirePackage{ulem}                            % \uline, \uuline, \uwave, ...
+
+% Double line spacing
+\newcommand{\jcb@singlespacing}{\renewcommand{\baselinestretch}{1}}
+\newcommand{\jcb@doublespacing}{\renewcommand{\baselinestretch}{1.667}}
+\let\jcb@spacing\jcb@doublespacing
+\DeclareOption{nodoublespace}{
+  \let\jcb@spacing\jcb@singlespacing
+}
+\jcb@spacing
+\AtBeginDelayedFloats{\jcb@spacing}
+
+\newcommand{\sectionbreak}{\clearpage}
+\DeclareOption{nosectionbreak}{
+ \renewcommand{\sectionbreak}{}
+}
+
+\ProcessOptions
+
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+% Page layout
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+% Change useable area of a page to be slightly larger
+\setlength{\topmargin}{0.0cm}
+\setlength{\textheight}{21.5cm}
+\setlength{\oddsidemargin}{2mm}
+\setlength{\evensidemargin}{2mm}
+\setlength{\textwidth}{155mm}
+\setlength{\marginparwidth}{15mm}
+
+% force the option `twoside'
+\@twosidetrue
+
+% The first page should not have a number, but \maketitle set it to
+% plain always
+\let\jcb@maketitle=\maketitle
+\renewcommand{\maketitle}{\jcb@maketitle\thispagestyle{empty}}
+
+% Citation according to J. Comp. Biol.
+\usepackage[round]{natbib}
+\bibliographystyle{jcbnat}                   % Home made /HB 2004-10-20
+
+
+% Place a framed note in the margin to tell where the figure should be.
+\renewcommand{\figureplace}{%
+ \marginpar{\fbox{\figurename~\thepostfig}}%
+}
+
+% Place a framed note in the margin to tell where the table should be.
+\renewcommand{\tableplace}{%
+ \marginpar{\fbox{\tablename~\theposttbl}}%
+}
+
+
+% When the endfloat version of figure* or table* is invoked, we want a
+% hook that tells which one it was. This is used below in
+% \efloatseparator.
+\global\newif\if@infigure\@infiguretrue
+\expandafter\let\expandafter\jcb@figure@st\csname figure*\endcsname
+\renewenvironment{figure*}{\global\@infiguretrue\jcb@figure@st}{\end@dblfloat}
+\expandafter\let\expandafter\jcb@table@st\csname table*\endcsname
+\renewenvironment{table*}{\global\@infigurefalse\jcb@table@st}{\end@dblfloat}
+
+
+% On the backside of every figure or table there should be 
+% i) an arrow indicating up, ii) the authors name, iii) figure or
+% table number
+\renewcommand{\efloatseparator}{%
+ \clearpage%
+ \begin{center}
+ \Huge
+  $\Uparrow$ \\[10mm]
+  \theauthor \\[10mm]
+  \if@infigure
+    \figurename~\thefigure~(of \thepostfig) \\[10mm]
+  \else
+    \tablename~\thetable~(of \theposttbl) \\[10mm]
+  \fi
+ \end{center}
+ \clearpage%
+}
+
+% Set page style to empty for figure pages
+\AtBeginDelayedFloats{%
+ \pagestyle{empty}
+ \cleardoublepage
+}
+
+% Figures should start on right hand sides so that if printed 
+% double sided, that is, in duplex, the figure will be on the
+% front page and the name and number etc. is on the back page.
+\AtBeginFigures{\cleardoublepage}
+% the same holds for tables
+\AtBeginTables{\cleardoublepage}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY:
+% 2004-12-09 /HB
+% o Renamed to jcompbio.sty.
+% 2004-12-07 /JML
+% o reduce a little bit \marginparwidth so that margin notes print
+%   correctly
+% o use \cleardoublepage before tables too
+% 2004-12-03 /JML
+% o remove page number on first page
+% o enforce double-sided layout
+% o fix \marginparwidth so that margin notes are output correctly on
+%   even pages
+% o use a baselinestretch of 1.667 for doublespacing (like
+%   spacing.sty)
+% o make sure tables and figures are doublespaced too
+% o properly support tables: add a margin note in place, change
+%   \efloatseparator to handle them too
+% o use \figurename and \tablename where relevant
+% 2004-10-21 /HB
+% o Added options 'nodoublespace' and 'nosectionbreak'.
+% o First version of style file. 
+% o Now making use of 'endfloat' package. It's great.
+% 2004-10-20 /HB
+% o First steps toward a style file.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

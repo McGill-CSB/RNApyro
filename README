@@ -1,1 +1,21 @@
 RNApyro
+
+You only need the python script src/RNAPyro.py
+The arguments are as follows:
+
+
+Required:
+      -f <file_path>  Path to the file containing the reference
+                      sequence, the MSE (optional) and the secondary
+                      structure. The FIRST sequence in the file
+                      will be used as reference
+      -m <int>        The numbers of mutants required
+      -a <float>      The weight given to match the MSE or the secondary
+                      structure, between [0,1]. A weight of 1 will only
+                      take into account the secondary structure, 0 only
+                      the MSE
+    Optional:      
+      -p <float>      The penality for a non canonical base pair (default
+                      sys.maxint)      
+      -b <int>        Backtrack stochastic, number of sequences to output
+      -no_profile     Do no output the resultant profile
