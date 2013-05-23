@@ -24,10 +24,11 @@
 #(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS#
 #SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE                  #
 ###############################################################################
-fimport os,sys
+import os,sys
 import itertools
 import random
 import math
+import time
 
 def MPMATH_MISSING():
   print """The module `mpmath` was not found. This might impeed the
@@ -692,7 +693,7 @@ def parse_fasta(file_name):
       line = line.strip()
       if not line:
         continue
-      if all(x in 'AUGC' for x in line):
+      if all(x in 'AUGC.' for x in line):
         seq.append(line)
         continue
       if all(x in '(.)' for x in line):
@@ -828,8 +829,10 @@ if __name__ == "__main__":
 
   n = len(seq)
   if not f_no_profile:
+    tic = time.time()
     results = all_probabilities(seq,ref_seq,struct,m,alpha)
     display_all_probabilities(results)
+    print time.time() - tic
   else:
     forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
 

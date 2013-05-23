@@ -1,6 +1,7 @@
 import os
 import sys
 import shlex
+from random import choice
 from subprocess import call
 from tempfile import mkdtemp, NamedTemporaryFile as NTF 
 from shutil import rmtree
@@ -137,7 +138,21 @@ def get_max_vote(d_merge_probs,ss):
     return ''.join(seq)
 
 
-def main(seq,l_reads,fold,ss):
+def get_most_reads_nt(d):
+    listed_keys = sorted(d.keys(), key=lambda x:len(d[x]))
+    return listed_keys[-1]
+
+
+def get_most_reads_seq(d_merge_probs, seq):
+    new_seq = []
+    for i,x in enumerate(seq):
+        if i in d_merge_probs['probs']:
+            new_seq.append(get_most_reads_nt(d_merge_probs['probs'][i]))
+        else:
+            new_seq.append(choice('ACGU'))
+    return ''.join(new_seq)
+
+def main(seq,l_reads,fold):
     seq = seq.upper().replace('U','T')
     if any(x not in ('ACGT') for x in seq):
         print help()
@@ -148,9 +163,8 @@ def main(seq,l_reads,fold,ss):
     d_clean_align = clean_align(raw_align,l_seq)
     d_nt_probs = get_nt_probs(raw_reads)
     d_merge_probs = merge_reads(d_clean_align,d_nt_probs)
-    max_vote_seq = get_max_vote(d_merge_probs,ss)
-    print seq
-    print max_vote_seq
+    new_seq = get_most_reads_seq(d_merge_probs, seq)
+    print new_seq
 
 
 def help():
@@ -180,7 +194,6 @@ if __name__ == '__main__':
     opts = sys.argv
     
     seq = ''
-    ss = ''
     l_reads = 0
     fold = 0
 
@@ -191,13 +204,11 @@ if __name__ == '__main__':
             seq = opts[i+1].upper().replace('U','T')
         elif x == '-f':
             fold = int(opts[i+1])
-        elif x == '-ss':
-            ss = opts[i+1]
 
-    if not seq or not l_reads or not fold or not ss:
+    if not seq or not l_reads or not fold:
         print seq, l_reads,fold
         help()
         sys.exit(1)
 
-    main(seq,l_reads,fold,ss)
+    main(seq,l_reads,fold)
     
