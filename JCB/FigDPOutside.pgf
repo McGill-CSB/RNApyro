@@ -1,22 +1,33 @@
 %!TEX root = main_RECOMB.tex
 
-\begin{tikzpicture}
+\begin{tikzpicture}[drop shadow/.style={
+    general shadow={%
+      shadow scale=1.,
+      shadow xshift=1ex,
+      shadow yshift=-1ex,
+      opacity=.5,
+      fill=black!50,
+      every shadow,
+      #1
+    }
+  }]
   \definecolor{rougeForb}{HTML}{eb23238f}
   \definecolor{rougeForbP}{HTML}{6d1515ff}
 
+  \newcommand{\NTSep}{17pt}
   \newcommand{\BSep}{9pt}
   \newcommand{\HSep}{350pt}
   \newcommand{\RelPosA}{0pt}
-  \newcommand{\RelPosB}{-130pt}
-  \newcommand{\RelPosC}{-260pt}
-  \newcommand{\RelPosD}{-390pt}
+  \newcommand{\RelPosB}{-150pt}
+  \newcommand{\RelPosC}{-300pt}
+  \newcommand{\RelPosD}{-450pt}
   \newcommand{\FitSep}{3.5pt}
 
-  \newcommand{\LabSepB}{15pt}
+  \newcommand{\LabSepB}{28pt}
 
 
   \newcommand{\CaptionTxtA}{{\bf Case 1}: Left innermost position is unpaired.}
-  \newcommand{\CaptionTxtB}{{\bf Case 2}: Paired innermost positions, nesting a consecutive base-pair, forming stacking base-pairs.}
+  \newcommand{\CaptionTxtB}{{\bf Case 2}: Paired innermost positions, leading to stacking base-pairs.}
   \newcommand{\CaptionTxtC}{{\bf Case 3}: Next leftward position is paired to the right, but no stacking pairs.}
   \newcommand{\CaptionTxtD}{{\bf Case 4}: Next leftward position is paired to the left.}
 
@@ -63,6 +74,7 @@ line after snake=0pt,
 
   \node[right=5pt of n-end] (x) {};
 
+  \path (a-1) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\Struct$}  (a-2);
 
 
   \begin{pgfonlayer}{background}
@@ -91,6 +103,7 @@ line after snake=0pt,
   \path[lined] (a-0) -- (a-0b);
   \path[linez] (n-beg) -- (a-0b);
   \path[linez] (a-3) -- (n-end);
+  \path (a-0) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\ub\,\Struct$}  (a-2);
 
 
 
@@ -130,6 +143,7 @@ line after snake=0pt,
   \path[lined] (a-0b) -- (a-0);
   \path[lined] (a-3) -- (a-3b);
   \path[linez] (a-3b) -- (n-end);
+  \path (a-1) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\Struct$}  (a-2);
 
   \node[right=5pt of n-end] (x) {};
 
@@ -167,6 +181,7 @@ line after snake=0pt,
   \draw[bp,looseness=.8] (a-1) to (a-2);
   \draw[bp,looseness=.8] (a-0) to (a-3);
 
+  \path (a-1) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\op\,\Struct\,\cp$}  (a-2);
 
 
 
@@ -208,6 +223,8 @@ line after snake=0pt,
   \path[line] (a-4b) -- (a-4);
   \path[line] (a-4) -- (a-4t);
   \path[linez] (a-4t) -- (n-end);
+  \path (a-1) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\Struct$}  (a-2);
+  \path (a-3) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\Struct'$}  (a-4b);
 
   \draw[bp,looseness=.7] (a-0) to (a-4);
   \draw[bp,looseness=.9,dashed] (a-1) to (a-2);
@@ -250,6 +267,8 @@ line after snake=0pt,
   \node[left=5pt of n-beg] (y3) {};
   \path (x) edge[arr]    (y3);
 
+  \path (a-0) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\op\,\Struct\,\Struct'\,\cp$}  (a-3);
+
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-beg)(a-0b.east)] (r1) {};
   \node[rectangle,inner sep=\FitSep,draw,fit=(n-end)(a-3b.west) ] (r2) {};
@@ -287,6 +306,9 @@ line after snake=0pt,
   \path[linez] (a-y) -- (a-z);
   \path[line] (a-z) -- (a-0);
   \path[linez] (a-3) -- (n-end);
+  \path (a-1) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\Struct$}  (a-2);
+
+  \path (a-x) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\Struct'$}  (a-0);
 
   \node[right=5pt of n-end] (x) {};
 
@@ -332,6 +354,8 @@ line after snake=0pt,
 
   \node[left=5pt of n-beg] (y4) {};
   \path (x) edge[arr]    (y4);
+
+  \path (a-0) --  node[lbl,pos=.5,below=\NTSep] (lbl1) {$\op\,\Struct'\,\cp\,\Struct$}  (a-3b);
 
 
   \begin{pgfonlayer}{background}

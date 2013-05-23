@@ -1,9 +1,20 @@
-\begin{tikzpicture}[scale=.95]
+\begin{tikzpicture}[,drop shadow/.style={
+    general shadow={%
+      shadow scale=1.,
+      shadow xshift=1ex,
+      shadow yshift=-1ex,
+      opacity=.5,
+      fill=black!50,
+      every shadow,
+      #1
+    }
+  }]
 
   \newcommand{\BSep}{9pt}
   \newcommand{\HSep}{250pt}
-  \newcommand{\VSepUp}{160pt}
-  \newcommand{\VSepDown}{-160pt}
+  \newcommand{\HSepB}{500pt}
+  \newcommand{\VSepUp}{150pt}
+  \newcommand{\VSepDown}{-150pt}
   \newcommand{\LabSepA}{35pt}
   \newcommand{\LabSepB}{35pt}
   \newcommand{\LabSepC}{35pt}
@@ -25,6 +36,7 @@ line after snake=0pt, segment length=10pt,thick]
 font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
   \tikzstyle{prob}=[fill=none,above=5pt,font=\relsize{+4},draw=none]
   \tikzstyle{cap2}=[fill=none,above=12pt,font=\relsize{+3}]
+  \tikzstyle{eqn}=[fill=none,anchor=west,font=\relsize{+3}]
 
 
 
@@ -83,6 +95,14 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 \end{scope}
 
   \path (x1) edge[arr]    (y1);
+
+% \begin{scope}[xshift=\HSepB,yshift=\VSepUp]
+%   \node[eqn]{$\displaystyle
+% 	\Z{\Struct}{m}{x,y} =
+%       \sum_{\substack{a'\in \B,\\ \Kron_{a,a'}\le m}}  
+%       \Z{\Struct'}{m-\Kron_{a,a'}}{a',y}$};
+% \end{scope}
+% 
 
 
 %%% Stacking case %%%
@@ -143,6 +163,16 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 \end{scope}
  
   \path (x2) edge[arr] (y2);
+
+
+% \begin{scope}[xshift=\HSepB]
+%   \node[eqn]{$\displaystyle
+% \Z{\Struct}{m}{x,y} =
+%       \sum_{\substack{a',b'\in \B^2,\\ \Kron_{ab,a'b'}\le m}}
+% 			 e^{\frac{-\EBP{i,j}{xy}{a'b'}}{RT}}
+% 			 \cdot \Z{S'}{m-\Kron_{ab,a'b'}}{a',b'}$};
+% \end{scope}
+
 %%% Junction case %%%%
 \begin{scope}[yshift=\VSepDown] 
   \node[base] (a-1) at (0,0) {$a$};
@@ -220,6 +250,15 @@ font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
 
 \end{scope}
 
+
+% \begin{scope}[xshift=\HSepB,yshift=\VSepDown]
+%   \node[eqn]{$\displaystyle
+% \Z{\Struct}{m}{x,y}=\sum_{\substack{a',b'\in \B^2,\\ \Kron_{ab, a'b'}\le m}}
+%       \sum_{m'=0}^{m-\Kron_{ab,a'b'}}
+%    		 e^{\frac{-\EBP{i,k}{\varnothing}{a'b'}}{RT}}
+%       \cdot\Z{\Struct'}{m-m'-\Kron_{ab,a'b'}}{a',b'}
+%       \cdot\Z{\Struct''}{m'}{b',y}$};
+% \end{scope}
 
 
   \path (x3) edge[arr] (y3);
