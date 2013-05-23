@@ -9,7 +9,8 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{relsize}
-\usetikzlibrary{matrix,positioning,arrows,fit,shapes,shadows}
+\usepackage{mathptmx}
+\usetikzlibrary{matrix,positioning,arrows,fit,shapes,shadows,snakes,shadows}
 
 % graphicx package, useful for including eps and pdf graphics
 \usepackage{graphics,graphicx}
@@ -20,9 +21,7 @@
 \pgfdeclarelayer{background}
 \pgfsetlayers{background,main}
 
-\thispagestyle{empty}
-
-
 \begin{document}
-\input{workflow.pgf}
+\thispagestyle{empty}
+\input{FigDPOutside.pgf}
 \end{document}

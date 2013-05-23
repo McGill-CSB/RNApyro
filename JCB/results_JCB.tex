@@ -55,8 +55,10 @@ Similarly, we also investigated the impact of an under- and over- estimate of th
 
 To evaluate our method, we computed a ROC curve representing the performance of a classifier based on the mutational probabilities computed
 by \RNApyro. More specifically, we fixed a threshold $\lambda \in [0,1]$, and predicted an error at position $i$ in sequence $\omega$ if and only if the
-probability $P(i,x)$ of a nucleotide $x \in \{ A,C,G,U \}$ exceeds this threshold. To correct the errors we used the set of nucleotides having probability
-greated than $\lambda$, that is  $C(i) = \{ x \; | \;  x \in \{ A,C,G,U \} \mbox{ and } P(i,x) > \lambda \mbox{ and }  n \neq \omega[i] \},$ where $\omega[i]$ is
+probability $P(i,x)$ of a nucleotide $x$ exceeds this threshold. To correct the errors we used the set of nucleotides having probability
+greater than $\lambda$, that is  
+$$C(i) = \{ x \; | \;  x \in \{ \Ab,\Cb,\Gb,\Ub \}, P(i,x) > \lambda \mbox{ and }  n \neq \omega[i] \},$$
+ where $\omega[i]$ is
 the nucleotide at position $i$ in the input sequence. We note that, for lower thresholds, multiple nucleotides may be available in $C(i)$ to correct
 the sequence. Here, we remind that our aim is to estimate the potential of error-correction of \RNApyro, and not to develop a full-fledged error-correction pipe-line, which  
 shall be the subject of further studies. Finally, we progressively varied $\lambda$ between $0$ and $1$ to calculate the ROC curve and the area

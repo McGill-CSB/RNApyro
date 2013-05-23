@@ -1,45 +1,45 @@
-
 \begin{tikzpicture}[scale=.95]
 
   \newcommand{\BSep}{9pt}
   \newcommand{\HSep}{250pt}
-  \newcommand{\VSepUp}{140pt}
-  \newcommand{\VSepDown}{-140pt}
-  \newcommand{\LabSepA}{63pt}
-  \newcommand{\LabSepB}{75pt}
-  \newcommand{\LabSepC}{72pt}
+  \newcommand{\VSepUp}{160pt}
+  \newcommand{\VSepDown}{-160pt}
+  \newcommand{\LabSepA}{35pt}
+  \newcommand{\LabSepB}{35pt}
+  \newcommand{\LabSepC}{35pt}
  
-  \tikzstyle{base}=[circle,draw,thick,inner sep=0,minimum width=17pt,fill=white,,font={\relsize{+2}}]
-  \tikzstyle{basesmall}=[circle,draw,thick,inner sep=0,minimum width=10pt,fill=white]
-  \tikzstyle{basephantom}=[base,dashed,font=\relsize{+2}]
+  \tikzstyle{basebase}=[circle,draw,thick,inner sep=0,minimum width=18pt,fill=white,font=\relsize{+2}]
+
+  \tikzstyle{base}=[basebase]
+  \tikzstyle{basesmall}=[basebase,minimum width=10pt]
+  \tikzstyle{basephantom}=[basebase,dashed]
   \tikzstyle{linez}=[draw,snake=zigzag, segment aspect=.2,%
-line after snake=0pt, 
-        segment length=10pt,thick]
+line after snake=0pt, segment length=10pt,thick]
   \tikzstyle{lined}=[linez,draw,snake=none,thick]
   \tikzstyle{line}=[linez,draw,snake=none,thick]
   \tikzstyle{bp}=[in=95,out=85,draw,line width=1.5pt,blue,looseness=1]
-  \tikzstyle{block}=[trapezium,trapezium angle=33, fill=blue!20, draw=blue!20!gray,line width=1.5pt, inner sep=0]
+  \tikzstyle{block}=[trapezium,trapezium angle=33, fill=blue!20, draw=blue!20!gray,line width=1.5pt, inner sep=0,drop shadow]
   \tikzstyle{lbl}=[inner sep=0]
-  \tikzstyle{arr}=[line width=1.5pt,-open triangle 60,line width=2pt]
+  \tikzstyle{arr}=[-open triangle 60,line width=1.5pt]
   \tikzstyle{caption}=[%fill=gray!20,draw=gray!60,thick,inner sep=4pt,rounded corners=6pt,
-font=\relsize{+3},anchor=north west,xshift=-70pt]
+font=\relsize{+3}\sffamily,anchor=north west,xshift=-70pt]
   \tikzstyle{prob}=[fill=none,above=5pt,font=\relsize{+4},draw=none]
   \tikzstyle{cap2}=[fill=none,above=12pt,font=\relsize{+3}]
 
 
 
 
-
+ 
 %% Inside part %%%%%%%%%%
 {
 %% Unpaired case %%%%%%%%%%
 
 \begin{scope}[yshift=\VSepUp]
-  \node[base] (a-1) at (0,0) {$b$};
+  \node[base] (a-1) at (0,0) {$a$};
   \node[basesmall] (a-1b) at (.8,0) {};
   \node[basesmall] (a-2) at (4,0) {};
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$c$}; 
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$}; 
   \node[right=0 of a-3] (x1) {};
 
 
@@ -51,22 +51,22 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
   \node[lbl,below=3pt of a-2] (c2) {};
   \path (a-1) --  node (xx1) {\phantom{xx3}} (a-2);
 
-  \path[draw=none] (a-1) -- node[cap2] (s1) {$\Struct$}  (a-2);
+  \path[draw=none] (a-1) -- node[cap2] (s1) {$m$}  (a-2);
 
   \begin{pgfonlayer}{background}
   \node[rectangle,inner sep=2pt,draw,fit=(a-1.west)(a-2.east) (c1) (c2)] (r1) {};
   \path[block]   (r1.south west) to (r1.south east) to (r1.north east) to[out=90,in=90,looseness=1.1] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
 \end{scope}
-\node[above= \LabSepA of a-1, caption] {{\bf Case 1:} First position is unpaired.};
+\node[below= \LabSepA of a-1, caption] {{\bf Case 1:} First position is unpaired.};
 
 \begin{scope}[xshift=\HSep,yshift=\VSepUp]
-  \node[base] (a-1) at (0,0) {\color{red}$b'$};
+  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};
   \node[basesmall,right=\BSep of a-1] (a-1b)  {};
   \node[basesmall] (a-2) at (5,0) {};
   \node[left=\BSep of a-1, basephantom] (a-0) {}; 
-  \node[right=\BSep of a-2, basephantom] (a-3) {$c$};
-  \path[linez] (a-1b) -- node (xy1) {} node[cap2] {$\Struct'$}  (a-2);
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
+  \path[linez] (a-1b) -- node (xy1) {} node[cap2,yshift=-6pt] {$m-{\color{StressColor}\Kron_{a,a'}}$}  (a-2);
   \path[line] (a-1) -- (a-1b);
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
@@ -85,17 +85,17 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
   \path (x1) edge[arr]    (y1);
 
 
-%%%Stacking case %%%
+%%% Stacking case %%%
 \begin{scope}[yshift=0]
-  \node[base] (a-1) at (0,0) {$b$};
-  \node[base] (a-2) at (4,0) {$c$};
+  \node[base] (a-1) at (0,0) {$a$};
+  \node[base] (a-2) at (4,0) {$b$};
 
 
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
   \node[right=0 of a-3] (x2) {};
 
-  \path[linez] (a-1) -- node (xx2) {} node[cap2,yshift=-4pt] (s2) {$\Struct$}  (a-2);
+  \path[linez] (a-1) -- node (xx2) {} node[cap2,yshift=-4pt] (s2) {$m$}  (a-2);
 
   \path[lined] (a-0) -- (a-1);
   \path[lined] (a-2) -- (a-3);
@@ -111,19 +111,19 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
   \path[block]   (r1.south west) to   (r1.south east) to (r1.north east) to[out=90,in=90,looseness=1.1] (r1.north west) to (r1.south west) ;
   \end{pgfonlayer}{background}
 \end{scope}
-\node[above= \LabSepB of a-1, caption] {{\bf Case 2:} Extremities are paired, surrounded by another base-pair, forming a stacking base-pair.};
+\node[below= \LabSepB of a-1, caption] {{\bf Case 2:} Extremities are paired, nested within a consecutive base-pair, forming a stacking base-pair.};
 
 \begin{scope}[xshift=\HSep,yshift=00pt]
-  \node[base] (a-1) at (0,0) {\color{red}$b'$};
-  \node[base] (a-2) at (5,0) {\color{red}$c'$};
+  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};
+  \node[base,drop shadow] (a-2) at (5,0) {\color{StressColor}$b'$};
 
   \node[basesmall,right=\BSep of a-1] (a-1b) {};
   \node[basesmall,left=\BSep of a-2] (a-2b)  {};
 
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
 
-  \path[linez] (a-1b) -- node (xy2) {}  node[cap2,yshift=-4pt]  {$\Struct'$}  (a-2b);
+  \path[linez] (a-1b) -- node (xy2) {}  node[cap2,yshift=-10pt]  {$m-{\color{StressColor}\Kron_{ab,a'b'}}$}  (a-2b);
 
   \path[line] (a-1) -- (a-1b);
   \path[line] (a-2) -- (a-2b);
@@ -145,18 +145,18 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
   \path (x2) edge[arr] (y2);
 %%% Junction case %%%%
 \begin{scope}[yshift=\VSepDown] 
-  \node[base] (a-1) at (0,0) {$b$};
+  \node[base] (a-1) at (0,0) {$a$};
   \node[basesmall] (a-2) at (4,0) {};
-  \node[base] (a-2k) at (2,0) {$c$};
+  \node[base] (a-2k) at (2,0) {$b$};
 
-  \node[left=\BSep of a-1, basephantom] (a-0) {$a$};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[left=\BSep of a-1, basephantom] (a-0) {$x$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
   \node[right=0 of a-3] (x3) {};
 
 
   \path[linez] (a-1) --  (a-2k);
   \path[linez] (a-2k) --  (a-2);
-  \path[draw=none] (a-1) -- node[cap2,yshift=6pt](s3) {$\Struct$}  (a-2);
+  \path[draw=none] (a-1) -- node[cap2,yshift=6pt](s3) {$m$}  (a-2);
 
   \path (a-1) --  node (xx3) {} (a-2);
 
@@ -176,11 +176,11 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
   \end{pgfonlayer}{background}
 \end{scope}
 
-\node[above= \LabSepC of a-1, caption] {{\bf Case 3:} First position in paired to some position, but not involved in a stacking pair.};
+\node[below= \LabSepC of a-1, caption] {{\bf Case 3:} First position in paired to some position, but not involved in a stacking pair.};
 
 \begin{scope}[xshift=\HSep,yshift=\VSepDown]
-  \node[base] (a-1) at (0,0) {\color{red}$b'$};
-  \node[base] (a-p) at (3,0) {\color{red}$c'$};
+  \node[base,drop shadow] (a-1) at (0,0) {\color{StressColor}$a'$};
+  \node[base,drop shadow] (a-p) at (3,0) {\color{StressColor}$b'$};
 
   \node[basesmall,right=\BSep of a-1] (a-1b) {};
   \node[basesmall,left=\BSep of a-p] (a-pb)  {};
@@ -188,10 +188,10 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
 
   \node[basesmall] (a-2) at (5,0) {};
   \node[left=\BSep of a-1, basephantom] (a-0) {};
-  \node[right=\BSep of a-2, basephantom] (a-3) {$d$};
+  \node[right=\BSep of a-2, basephantom] (a-3) {$y$};
 
-  \path[linez] (a-1b) -- node (xy3) {} node[cap2,yshift=-7pt] {$\Struct'$} (a-pb);
-  \path[linez] (a-pa) -- node (xz3) {} node[cap2,yshift=-7pt] {$\Struct''$} (a-2);
+  \path[linez] (a-1b) -- node (xy3) {} node[cap2,yshift=-7pt] {$m'$} (a-pb);
+  \path[linez] (a-pa) -- node (xz3) {} node[cap2,yshift=-7pt] (xyx) {} (a-2);
 
   \path[line] (a-1) -- (a-1b);
   \path[line] (a-pb) -- (a-p);
@@ -227,18 +227,19 @@ font=\relsize{+3},anchor=north west,xshift=-70pt]
  \newcommand{\CapSep}{35pt}
  \tikzstyle{cap3}=[anchor=base,font=\relsize{+3}] 
 
- \node[below=\CapSep of xx1.center,cap3] {$m$};
- \node[ below=\CapSep of xx2.center,cap3] {$m$};
- \node[ below=\CapSep of xx3.center,cap3] {$m$};
+ \node[below=\CapSep of xx1.center,cap3] {$\Struct$};
+ \node[ below=\CapSep of xx2.center,cap3] {$\Struct$};
+ \node[ below=\CapSep of xx3.center,cap3] {$\Struct$};
 
- \node[below=\CapSep of xy1.center,cap3] {$m-{\color{red}\Kron_{b,b'}}$};
- \node[below=\CapSep of xy2.center,cap3] {$m-{\color{red}\Kron_{bc,b'c'}}$};
- \node[below=\CapSep of xy3.center,cap3] {$m'$};
- \node[below=\CapSep of xz3.center,text width=7em,cap3] {\;\,$m-m'-{\color{red}\Kron_{bc,b'c'}}$
+ \node[below=\CapSep of xy1.center,cap3] {$\Struct'$};
+ \node[below=\CapSep of xy2.center,cap3] {$\Struct'$};
+ \node[below=\CapSep of xy3.center,cap3] {$\Struct'$};
+ \node[below=\CapSep of xz3.center,cap3] {$\Struct''$};
 
-};
+  \node[cap3, above=28pt of xyx,xshift=23pt, inner sep=3pt] (tre) {$m-m'-{\color{StressColor}\Kron_{ab,a'b'}}$};
+  \draw[arr] (tre) -- (xyx.center);
 
 }
 
   
-\end{tikzpicture}2
+\end{tikzpicture}
