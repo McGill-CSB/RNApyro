@@ -97,7 +97,7 @@ or as two sequences segregated by some base-pair (General base-pairing case). In
 The \emph{Inside} function $\Z{\Struct}{m}{x,y}$ is simply the partition function, i.e. the sum of Boltzmann factors over all sequences for a substructure $\Struct$ (implicitly attached to an interval $[i,j]$ of the sequence), featuring $m$ mutations/errors compared to $s$, and having flanking nucleotides $x$ and $y$. 
 Such terms can be computed recursively, using the following equation for the initial case:
 \begin{equation}
-	\forall x,y\in B\times \B, m\in [0,M]:\, \Z{\varepsilon}{m}{x,y}=\left\{
+	\forall x,y\in \B\times \B, m\in [0,M]:\, \Z{\varepsilon}{m}{x,y}=\left\{
 	\begin{array}{ll}
 		1 &\text{ If } m = 0\\
 		0 &\text{ Otherwise.}
@@ -144,7 +144,6 @@ In other words, if the leftmost position is paired, and the base-pair is not sta
 
 The \emph{Outside} function, $\Y{\Struct}{m}{x,y}$ is the partition function considering only the 
 contributions of subsequences excluding a given structure/interval $\Struct$, occupying the open interval $]i,j[$ in the sequence, at Hamming distance exactly $m$ to the initial sequence $s$, and assuming that nucleotides $x$ and $y$ were previously chosen for $i+1$ and $j-1$, the outermost portions of the excluded structure.
-\TODOYann{Reformat outside Figure as in Incarnation.}
 The associated terms $\Y{\Struct}{m}{x,y}$ can then be computed recursively, initially considering the case of any prefix $\Struct'$ of the complete structure:
 \begin{equation}
 	\forall x,y\in \B\times \B, \forall \Struct'\text{ s.t. }\Struct=\Struct'.\Struct'', m\in [0,M]:\, \Y{\Struct'}{m}{x,y}=\Z{\Struct''}{m}{y,z}
@@ -167,7 +166,7 @@ In general, the main recurrence below works by extending the excluded structure 
     \Y{\ub\Struct}{m- \Kron_{a,a'}}{a',y}
 \label{eq:Y_rec_A}
 \end{equation}
-\item {\bf Case 2: Stacking base-pair.} If both ends of the excluded structure are paired together, and are nested within another base-pair in the remaining structure, then an additional contribution for stacking has to be considered. The outside terms are then computed by simulating any pair of base-pairing nucleotides for $i,j$, and by proceeding recursively on the remaining portion, as follows:
+\item {\bf Case 2: Stacking base-pair.} If both ends of the excluded structure are paired together, and are nested within another base-pair in the remaining structure, then an additional contribution, stemming from a stacking pairs energy, has to be considered. The outside terms are then computed by simulating any pair of base-pairing nucleotides for $i,j$, and by proceeding recursively on the remaining portion, as follows:
 \begin{equation}
 	\Y{\Struct}{m}{x,y} = 
     \sum_{\substack{a'b'\in \B^2,\\ \Kron_{ab,a'b'}\le m}}
