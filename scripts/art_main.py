@@ -108,7 +108,21 @@ def get_nt_probs(raw_reads):
 
     return d_nt_probs
 
-def get_max_vote(d_merge_probs):
+def list_ss_bp(ss):
+    d_lbp = {}
+    d_rbp = {}
+    left = []
+    for i,x in enumerate(ss):
+        if x == '(':
+            left.append(i)
+        elif x == ')':
+            l = left.pop()
+            r = i
+            d_lbp[l] = r
+            d_rbp[r] = l
+    return d_lbp,d_rbp
+
+def get_max_vote(d_merge_probs,ss):
     seq = []
     for pos in sorted(d_merge_probs['probs'].keys()):
         t = tuple((x,len(d_merge_probs['probs'][pos][x])) 
@@ -122,7 +136,8 @@ def get_max_vote(d_merge_probs):
         seq.append(nt)
     return ''.join(seq)
 
-def main(seq,l_reads,fold):
+
+def main(seq,l_reads,fold,ss):
     seq = seq.upper().replace('U','T')
     if any(x not in ('ACGT') for x in seq):
         print help()
@@ -133,7 +148,7 @@ def main(seq,l_reads,fold):
     d_clean_align = clean_align(raw_align,l_seq)
     d_nt_probs = get_nt_probs(raw_reads)
     d_merge_probs = merge_reads(d_clean_align,d_nt_probs)
-    max_vote_seq = get_max_vote(d_merge_probs)
+    max_vote_seq = get_max_vote(d_merge_probs,ss)
     print seq
     print max_vote_seq
 
@@ -165,6 +180,7 @@ if __name__ == '__main__':
     opts = sys.argv
     
     seq = ''
+    ss = ''
     l_reads = 0
     fold = 0
 
@@ -174,12 +190,14 @@ if __name__ == '__main__':
         elif x == '-s':
             seq = opts[i+1].upper().replace('U','T')
         elif x == '-f':
-            fold = opts[i+1]
+            fold = int(opts[i+1])
+        elif x == '-ss':
+            ss = opts[i+1]
 
-    if not seq or not l_reads or not fold:
+    if not seq or not l_reads or not fold or not ss:
         print seq, l_reads,fold
         help()
         sys.exit(1)
 
-    main(seq,l_reads,fold)
+    main(seq,l_reads,fold,ss)
     
