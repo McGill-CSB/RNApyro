@@ -53,7 +53,7 @@ The isostericity contribution exponentially favors sequences that are likely to 
 
 \subsubsection{Combining contributions.}
 Let us remark that any of the individual contributions can be associated to (a subset of) the base-pairs occurring in the structure, possibly complemented, in the case of stacking pairs, with the knowledge of flanking base-pairing nucleotide.
-Therefore, let us denote by $\EBP{i,j}{xy}{a'b'}$ the local contribution of a base-pair $(i,j)$ of nucleotides $(a',b')$, surrounded by a stacking pair $(x,y)$ (or $\varnothing$ otherwise), to the pseudo-energy:
+Dropping the implicit dependency on $\Omega$ and $\beta$, let us denote by $\EBP{i,j}{xy}{a'b'}$ the local contribution of a base-pair $(i,j)$ of nucleotides $(a',b')$, surrounded by a stacking pair $(x,y)$ (or $\varnothing$ otherwise), to the pseudo-energy:
 \begin{equation}
   \EBP{i,j}{xy}{a'b'}  = \alpha \cdot\ES^\beta_{xy \to a' b'}+(1-\alpha)\cdot\EI^{\Omega}_{(i,j),a'b'}.
 \end{equation}
@@ -72,10 +72,10 @@ We define a variant of the
 
 The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C}, is analogous to an \emph{inside} computation. Considering an interval of the sequence/secondary structure, it consists in the accumulated contributions of any possible sequences that have suitable Hamming distance within the interval. It is therefore similar to a partition function, i.e. the sum of Boltzmann factors over all sequences within $[i,j]$, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$), within 
-$m$ mutations of $s$. The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec},
+$m$ mutations of $s$. The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D},
  computes the \emph{outside} algorithm,   
 the partition function over sequences within $m$ mutations of $s$ outside the interval (restricted to two intervals $[0,i]\cup[j,n-1]$), 
-knowing  that flanking inner positions $(i+1,j-1)$ contain nucleotides $a$ and $b$ respectively. A suitable multiplicative combination of these terms, computed as shown in Equation~\eqref{eq:combine}, gives the total weight of every possible sequences that support a given base-pair (or unpaired position) and, in turn, the probability of seeing a specific base at a given position.
+knowing  that flanking inner positions $(i+1,j-1)$ contain nucleotides $a$ and $b$ respectively. A suitable combination of these terms, computed as shown in Equations~\eqref{eq:combine_A}-\eqref{eq:combine_C}, gives the total weight of every possible sequences that support a given base-pair (or unpaired position) and, in turn, the probability of seeing a specific base at a given position.
 
 %Drawing a parallel with stochastic context-free grammars (SCFG), for which the inside-outside algorithm was introduced, the set of sequences can be seen as the language of words having length $n$, generated from a stochastic context-free grammar.
 %These rules would limit the number of mutations (i.e. )
@@ -157,9 +157,9 @@ It is also worth pointing out that $\Y{\Struct}{m}{x,y}= \Z{\varepsilon}{m}{y,X}
 \begin{figure}[t]\centering
 \includegraphics[scale=\ScaleDP]{FigDPOutsideWrapper}
 \caption{Principle of the outside computation. Note that the outside algorithm uses intermediate results from the inside algorithm, 
-therefore its efficient implementation requires the precomputation and storage of the inside contributions.}
+therefore its efficient implementation requires the precomputation and storage of the inside contributions.\label{fig:outside}}
 \end{figure}
-In general, the main recurrence below works by extending the excluded structure $\Struct$ (covering the $]i,j[$ interval) in the leftward direction, and considers four cases depending on the base-pairing status and directionality of the next considered position:
+In general, the main recurrence below works by extending the excluded structure $\Struct$ (covering the $]i,j[$ interval) in the leftward direction. As shown in Figure~\ref{fig:outside}, four cases must be considered, depending on the base-pairing status and directionality of the next considered position:
 \begin{itemize}
 \item {\bf Case 1: Unpaired position.} When the innermost leftward base is unpaired, any base $a\in\B$ may be chosen for this position, and the rest of the sequence is generated recursively. The number of remaining mutations may be decreased by the choice of $a$, leading to the following recurrence:
 \begin{equation}
@@ -167,7 +167,7 @@ In general, the main recurrence below works by extending the excluded structure 
     \Y{\ub\Struct}{m- \Kron_{a,a'}}{a',y}
 \label{eq:Y_rec_A}
 \end{equation}
-\item {\bf Case 2: Stacking base-pair.} If both ends of the excluded structure are paired together, and are nested within another base-pair in the remaining structure, then an additional contribution for stacking has to be considered. The outside terms are then computed by simulating the choice of two base-pairing nucleotides, and by recurring on the remaining portion, as follows:
+\item {\bf Case 2: Stacking base-pair.} If both ends of the excluded structure are paired together, and are nested within another base-pair in the remaining structure, then an additional contribution for stacking has to be considered. The outside terms are then computed by simulating any pair of base-pairing nucleotides for $i,j$, and by proceeding recursively on the remaining portion, as follows:
 \begin{equation}
 	\Y{\Struct}{m}{x,y} = 
     \sum_{\substack{a'b'\in \B^2,\\ \Kron_{ab,a'b'}\le m}}
@@ -188,7 +188,7 @@ The structure within the base-pair may be described by the expression $\op\Struc
 \end{equation}
 \item {\bf Case 4: Next position paired leftward.} If the innermost, leftward, position $i$ is paired to some position $k<i$, delimiting a substructure $\Struct'$, then any sequence considered by the outside computation consists in three parts: two nucleotides $a$ and $b$, a sequence for $\Struct'$, and a sequence for the region excluding $\op\Struct'\cp\Struct$. Consequently, one has:
 \begin{equation}
-	\Y{i,j}{m}{x,y} = 
+	\Y{\Struct}{m}{x,y} = 
 		 \sum_{\substack{a'b'\in \B^2,\\ \Kron_{ab,a'b'}\le m}}
 		 \sum_{m'=0}^{m-\Kron_{ab,a'b'}}
    	 e^{\frac{-\EBP{k,i}{\varnothing}{a'b'}}{RT}}
@@ -205,69 +205,46 @@ We are now left to compute the probability that a a given nucleotide $a\in\B$ is
 This quantity can also be expressed as the ratio of $\mathcal{W}^M_{\substack{i, [a]}}$, the total Boltzmann weight 
 of the set of sequences featuring the nucleotide, and $\Z{\varepsilon}{\le M}{X,X}$ the total weight of sequences having at most $M$ mutations:
 \begin{equation}
-	\mathbb{P}(s_i = a\;|\; M) := \frac{\mathcal{W}^M_{\substack{i, [a]}}}{\sum_{m=0}^{M}\Z{\varepsilon}{m}{X,X}}\label{eq:normalize}
+	\mathbb{P}(s_i = a\;|\; M) := \frac{\mathcal{W}^M_{\substack{i, [a]}}}{\Z{\varepsilon}{\le M}{X,X'}} = \frac{\mathcal{W}^M_{\substack{i, [a]}}}{\sum_{m=0}^{M}\Z{\varepsilon}{m}{X,X'}}\label{eq:normalize}
 \end{equation}
+where $X,X'\in\B$ may be any nucleotides (no impact on energy/weights).
 
-
-To that purpose, we leverage the \emph{Inside-Outside} construction, and obtain the three following cases:
+To that purpose, one leverages the \emph{Inside-Outside} construction. Namely, while computing the total contribution of sequences featuring a base $a'\in\B$ at position $i$, one must consider the three following situations:
 \begin{itemize}
-\item 
-where $\mathcal{W}{\substack{\ast\\ \ast}}$ is defined by:
+\item {\bf Case 1: Unpaired position.} In this case, the supporting sequences are simply those excluding the structure $\ub$ at position $i$, where a base $c\in\B$ was formerly found. Summing over any possible number of mutations for the \emph{outside} region, one obtains:
 \begin{equation}
-\resizebox{\textwidth}{!}{%
-$ \mathcal{W}^M_{\substack{i, [x]}} =  \left\{
-	\begin{array}{ll}
+ \mathcal{W}^M_{\substack{i, [a]}} =  \sum_{m=\Kron_{a,c}}^{M}
+			\Y{\ub}{m-\Kron_{a,c}}{a,a}.
+\label{eq:combine_A}
+\end{equation}
+\item {\bf Case 2: Position is paired rightward.} Here, position $i$ is paired to some position $k>i$, whose content impacts the base-pair contribution. Any sequence having $a$ at position $i$ can be decomposed as a base-pair, nesting a sequence for the structure $\Struct'$ on the interval $[i+1,k-1]$, and an outside sequence, excluding the structure $\op\Struct'\cp$.
+Consequently, let $c$ and $d$ be the original nucleotides at positions $i$ and $k$, one has:
+\begin{equation}
+ \mathcal{W}^M_{\substack{i, [a]}} =  
 			\sum_{m=0}^{M}
-			\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}
-		&\text{If }S_i = -1\\
-			\displaystyle
+			\sum_{\substack{b\in \B\\\Kron_{ab,cd}\leq m}}
+			\sum_{m'=0}^{m-\Kron_{ab,cd}}
+     	 e^{\frac{-\EBP{i,k}{\varnothing}{ab}}{RT}}
+			\cdot\Y{\op\Struct'\cp}{m-\Kron_{ab,cd}}{a,b}
+			\cdot\Z{\Struct'}{m'}{a,b}
+\label{eq:combine_B}
+\end{equation}
+\item {\bf Case 3: Position is paired leftward.} This case is symmetrical to the previous one, with the exception that $k<i$.
+Consequently, let $c$ and $d$ be the original nucleotides at positions $i$ and $k$, one has:
+\begin{equation}
+ \mathcal{W}^M_{\substack{i, [a]}} =  
 			\sum_{m=0}^{M}
-			\sum_{\substack{b\in B\\\Kron_{xb,s_is_k\leq m}}}
-			\sum_{m'=0}^{m-\Kron_{xb,s_is_k}}
-     	 e^{\frac{-E_{(i,k),\varnothing\to xb}^{\Omega,\beta} }{RT}}
-			\cdot\Y{i-1,k+1}{m-\Kron_{xb,s_is_k-m'}}{x,b}
-			\cdot\Z{i+1,k-1}{m'}{x,b}
-		&\text{If }S_i=k>i\\
-    \displaystyle
-			\sum_{m=0}^{M}
-			\sum_{\substack{b\in B\\\Kron_{bx,s_ks_i\leq m}}}
-			\sum_{m'=0}^{m-\Kron_{bx,s_ks_i}}
-     	 e^{\frac{-E^{\Omega, \beta}_{(k,i),\varnothing\to bx}}{RT}}
-			\cdot\Y{k-1,i+1}{m-\Kron_{bx,s_ks_i-m'}}{b,x}
-			\cdot\Z{k+1,i-1}{m'}{b,x}
-		&\text{If }S_i=k<i
-	\end{array}\right.
-$}\label{eq:combine}
+			\sum_{\substack{b\in \B\\\Kron_{ba,cd}\leq m}}
+			\sum_{m'=0}^{m-\Kron_{ba,cd}}
+     	 e^{\frac{-\EBP{k,i}{\varnothing}{ba}}{RT}}
+			\cdot\Y{\op\Struct'\cp}{m-\Kron_{ba,cd}}{b,a}
+			\cdot\Z{\Struct'}{m'}{b,a}
+\label{eq:combine_C}
 \end{equation}
 \end{itemize}
 
-\TODOYann{Rephrase as tree constructs}
-\TODOVlad{Add illustration of Inside/Outside combination (adapted from RECOMB presentation??)}
-In every case, the denominator is the sum of the partitions function of exactly $m$ mutations, 
-for $m$ smaller or equal to our target $M$. The numerators are divided in the following three cases.
-\begin{description}
-\item[$S_i=-1$:] If the nucleotide at position $i$ is not paired, we are concerned by the weights
-over all sequences which have at position $i$ nucleotide $x$, which is exactly the sum
-of the values of $\Y{i-1,i+1}{m-\Kron_{x,s_i}}{x,x}$, for all $m$ between $0$ and $M$.
-\item[$S_i=k>i$:] Since we need to respect the derivation of the secondary structure $S$, if 
-position $i$ is paired, we must consider the two partition functions. The \emph{outside} of the 
-base pair, and the \emph{inside}, for all possible values for the nucleotide at position $k$, and
-all possible distribution of the mutant positions between the inside and outside of the base pair. We also add the term of isostericity for this specific base pair.
-\item[$S_i=k<i$:] Same as above, but with position $i$ pairing with a lower position.
-\end{description}
-
-By construction, the partition function over all sequences at exactly $m$ mutations of a reference sequence $s$ can 
-be either described from the \emph{inside} contribution $\Z{\Struct}{m}{X,X}$ of the whole sequence,
-$\forall X\in B$, or from a subset of the \emph{outside} terms, such that:
-$$
-	\Z{\Struct}{m}{X,X}
-	\equiv
-	\sum_{\substack{a\in \B,\\ \Kron_{a,s[k]}\le m}}	
-	\Y{\ub}{m-\Kron_{a,s[k]}}{a,a},\forall k \text{	unpaired.}
-$$
-
 \subsection{Complexity Considerations}
-Equations~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D} can be computed using dynamic programming. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and interval lengths, memorizing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ can be accessed in constant time thanks to a simple precomputation (not described)  of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations.
+Clearly, Equations~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D} can be computed using dynamic programming. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and structure lengths, storing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ may be accessed in constant time after a simple precomputation of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations due to the explicit distribution of the number of mutations.
 
 In principle, $\Theta(m\cdot n^2)$ terms, identified by $(m,i,j)$ triplets, should be computed.
 However, a close inspection of the recurrences reveals that the computation can be safely restricted to a subset of intervals $(i,j)$.
