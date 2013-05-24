@@ -35,7 +35,7 @@ The free-energy contribution in our pseudo-energy model corresponds to an additi
 where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. neither $\Gb\Ub$, $\Ub\Gb$, $\Cb\Gb$, $\Gb\Cb$, $\Ab\Ub$ nor $\Ub\Ab$). This latter parameter allows to choose whether to simply penalize invalid base pairs, or forbid them altogether ($\beta = \infty$).
 The loss of precision due to this simplification of the Turner model remains reasonable since the targeted secondary structure is fixed. For instance, multiloops do not consider base-specific contributions, and therefore their consideration would constitute a criterion for preferring a sequence over another. Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
 \subsubsection{Isostericity Contribution.}
-The concept of isostericity score~\cite{Stombaugh2009} is based on the geometric discrepancy (superimposability) of two base-pairs, using individual additive contributions computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gap-free RNA alignment $\Omega$,  we define the isostericity contribution to the pseudo-energy as
+The concept of isostericity score is based on the geometric discrepancy (superimposability) of two base-pairs, using individual additive contributions computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gap-free RNA alignment $\Omega$,  we define the isostericity contribution to the pseudo-energy as
 \begin{align*}
   \ES(s,S,\Omega) &= \sum_{\substack{(i,j)\in S\\ \text{pairs}}}\EI^{\Omega}_{(i,j),s_i s_j}, & \text{where}&& 	\EI^{\Omega}_{(i,j),ab}:=
 	\frac{
@@ -62,17 +62,21 @@ Dropping the implicit dependency on $\Omega$ and $\beta$, let us denote by $\EBP
 
 
 Let $s$ be an RNA sequence, $S$ a reference structure, and $m\geq 0$ a desired number of mutations. 
-We are interested in  the probability that a given position contains a specific nucleotide, over all sequences having at most $M$ mutations from $s$
-%  under the SCFG derivation $S$ 
-(formally $\mathbb{P}(s_i = x\mid s,\Omega, \Struct,M)$). 
-We define a variant of the
- \emph{Inside-Outside algorithm}~\cite{Lari1990} to compute this
- probability, based on two sets of dynamic programming equations. 
+We are interested in  the probability that a given position contains a specific nucleotide, over all sequences having at most $M$ mutations from $s$. Formally, let $\mathcal{D}_{s,M}=\{s'\;|\;\delta(s,s')\le M\}$ be the set of admissible sequences, one aims at computing the probabilities
+\begin{equation}
+\mathbb{P}(s_i = x\mid s,\Omega, \Struct,M) = \frac{\sum_{\substack{s'\in\mathcal{D}_{s,M}\\\text{s.t. }s'_{i}=x}}B(s')}{\sum_{\substack{s''\in\mathcal{D}_{s,M}}}B(s'')}
+\end{equation}
+
+ 
+Clearly, the number of sequences in $\mathcal{D}_{s,M}$ grows exponentially with the sequence length, therefore one cannot realistically rely on an exhaustive enumeration to compute the mutational profile. To work around this issue, we propose a linear-time variant of the
+ \emph{Inside-Outside algorithm}~\cite{Lari1990} to compute this probability, based on two sets of dynamic programming equations. 
 %from the two  functions $\mathcal{Z}_*^*$ and $\mathcal{Y}_*^*$. 
 
-The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C}, is analogous to an \emph{inside} computation. Considering an interval of the sequence/secondary structure, it consists in the accumulated contributions of any possible sequences that have suitable Hamming distance within the interval. It is therefore similar to a partition function, i.e. the sum of Boltzmann factors over all sequences within $[i,j]$, 
+The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C}, is analogous to an \emph{inside} computation: Considering a given substructure of the input structure, it computes the accumulated contributions of any possible sequences that have suitable Hamming distance within the interval. It is therefore similar to a partition function, i.e. the sum of Boltzmann factors over all sequences within $[i,j]$, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$), within 
-$m$ mutations of $s$. The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D},
+$m$ mutations of $s$. 
+
+The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D},
  computes the \emph{outside} algorithm,   
 the partition function over sequences within $m$ mutations of $s$ outside the interval (restricted to two intervals $[0,i]\cup[j,n-1]$), 
 knowing  that flanking inner positions $(i+1,j-1)$ contain nucleotides $a$ and $b$ respectively. A suitable combination of these terms, computed as shown in Equations~\eqref{eq:combine_A}-\eqref{eq:combine_C}, gives the total weight of every possible sequences that support a given base-pair (or unpaired position) and, in turn, the probability of seeing a specific base at a given position.
@@ -243,8 +247,10 @@ Consequently, let $c$ and $d$ be the original nucleotides at positions $i$ and $
 \end{itemize}
 
 \subsection{Complexity Considerations}
-Clearly, Equations~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D} can be computed using dynamic programming. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and structure lengths, storing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ may be accessed in constant time after a simple precomputation of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations due to the explicit distribution of the number of mutations.
+Using dynamic programming, Equations~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D} can be computed in linear time and memory. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and structure lengths, storing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ may be accessed in constant time after a simple precomputation of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations due to the explicit distribution of the number of mutations.
 
 In principle, $\Theta(m\cdot n^2)$ terms, identified by $(m,i,j)$ triplets, should be computed.
 However, a close inspection of the recurrences reveals that the computation can be safely restricted to a subset of intervals $(i,j)$.
-For instance, the inside algorithm only requires computing intervals $[i,j]$ that do not break any base-pair, and whose next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation, resulting in a drastic limitation of the combinatorics of required computations, dropping from $\Theta(n^2)$ to $\Theta(n)$ the number of terms that need to be computed and stored. Consequently the overall complexity of the algorithm is $\Theta(n\cdot(|\Omega|+m^2))$ arithmetic operations and $\Theta(n\cdot(|\Omega|+m))$ memory.
+For instance, the inside algorithm only requires computing intervals $[i,j]$ that do not break any base-pair, and whose next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation,  following from the linearity of the outside recurrence (i.e. the computation of the outside term for a given excluded structure only relies on the computation of another, strictly larger, structure).
+ 
+These properties drastically limit the combinatorics of required computations, dropping from $\Theta(n^2)$ to $\Theta(n)$ the number of terms that need to be computed and stored. Consequently the overall complexity of the algorithm is $\Theta(n\cdot(|\Omega|+M^2))$ arithmetic operations and $\Theta(n\cdot(|\Omega|+M))$ memory.
