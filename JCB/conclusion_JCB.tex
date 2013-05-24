@@ -7,8 +7,8 @@ In this article we presented a new and efficient way of exploring the mutational
 and apply our techniques to identify and fix sequencing errors. In addition, we introduced a new scoring scheme to measure the
 likelihood of sequencing errors that combines the classical nearest-neighbour energy model parameters \cite{Turner2010} to the recently introduced
 isostericity matrices \cite{Stombaugh2009}. The latter accounting for geometrical discrepancies occurring during base pair replacements.
-Importantly, our algorithm runs in  $\Theta(n\cdot(|\Omega|+m^2))$ time and $\Theta(n\cdot(|\Omega|+m))$ memory, where $n$ is the length of the RNA,
-$m$ the number of mutations and $\Omega$ the size of the multiple sequence alignment. This achievement enables us to envision applications to high-throughput sequencing pipe-lines.
+Importantly, our algorithm runs in  $\Theta(n\cdot(|\Omega|+M^2))$ time and $\Theta(n\cdot(|\Omega|+M))$ memory, where $n$ is the length of the RNA,
+$M$ the number of mutations and $\Omega$ the size of the multiple sequence alignment. This achievement enables us to envision applications to high-throughput sequencing pipe-lines.
 
 
 By combining these two approaches into \texttt{RNApyro} ,  the 
