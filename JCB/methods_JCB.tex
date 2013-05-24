@@ -71,9 +71,12 @@ We are interested in  the probability that a given position contains a specific 
 Clearly, the number of sequences in $\mathcal{D}_{s,M}$ grows exponentially with the sequence length, therefore one cannot realistically rely on an exhaustive enumeration to compute the mutational profile. To work around this issue, we propose a linear-time variant of the
  \emph{Inside-Outside algorithm}~\cite{Lari1990} to compute this probability, based on two sets of dynamic programming equations. 
 %from the two  functions $\mathcal{Z}_*^*$ and $\mathcal{Y}_*^*$. 
-The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C}, is analogous to an \emph{inside} computation. Considering an interval of the sequence/secondary structure, it consists in the accumulated contributions of any possible sequences that have suitable Hamming distance within the interval. It is therefore similar to a partition function, i.e. the sum of Boltzmann factors over all sequences within $[i,j]$, 
+
+The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C}, is analogous to an \emph{inside} computation: Considering a given substructure of the input structure, it computes the accumulated contributions of any possible sequences that have suitable Hamming distance within the interval. It is therefore similar to a partition function, i.e. the sum of Boltzmann factors over all sequences within $[i,j]$, 
 knowing that position $i-1$ is composed of nucleotide $a$ (resp. $j+1$ is $b$), within 
-$m$ mutations of $s$. The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D},
+$m$ mutations of $s$. 
+
+The latter, defined by Equations~\eqref{eq:Y_in} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D},
  computes the \emph{outside} algorithm,   
 the partition function over sequences within $m$ mutations of $s$ outside the interval (restricted to two intervals $[0,i]\cup[j,n-1]$), 
 knowing  that flanking inner positions $(i+1,j-1)$ contain nucleotides $a$ and $b$ respectively. A suitable combination of these terms, computed as shown in Equations~\eqref{eq:combine_A}-\eqref{eq:combine_C}, gives the total weight of every possible sequences that support a given base-pair (or unpaired position) and, in turn, the probability of seeing a specific base at a given position.
