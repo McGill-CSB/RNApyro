@@ -804,7 +804,7 @@ def help(file_name=False,
       -a <float>    The weight given to match the MSE or the secondary
                     structure, between [0,1]. A weight of 1 will only
                     take into account the secondary structure, 0 only
-                    the MSE
+                    the MSA
     Optional:
       -p <float>    The penality for a non canonical base pair (default
                     sys.maxint)
