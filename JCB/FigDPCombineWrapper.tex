@@ -1,0 +1,27 @@
+
+\documentclass[11pt,border=1pt]{standalone}
+\pdfcompresslevel=0\pdfobjcompresslevel=0 
+%\usepackage[letterpaper]{geometry}
+% amsmath package, useful for mathematical formulas
+\usepackage{amsmath}
+% amssymb package, useful for mathematical symbols
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{relsize}
+\usepackage{mathptmx}
+\usetikzlibrary{matrix,positioning,arrows,fit,shapes,shadows,snakes,shadows}
+
+% graphicx package, useful for including eps and pdf graphics
+\usepackage{graphics,graphicx}
+
+% Generate the pdf: latex Figure1;dvips Figure1.dvi;ps2epsi Figure1.ps;epspdf Figure1.epsi
+
+\input{macros.tex}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\begin{document}
+\thispagestyle{empty}
+\input{FigDPCombine.pgf}
+\end{document}

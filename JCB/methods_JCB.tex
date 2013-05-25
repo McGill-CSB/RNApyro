@@ -212,6 +212,11 @@ of the set of sequences featuring the nucleotide, and $\Z{\varepsilon}{\le M}{X,
 \end{equation}
 where $X,X'\in\B$ may be any nucleotides (no impact on energy/weights).
 
+\begin{figure}[t]\centering
+\includegraphics[scale=\ScaleDP]{FigDPCombineWrapper}
+\caption{Combining the inside and outside contributions to compute the total Boltzmann weight of all sequences having a given base (case 1) or base-pair (cases 2 and 3) at a given position.\label{fig:combine}}
+\end{figure}
+
 To that purpose, one leverages the \emph{Inside-Outside} construction. Namely, while computing the total contribution of sequences featuring a base $a'\in\B$ at position $i$, one must consider the three following situations:
 \begin{itemize}
 \item {\bf Case 1: Unpaired position.} In this case, the supporting sequences are simply those excluding the structure $\ub$ at position $i$, where a base $c\in\B$ was formerly found. Summing over any possible number of mutations for the \emph{outside} region, one obtains:
