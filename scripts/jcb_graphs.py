@@ -11,7 +11,7 @@ def main(m='a'):
         data = cPickle.load(f)
 
 
-    for f_name in os.listdir(os.path.join('..','16S','Bench')):
+    for f_name in os.listdir(os.path.join('..','16S','Bench_iso')):
         id = int(f_name.split('.')[0])
         seq = d_key[id][0]
         fold = d_key[id][-1]
@@ -24,7 +24,7 @@ def main(m='a'):
             pass
         cmd = ['python',
                'createROC.py',
-               '-f', '%s' % os.path.join('..','16S','Bench',f_name),
+               '-f', '%s' % os.path.join('..','16S','Bench_iso',f_name),
                '-o', '%s' % os.path.join('Figs_Bench','%sid_%sfold.pdf' % (id, fold)),
                '-m', '%s' % m]
         print cmd
