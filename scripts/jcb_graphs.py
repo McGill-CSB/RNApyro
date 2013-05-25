@@ -1,15 +1,23 @@
 import os
 import sys
+import cPickle
 from subprocess import call
 
 def main(m='a'):
     with open(os.path.join('..','16S','key_to_Bench.txt')) as f:
         key = eval(f.readline())
     d_key = {x[0]:x[1:] for x in key}
+    with open(os.path.join('..','16S','d_clusters_trim.cPickle')) as f:
+        data = cPickle.load(f)
+
 
     for f_name in os.listdir(os.path.join('..','16S','Bench')):
         id = int(f_name.split('.')[0])
+        seq = d_key[id][0]
         fold = d_key[id][-1]
+        mut = data[seq]['mut'][fold]
+        with open(os.path.join('Figs_Bench','%sid_%sfold.mut' % (id, fold)), 'w') as f:
+            f.write(mut)
         try:
             os.mkdir('Figs_Bench')
         except OSError:

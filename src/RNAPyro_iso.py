@@ -370,6 +370,27 @@ class memoize(dict):
   def resetCache(self):
       self.clear()
 
+class memoize_iso(dict):
+  """Generically memoizes a function results."""
+  fun = None
+  
+  def __init__(self, f):
+      self.fun = f
+  
+  def __call__(self,*args):
+      nargs = [args[0]]
+      nargs.extend(args[2:])
+      nargs = tuple(nargs)
+      if nargs in self:
+          return self[nargs]
+      else:
+          val = mpf(self.fun(*args))
+          self[nargs] = val
+          return val
+  def resetCache(self):
+      self.clear()
+
+
 def delta(seq,i,c):
   if i<0 or i>=len(seq):
     return 0
@@ -386,6 +407,7 @@ def energy((a,b),(a2,b2),alpha):
 def isGapChar(c):
   return c=="." or c=="-"
 
+@memoize_iso
 def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   if not ref_seq:
     return 1.
