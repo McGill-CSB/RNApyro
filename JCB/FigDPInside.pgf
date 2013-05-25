@@ -1,8 +1,8 @@
 \begin{tikzpicture}[,drop shadow/.style={
     general shadow={%
       shadow scale=1.,
-      shadow xshift=1ex,
-      shadow yshift=-1ex,
+      shadow xshift=.8ex,
+      shadow yshift=-.8ex,
       opacity=.5,
       fill=black!50,
       every shadow,
