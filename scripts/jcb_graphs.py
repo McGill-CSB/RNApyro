@@ -25,7 +25,7 @@ def main(m='a'):
         cmd = ['python',
                'createROC.py',
                '-f', '%s' % os.path.join('..','16S','Bench_iso',f_name),
-               '-o', '%s' % os.path.join('Figs_Bench','%sid_%sfold.pdf' % (id, fold)),
+               '-o', '%s' % os.path.join('Figs_Bench','%sid_%sfold_%s.pdf' % (id, fold,m)),
                '-m', '%s' % m]
         print cmd
         call(cmd)
