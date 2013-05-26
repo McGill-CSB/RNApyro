@@ -217,7 +217,7 @@ where $X,X'\in\B$ may be any nucleotides (no impact on energy/weights).
 \caption{Combining the inside and outside contributions to compute the total Boltzmann weight of all sequences having a given base (case 1) or base-pair (cases 2 and 3) at a given position.\label{fig:combine}}
 \end{figure}
 
-To that purpose, one leverages the \emph{Inside-Outside} construction. Namely, while computing the total contribution of sequences featuring a base $a'\in\B$ at position $i$, one must consider the three following situations:
+To that purpose, one leverages the \emph{Inside-Outside} construction, as  illustrated by Figure~\ref{fig:combine}. Namely, while computing the total contribution of sequences featuring a base $a'\in\B$ at position $i$, one must consider the three following situations:
 \begin{itemize}
 \item {\bf Case 1: Unpaired position.} In this case, the supporting sequences are simply those excluding the structure $\ub$ at position $i$, where a base $c\in\B$ was formerly found. Summing over any possible number of mutations for the \emph{outside} region, one obtains:
 \begin{equation}
@@ -254,7 +254,7 @@ Consequently, let $c$ and $d$ be the original nucleotides at positions $i$ and $
 \subsection{Complexity Considerations}
 Using dynamic programming, Equations~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C} and~\eqref{eq:Y_rec_A}-\eqref{eq:Y_rec_D} can be computed in linear time and memory. Namely, the $\mathcal{Z}^{*}_{*}$ and $\mathcal{Y}^{*}_{*}$ terms are computed starting from smaller values of $m$ and structure lengths, storing the results as they become available to ensure constant-time access during later stages of the computation. Furthermore, energy terms $E(\cdot)$ may be accessed in constant time after a simple precomputation of the isostericity contributions in $\Theta(n\cdot|\Omega|)$. Computing any given term therefore requires $\Theta(m)$ operations due to the explicit distribution of the number of mutations.
 
-In principle, $\Theta(m\cdot n^2)$ terms, identified by $(m,i,j)$ triplets, should be computed.
+In principle, $\Theta(M\cdot n^2)$ terms, identified by $(M,i,j)$ triplets, should be computed.
 However, a close inspection of the recurrences reveals that the computation can be safely restricted to a subset of intervals $(i,j)$.
 For instance, the inside algorithm only requires computing intervals $[i,j]$ that do not break any base-pair, and whose next position $j+1$ is either past the end of the sequence, or is base-paired prior to $i$. Similar constraints hold for the outside computation,  following from the linearity of the outside recurrence (i.e. the computation of the outside term for a given excluded structure only relies on the computation of another, strictly larger, structure).
  

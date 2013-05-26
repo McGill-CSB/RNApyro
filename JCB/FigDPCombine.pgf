@@ -14,8 +14,8 @@
 
   \newcommand{\NTSep}{17pt}
   \newcommand{\BSep}{9pt}
-  \newcommand{\HSep}{350pt}
-  \newcommand{\RelPosA}{300pt}
+  \newcommand{\HSep}{380pt}
+  \newcommand{\RelPosA}{330pt}
   \newcommand{\FitSep}{3.5pt}
 
   \newcommand{\LabSep}{28pt}
@@ -114,7 +114,7 @@ line after snake=0pt,
 
   \node[left=5pt of n-beg] (y2) {};
 
-\node[below= \LabSep of n-beg, caption,text width=39em] {{\bf Case 2 \& 3:} Paired position, leading to a decomposition\\ of suitable sequences into inside and outside parts.};
+\node[below= \LabSep of n-beg, caption] {{\bf Case 2 \& 3:} Paired positions.};
 
 
   \begin{pgfonlayer}{background}
