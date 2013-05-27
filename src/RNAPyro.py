@@ -781,7 +781,7 @@ def help(file_name=False,
 
   print """Required:
       -f <file_path>  Path to the file containing the reference
-                      sequence, the MSE (optional) and the secondary
+                      sequence, the MSA (optional) and the secondary
                       structure. The FIRST sequence in the file
                       will be used as reference
       -m <int>        The numbers of mutants required
