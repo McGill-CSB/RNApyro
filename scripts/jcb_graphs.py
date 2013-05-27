@@ -1,7 +1,9 @@
 import os
 import sys
 import cPickle
+import pylab
 from subprocess import call
+import numpy
 
 def ind(modes):
     print "File\tMode\tAlpha\tAUC\tDelta\t#MutEst\t#MutReal"
@@ -37,7 +39,7 @@ def ind(modes):
                    '-m', '%s' % m]
             #print cmd
             call(cmd)
-	
+    
 def batch(modes):
     print "File\tMode\tAlpha\tAUC\tDelta\t#MutEst\t#MutReal"
     with open(os.path.join('..','16S','key_to_Bench.txt')) as f:
@@ -78,18 +80,62 @@ def batch(modes):
                    '-m', '%s' % m])
             call(cmd)
 
+def getTimes(path):
+    fileHandler = open(path,'r')
+    lines = [line[:] for line in fileHandler.readlines()]
+    seq = lines[0][:-1]
+    struct = lines[1][:-1]
+    nbMut = int(lines[2][:-1])
+    profiles = eval(lines[3][:-1])
+    times = eval(lines[4])
+    print len(seq),nbMut,times
+    return times
+
+
+def createTimeFig():
+    dataPoints = {}
+    for l in open("TimeBench.dat","r"):
+        data = l[:-1].split()
+        print data
+        try:
+            if len(data)==2:
+                f_name,time = data[0],float(data[1])
+                args = f_name.split("-")
+                length = int(args[1][len("length"):])
+                if (length not in dataPoints):
+                    dataPoints[length] = []
+                dataPoints[length].append(time)
+        except Exception, e:
+            print e
+            pass
+    x = dataPoints.keys()
+    x.sort()
+    y = [numpy.mean(dataPoints[v]) for v in x]    
+    err = [numpy.std(dataPoints[v]) for v in x]    
+    pylab.figure()
+    pylab.errorbar(x, y, yerr=err,linewidth=1.5)
+    pylab.title("")
+    pylab.xlabel('Length (nts)',fontsize=16)
+    pylab.ylabel('Time (sec.)',fontsize=16)
+    pylab.savefig(os.path.join("Figs_Bench","TimeBenchmark.pdf"), format='pdf',bbox_inches='tight')
 
 if __name__ == '__main__':
     modes = ['a','b']
     batch_flag = False
+    time_flag = False
     for i, opt in enumerate(sys.argv):
         if opt == '-m':
             modes = [sys.argv[i + 1]]
         elif opt == '-b':
             batch_flag = True
+        elif opt == '-t':
+            time_flag = True
 
                   
     if batch_flag:
         batch(modes)
+    elif time_flag:
+        createTimeFig()
     else:
         ind(modes)
+
