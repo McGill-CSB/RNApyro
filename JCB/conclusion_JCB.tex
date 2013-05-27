@@ -5,23 +5,31 @@
 \TODOJerome{Etoffer la conclusion}
 In this article we presented a new and efficient way of exploring the mutational landscape of an RNA under structural constraints,
 and apply our techniques to identify and fix sequencing errors. In addition, we introduced a new scoring scheme to measure the
-likelihood of sequencing errors that combines the classical nearest-neighbour energy model parameters \cite{Turner2010} to the recently introduced
-isostericity matrices \cite{Stombaugh2009}. The latter accounting for geometrical discrepancies occurring during base pair replacements.
+likelihood of sequencing errors that combines the classical nearest-neighbour energy model parameters \cite{Turner2010} to the
+recently introduced isostericity matrices \cite{Stombaugh2009}. The latter accounting for geometrical discrepancies occurring
+during base pair replacements.
 
 We combined our algorithm for exploring the mutational neighbourhood of an input sequence with known secondary structure to
-this new pseudo energy model, and create a tool to predict point-wise sequencing errors in structured RNAs.
-Importantly, our algorithm runs in  $\Theta(n\cdot(|\Omega|+M^2))$ time and $\Theta(n\cdot(|\Omega|+M))$ memory, where $n$ is the length of the RNA,
-$M$ the number of mutations and $\Omega$ the size of the multiple sequence alignment. This achievement enables us to envision applications to high-throughput sequencing pipe-lines.
+this new pseudo energy model, and create a tool to predict point-wise sequencing errors in structured RNAs. Importantly, our
+algorithm runs in  $\Theta(n\cdot(|\Omega|+M^2))$ time and $\Theta(n\cdot(|\Omega|+M))$ memory, where $n$ is the length of
+the RNA, $M$ the number of mutations and $\Omega$ the size of the multiple sequence alignment. This achievement enables
+us to envision applications to high-throughput sequencing pipe-lines.
 
-We validated our model on the 5s rRNA and 16s rRNA (See Sec.~\ref{sec:results}) and showed that our technology enables us to recover 
-mutational errors with [INSERT PERFS]. Interestingly, we observed that using the isostericity matrices alone yields higher performance than with the 
-nearest-neighbour energy model alone. This findings supports our hypothesis that isostericity matrices provide a valuable source of informations that
-can be efficiently used for RNA sequence and structure analysis.
+We validated our model on the 5s rRNA and 16s rRNA (See Sec.~\ref{sec:results}) and showed that our technology enables us
+to recover mutational errors with high accuracy (Area under the ROC curve between $0.95$ and $0.99$ when the mutations are
+located in in base paired regions). Interestingly, we observed that using the isostericity matrices alone yields higher performance
+than with the nearest-neighbour energy model alone. This finding supports our hypothesis that isostericity matrices provide a
+valuable source of informations that can be efficiently used for RNA sequence and structure analysis. Nonetheless, we also found
+that the nearest-neighbour model seems to provide a valuable signal when we under-estimate of the number of errors in the input
+sequences.
 
-Our techniques are designed to correcting point-wise errors in structured regions (i.e. base paired nucleotides). Nonetheless, our software 
-\texttt{RNApyro} can be easily combined with other methodologies previously developed for correcting other types of sequencing errors such as indels in 
-unstructured regions or repeats \cite{Quinlan2008,Quince:2009uq}. In further works, we also intend to include in our model errors stemming from insertions or deletions. It is indeed theoretically possible to considers these scenario within our dynamic programming scheme \cite{Waldispuhl:2002fk} with minor impacts of the complexity.
+Our techniques are designed to correcting point-wise errors in structured regions (i.e. base paired nucleotides). Nonetheless,
+our software \texttt{RNApyro} can be easily combined with other methodologies previously developed for correcting other types
+of sequencing errors such as indels in unstructured regions or repeats \cite{Quinlan2008,Quince:2009uq}. In further works, we
+also intend to include in our model errors stemming from insertions or deletions. It is indeed theoretically possible to considers
+these scenario within our dynamic programming scheme \cite{Waldispuhl:2002fk} with minor impacts of the complexity.
 
-Finally, we hope that integrating our software to current sequencing pipe-lines used in metagenomics studies will permit to improve the estimate of microbial diversity.
+Finally, we hope that integrating our software to current sequencing pipe-lines used in metagenomics studies will permit to
+improve the estimate of microbial diversity.
 
 
