@@ -98,14 +98,14 @@ def plot_multiple_roc(rocList,title='',labels=None, include_baseline=False, equa
 	if equal_aspect:
 		cax = pylab.gca()
 		cax.set_aspect('equal')
-	pylab.xlabel("1 - Specificity")
-	pylab.ylabel("Sensitivity")
+	pylab.xlabel("1 - Specificity", fontsize=16)
+	pylab.ylabel("Sensitivity", fontsize=16)
 	pylab.title(title)
 	if not labels:
 		labels = [ '' for x in rocList]
 	_remove_duplicate_styles(rocList)
 	for ix, r in enumerate(rocList):
-		pylab.plot([x[0] for x in r.derived_points], [y[1] for y in r.derived_points], r.linestyle, linewidth=1.5, label=labels[ix])
+		pylab.plot([x[0] for x in r.derived_points], [y[1] for y in r.derived_points], r.linestyle, marker=None,linewidth=1.5, label=labels[ix])
 	if include_baseline:
 		pylab.plot([0.0,1.0], [0.0, 1.0], 'k-', label= 'random')
 	if labels:

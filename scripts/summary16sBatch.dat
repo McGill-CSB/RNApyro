@@ -1,0 +1,25 @@
+File	Mode	Alpha	AUC	Delta	#MutEst	#MutReal	Fold
+Multiple	a	0.0	78.54	-3.0	27	5	5
+Multiple	a	0.5	68.43	-204.0	27	5
+Multiple	a	0.8	67.64	-195.0	27	5
+Multiple	a	1.0	67.32	-206.0	27	5
+Multiple	b	0.0	99.76	-3.0	27	5
+Multiple	b	0.5	93.06	-204.0	27	5
+Multiple	b	0.8	92.79	-195.0	27	5
+Multiple	b	1.0	92.51	-206.0	27	5
+Multiple	a	0.0	83.51	23.0	73	67	15
+Multiple	a	0.5	81.15	-127.0	73	67
+Multiple	a	0.8	79.53	-137.0	73	67
+Multiple	a	1.0	77.55	-172.0	73	67
+Multiple	b	0.0	97.78	23.0	73	67
+Multiple	b	0.5	95.22	-127.0	73	67
+Multiple	b	0.8	93.15	-137.0	73	67
+Multiple	b	1.0	91.14	-172.0	73	67
+Multiple	a	0.0	77.40	7.0	18	7	10
+Multiple	a	0.5	78.33	-103.0	18	7
+Multiple	a	0.8	76.70	-115.0	18	7
+Multiple	a	1.0	75.46	-137.0	18	7
+Multiple	b	0.0	93.72	7.0	18	7
+Multiple	b	0.5	93.26	-103.0	18	7
+Multiple	b	0.8	92.55	-115.0	18	7
+Multiple	b	1.0	93.04	-137.0	18	7
