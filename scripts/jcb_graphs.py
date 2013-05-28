@@ -94,7 +94,7 @@ def getTimes(path):
 
 def createTimeFig():
     dataPoints = {}
-    for l in open("TimeBench.dat","r"):
+    for l in open("TimeBench_yamaska.dat","r"):
         data = l[:-1].split()
         print data
         try:

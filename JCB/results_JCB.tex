@@ -29,7 +29,7 @@ For each sequence, a random multiple sequence alignment was generated, consistin
 \end{figure}
 
 
-\subsection{Error Correction in 5s rRNAs}
+\subsection{Homogenous Error Correction in 5s rRNAs}
 \label{sec:5S}
 To illustrate the potential of our algorithm, we applied our techniques to identify and correct point-wise errors in RNA sequences
 with conserved secondary structures. More precisely, we used \RNApyro to reconstruct 5s rRNA sequences with randomly distributed
@@ -93,40 +93,30 @@ presumed mutations. Indeed, good AUC values are achieved even with conservative 
 Fig.~\ref{fig:ROCall}(a)), as well as with large  values (cf~200\% of the errors  in Fig.~\ref{fig:ROCall}(c)). It is worth noting that scoring schemes giving a larger weight on
 the isostericity scores (i.e. for low $\alpha$ values) seem more robust to under- and over-estimating the number of errors.
 
-\subsection{Error Correction in 16s rRNAs}
+\subsection{Correcting Illumina sequencing errors in 16s rRNAs}
 \label{sec:16S}
 \TODOTous{Describe and present results????}
 
-To complete our benchmark we also looked at the Bacterial small subunit ribosomal RNA. 
-We gathered the seed multiple sequence alignment (MSA) composed of 93 sequences from the Rfam Database 11.0 (Rfam id: RF00177)~\cite{gardner2011rfam}.
-Those sequences are between 1461 and 1568 nucleotides long and yield a similarity of $69\%$.
+To complete our benchmark, we turned to the small subunit ribosomal RNA in bacteriae, a molecule which is of particular interest  in metagenomics and phylogenetics. Our aim was to get as close as possible to a pyrosequencing context, in which reads are produced non-uniformly by an Illumina sequencer, impacting the distribution of errors in the sequence. 
+We chose this setting both because of the popularity of Illumina sequencing in metagenomics, and since the underlying sequencing technique only considers base substitutions (no insertions), the only type of errors currently detected by \RNApyro.
+To that purpose, we used simulated Illumina reads, mapped the reads back to a reference alignment, and run \RNApyro on a consensus sequence derived from the mapped reads, estimating the maximal amount of mutations from both the length of the sequence and the sequencing depth.
 
-As in Sec.~\ref{sec:5S} we used a leave-one-out strategy. Since few structures contain all gaps 
-at the same positions, after selecting a sequence of interest,  we used the following strategy.
- It was applied to each sequence in the alignment. Starting with the full alignment, all positions corresponding to gaps in the sequence of interest were removed, for all sequences in the alignment.  
 
-To simulate sequencing error in the sequence of interest,
- we use the the next-generation sequencing read simulator 
-\ART~\cite{huang2012art}. The Illumina technology main error mode is base substitution. We used
-this model since those
-are the errors that \RNApyro detects. As parameters, the reads  generated
-were $75\text{bps}$ long for an average fold coverage of $5$, $10$ and $15$. 
- They yield respectively an average error rate of $2.4\%$, $0.9\%$ and $0.6\%$. \ART reads
- are automatically mapped to the sequence of interest. For every position covered by reads, 
- we selected the nucleotide appearing more frequently. At un-covered position, we picked a random
- nucleotide.
+We gathered the seed sequences of the bacterial multiple sequence alignment (MSA) retrieved from the RFAM Database 11.0 (Rfam id: RF00177)~\cite{gardner2011rfam}. This alignment is composed of 93 sequences, whose length varies between 1461 and 1568 nucleotides, and has an average pairwise sequence identity of $69\%$. We used the pseudoknot-free version of the consensus secondary structure. A secondary structure for a specific reference sequence was obtained by simply mapping the structure back to sequence, i.e. by removing any base-pair having at least one partner involved in a gapped position. For similar reasons, we locally excluded from our calculation of the isostericity contribution for a given base-pair, described in Section~\ref{sec:model}, any sequence featuring at least a gap on the corresponding positions.
+
+To simulate sequencing errors, we used the next-generation sequencing read simulator 
+{\tt ART}~\cite{huang2012art}. The \emph{Illumina technology} setting was chosen as the main error mode, generating reads of $75~\text{bps}$, featuring mostly base substitution errors. Reads were mapped back to the original sequence, and a consensus sequence was determined, from the sequencing output, by a simple majority vote in the case of multiple coverage. Uncovered regions were simply generated at random. The average  rate of errors observed in the final consensus sequence was empirically estimated to represent $2.4\%$, $0.9\%$ and $0.6\%$ of the reference sequence, for prescribed sequencing coverages of $5$, $10$ and $15$ fold respectively.
+
+As in Section~\ref{sec:5S}, we evaluated the predictive power of \RNApyro-computed mutational profiles using a leave-one-out strategy. We picked a sequence at random from the MSA, sequenced/mutated it as above, and run \RNApyro to establish its mutational profile. In this execution, we used values of $\beta=15$ and $\alpha\in [0, 0.5, 0.8, 1.0]$, and set the presumed number of mutations to twice the average error rate made by {\tt ART}, i.e. $4.8\%$, $1.8\%$ and $1.2\%$ for fold coverages of $5$, $10$ and $15$ respectively.
+We repeated the whole procedure $12$/$10$/$14$ times for the $5$/$10$/$15-$fold coverage. 
+We evaluated the predictive power of the profile by a computing a joint ROC curve for each value of $\alpha$, and each coverage, as described in Section~\ref{sec:5S}. Figure~\ref{fig:16s_all} shows the ROC curves, computed over all positions, while Figure~\ref{fig:16s_bp} only focuses on positions that are paired in the consensus secondary structure.
+
+
+
  
-We used a value of $\beta=15$ and evaluated $\alpha$ at $0, 0.5, 0.8, 1.0$. 
- Additionally since the alignment still contains gap, we made sure to evaluate the isostericity 
- term only
- with sequences in the MSA where both positions in the base pair are not gaps. 
- Due to the low number of errors, we set the presumed as twice the average error rate made by \ART, i.e. $4.8\%$, $1.8\%$ and $1.2\%$ for fold coverages of $5$, $10$ and $15$ respectively. \ART reads
- 
-To evaluate our method, we simulated with a random sequences from the MSA every time,
- $12$ times the $5-$fold, $10$ times the $10-$fold and $14$ times the $15-$fold coverage. And we 
- evaluated the ROC curve mostly as in Sec.~\ref{sec:5S}. In Fig.~\ref{fig:16s_all} they are computed
- over all positions, while in Fig.~\ref{fig:16s_bp} only over positions inside a base pair.
- 
+
+
+
  \begin{figure}
 \centering
 \begin{subfigure}{.33\textwidth}
@@ -176,9 +166,9 @@ Our data demonstrates that even on long sequences our algorithm shows interestin
 error-correction applications. First, the AUC values (up to 0.81) when looking at all positions, 
 in Fig.~\ref{fig:16s_all},  indicate that a signal has been successfully extracted. When restraining
 to structured regions (i.e. base paired regions) we obtain AUC values up to 0.998.  Since 
-contributions to the energy only comes from structured regions, this was an expected result.
+contributions to the energy and isostericity only arise from structured regions, this was an expected result.
 
 An interesting feature is that best results are almost always when $\alpha=0$, i.e. all the contribution
 comes from the isostericity. A notable exception is when the number of mutation is underestimated, 
-in that case best performances were observed for non-nil values of $\alpha$.
+in that case best performances were observed for non-null values of $\alpha$.
 
