@@ -107,18 +107,21 @@ at the same positions, after selecting a sequence of interest,  we used the foll
 
 To simulate sequencing error in the sequence of interest,
  we use the the next-generation sequencing read simulator 
-ART~\cite{huang2012art}. The Illumina technology main error mode is base substitution. We used
+\ART~\cite{huang2012art}. The Illumina technology main error mode is base substitution. We used
 this model since those
 are the errors that \RNApyro detects. As parameters, the reads  generated
 were $75\text{bps}$ long for an average fold coverage of $5$, $10$ and $15$. 
- They yield respectively an average error rate of $2.4\%$, $0.9\%$ and $0.6\%$.
+ They yield respectively an average error rate of $2.4\%$, $0.9\%$ and $0.6\%$. \ART reads
+ are automatically mapped to the sequence of interest. For every position covered by reads, 
+ we selected the nucleotide appearing more frequently. At un-covered position, we picked a random
+ nucleotide.
  
 We used a value of $\beta=15$ and evaluated $\alpha$ at $0, 0.5, 0.8, 1.0$. 
  Additionally since the alignment still contains gap, we made sure to evaluate the isostericity 
  term only
  with sequences in the MSA where both positions in the base pair are not gaps. 
- Due to the low number of errors, we set the presumed as twice the average error rate made by ART, i.e. $4.8\%$, $1.8\%$ and $1.2\%$ for fold coverages of $5$, $10$ and $15$ respectively.
-
+ Due to the low number of errors, we set the presumed as twice the average error rate made by \ART, i.e. $4.8\%$, $1.8\%$ and $1.2\%$ for fold coverages of $5$, $10$ and $15$ respectively. \ART reads
+ 
 To evaluate our method, we simulated with a random sequences from the MSA every time,
  $12$ times the $5-$fold, $10$ times the $10-$fold and $14$ times the $15-$fold coverage. And we 
  evaluated the ROC curve mostly as in Sec.~\ref{sec:5S}. In Fig.~\ref{fig:16s_all} they are computed
@@ -164,7 +167,7 @@ ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the i
   \includegraphics[width=\linewidth]{figures/15fold-b}
     \caption{$15-$fold coverage}
 \end{subfigure}
-\caption{Performance of error-correction over positions inside a base pair. Subfigures show accuracy when
+\caption{Performance of error-correction over structured positions (i.e. inside a base pair). Subfigures show accuracy when
 ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the impact of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores and use values ranging of $\alpha = \{0, 0.5, 0.8, 1.0\}$. The AUC is indicated in the legend of the figures. Each individual ROC curve represent the average performance over at least 10 experiments.}
 \label{fig:16s_bp}
 \end{figure}
