@@ -10,14 +10,13 @@ for  arbitrary floating point precision. The source code is freely available at:
 %\TODOJerome{Did we set up an ad hoc website?}
 
 {\centering \url{http://csb.cs.mcgill.ca/RNApyro}\\}
-The time benchmarks were performed on a MacMini 2010, 2.3GHz dual-core Intel Core i5, 8GB of RAM.
-%on AMD Opteron(tm) Processor 6278  at 2.4 GHz with cache of 512 KB.20 cores and 175 GB ram.
+The time benchmarks were performed on an AMD Opteron(tm) Processor 6278  at 2.4 GHz with cache of 512 KB.20 cores and 175 GB ram.
 Since typical use-cases of \RNApyro require efficiency and scalability, we present in TableFigure~\ref{fig:time}
 typical runtimes required to compute the probabilities for  every nucleotide at every positions for a vast set of parameters.
 For those tests, both the multiple sequence alignment and the reference sequence were generated uniformly at random,
 based on a realistic random secondary structure, generated as described in Levin~\emph{et al}~\cite{Levin:2012kx}.
 \TODOVlad{Add more extensive time benchmark, as a plot}
-\TODOVlad{Is time benchmark still on Mac mini or mcbbigram?}
+%\TODOVlad{Is time benchmark still on Mac mini or mcbbigram?}
 
 \begin{figure}[t]
 {\centering \includegraphics[width=.5\linewidth]{figures/TimeBenchmark}\\}
@@ -96,6 +95,7 @@ the isostericity scores (i.e. for low $\alpha$ values) seem more robust to under
 
 \subsection{Error Correction in 16s rRNAs}
 \label{sec:16S}
+\TODOTous{Describe and present results????}
 
 To complete our benchmark we also looked at the Bacterial small subunit ribosomal RNA. 
 We gathered the seed multiple sequence alignment (MSA) composed of 93 sequences from the Rfam Database 11.0 (Rfam id: RF00177)~\cite{gardner2011rfam}.
@@ -118,6 +118,4 @@ were $75\text{bps}$ long for an average fold coverage of $5$, $10$ and $15$.
 
 
 
-\subsection{Error Correction in 16s rRNAs}
 
-\TODOTous{Describe and present results????}
