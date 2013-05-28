@@ -121,7 +121,8 @@ We used a value of $\beta=15$ and evaluated $\alpha$ at $0, 0.5, 0.8, 1.0$.
 
 To evaluate our method, we simulated with a random sequences from the MSA every time,
  $12$ times the $5-$fold, $10$ times the $10-$fold and $14$ times the $15-$fold coverage. And we 
- evaluated the ROC curve as in Sec.~\ref{sec:5S}.
+ evaluated the ROC curve mostly as in Sec.~\ref{sec:5S}. In Fig.~\ref{fig:16s_all} they are computed
+ over all positions, while in Fig.~\ref{fig:16s_bp} only over positions inside a base pair.
  
  \begin{figure}
 \centering
@@ -168,4 +169,13 @@ ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the i
 \label{fig:16s_bp}
 \end{figure}
 
+Our data demonstrates that even on long sequences our algorithm shows interesting potential for 
+error-correction applications. First, the AUC values (up to 0.81) when looking at all positions, 
+in Fig.~\ref{fig:16s_all},  indicate that a signal has been successfully extracted. When restraining
+to structured regions (i.e. base paired regions) we obtain AUC values up to 0.998.  Since 
+contributions to the energy only comes from structured regions, this was an expected result.
+
+An interesting feature is that best results are almost always when $\alpha=0$, i.e. all the contribution
+comes from the isostericity. A notable exception is when the number of mutation is underestimated, 
+in that case best performances were observed for non-nil values of $\alpha$.
 
