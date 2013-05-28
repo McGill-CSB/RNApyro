@@ -6,15 +6,18 @@
 The software was implemented in Python2.7 using the \textit{mpmath}~\cite{mpmath} library
 for  arbitrary floating point precision. The source code is freely available at:
 
-{\centering \url{https://github.com/McGill-CSB/RNApyro}\\}
-\TODOJerome{Did we set up an ad hoc website?}
+%{\centering \url{https://github.com/McGill-CSB/RNApyro}\\}
+%\TODOJerome{Did we set up an ad hoc website?}
+
+{\centering \url{http://csb.cs.mcgill.ca/RNApyro}\\}
 
 The time benchmarks were performed on a MacMini 2010, 2.3GHz dual-core Intel Core i5, 8GB of RAM.
-Since typical use-cases of \RNApyro require
- efficiency and scalability, we present in TableFigure~\ref{fig:time} typical runtimes required to compute the probabilities for  every nucleotide at every positions for a vast set of parameters. For those tests,
- both the multiple sequence alignment and the reference sequence were generated uniformly at random, based on a realistic random secondary structure, generated as described in Levin~\emph{et al}~\cite{Levin:2012kx}.
+Since typical use-cases of \RNApyro require efficiency and scalability, we present in TableFigure~\ref{fig:time}
+typical runtimes required to compute the probabilities for  every nucleotide at every positions for a vast set of parameters.
+For those tests, both the multiple sequence alignment and the reference sequence were generated uniformly at random,
+based on a realistic random secondary structure, generated as described in Levin~\emph{et al}~\cite{Levin:2012kx}.
 \TODOVlad{Add more extensive time benchmark, as a plot}
-
+\TODOVlad{Is time benchmark still on Mac mini or mcbbigram?}
 
 \begin{figure}[t]
 {\centering \includegraphics[width=.5\linewidth]{figures/TimeBenchmark}\\}
