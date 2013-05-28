@@ -63,17 +63,33 @@ if __name__=="__main__":
   exec_name = os.path.join('..','src','RNAPyro_iso.py')
   nbmuts = 10
   alpha = .5
-  outfile = open("TimeBench.dat","w")
+
+  dataPoints = {}
   for f_name in os.listdir(os.path.join("TimeBench")):
-    outfile.write("%s\t"%(f_name))
-    cmd = ['python',
-                   exec_name,
-                   '-f', '%s' % os.path.join("TimeBench",f_name),
-                   '-m', '%s' % nbmuts,
-                   '-a', '%s' % alpha
-                   ]
-    tic = time.time()
-    call(cmd)
-    tac = time.time() - tic
-    print "%s\t%s"%(f_name,tac)
-    outfile.write("%s\n"%(tac))
+    args = f_name.split("-")
+    length = int(args[1][len("length"):])
+    if (length not in dataPoints):
+      dataPoints[length] = []
+    dataPoints[length].append(f_name)
+  maxSize = max([len(x) for x in dataPoints.values()])
+
+  outfile = open("TimeBenchTst.dat","w")
+  lengths = dataPoints.keys()
+  lengths.sort()
+  for i in range(maxSize):
+    for length in lengths:
+      if len(dataPoints[length])>i:
+        f_name = dataPoints[length][i]
+        outfile.write("%s\t"%(f_name))
+        cmd = ['python',
+                       exec_name,
+                       '-f', '%s' % os.path.join("TimeBench",f_name),
+                       '-m', '%s' % nbmuts,
+                       '-a', '%s' % alpha
+                       ]
+        tic = time.time()
+        call(cmd)
+        tac = time.time() - tic
+        print "%s\t%s"%(f_name,tac)
+        outfile.write("%s\n"%(tac))
+        outfile.flush()
