@@ -8,7 +8,7 @@ for  arbitrary floating point precision. The source code is freely available at:
 
 {\centering \url{https://github.com/McGill-CSB/RNApyro}\\}
 
-The time benchmarks were performed on a MacMini 2010, 2.3GHz dual-core Intel Core i5, 8GB of RAM.
+The time benchmarks were performed on a MacMini 2010, 2.3GHz dual-core Intel Core i5, 8GB of RAM for the Sec.~\ref{sec:5S} and Sec.~\ref{sec:16S} on AMD Opteron(tm) Processor 6278  at 2.4 GHz with cache of 512 KB.20 cores and 175 GB ram. 
 Since typical use-cases of \RNApyro require
  efficiency and scalability, we present in Table~\ref{tab:time} typical runtimes required to compute the probabilities for  every nucleotide at every positions for a vast set of parameters. For those tests,
  both the sequences and the target secondary structure were generated at random.
@@ -37,7 +37,7 @@ set at $0.5$,  $\beta$ to $15$ and $|\Omega|=44$.}
 
 
 \subsection{Error Correction in 5s rRNAs}
-
+\label{sec:5S}
 To illustrate the potential of our algorithm, we applied our techniques to identify and correct point-wise errors in RNA sequences
 with conserved secondary structures. More precisely, we used \RNApyro to reconstruct 5s rRNA sequences with randomly distributed
 mutations. This experiment has been designed to suggest further applications to error-corrections in pyrosequencing data.
@@ -99,6 +99,29 @@ using this energy term. Further studies must be conducted to understand how to m
 presumed mutations. Indeed, good AUC values are achieved even with conservative estimates for the number of errors (c.f.~50\% of the errors, leading to 
 Fig.~\ref{fig:ROCall}(a)), as well as with large  values (cf~200\% of the errors  in Fig.~\ref{fig:ROCall}(c)). It is worth noting that scoring schemes giving a larger weight on
 the isostericity scores (i.e. for low $\alpha$ values) seem more robust to under- and over-estimating the number of errors.
+
+\subsection{Error Correction in 16s rRNAs}
+\label{sec:16S}
+
+To complete our benchmark we also looked at the Bacterial small subunit ribosomal RNA. 
+We gathered the seed multiple sequence alignment (MSA) composed of 93 sequences from the Rfam Database 11.0 (Rfam id: RF00177)~\cite{gardner2011rfam}.
+Those sequences are between 1461 and 1568 nucleotides long and yield a similarity of $69\%$.
+
+As in Sec.~\ref{sec:5S} we used a leave-one-out strategy. Since few structures contain all gaps 
+at the same positions, after selecting a sequence of interest,  we used the following strategy.
+ It was applied to each sequence in the alignment. Starting with the full alignment, all positions corresponding to gaps in the sequence of interest were removed, for all sequences in the alignment.  
+
+To simulate sequencing error in the sequence of interest,
+ we use the the next-generation sequencing read simulator 
+ART~\cite{huang2012art}. The Illumina technology main error mode is base substitution. We used
+this model since those
+are the errors that \RNApyro detects. As parameters, the reads reads generated
+were $75\text{bps}$ long for an average fold coverage of $5$, $10$ and $15$. 
+ They yield respectively an average error rate of $2.4\%$, $0.9\%$ and $0.6\%$.
+ 
+ As in Sec.~\ref{sec:5S} we used a value of $\beta=15$ and evaluated $\alpha$ at $0, 0.5, 0.8, 1.0$. 
+ Additionally since the alignment still contains gap, we made sure to evaluate the isostericity term
+
 
 
 
