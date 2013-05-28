@@ -73,7 +73,7 @@ if __name__=="__main__":
     dataPoints[length].append(f_name)
   maxSize = max([len(x) for x in dataPoints.values()])
 
-  outfile = open("TimeBenchTst.dat","w")
+  outfile = open("TimeBench_yamaska.dat","w")
   lengths = dataPoints.keys()
   lengths.sort()
   for i in range(maxSize):
