@@ -13,7 +13,7 @@ Given an RNA sequence $s\in \B^n$, let $s_i$ be the nucleotide at position $i$. 
 length $n$. $\Struct$ is a secondary structure without pseudoknots, denoted by a dot-parenthesis string (well-parenthesized expression with dots). In any such expression, matched parentheses induce and unambiguous set of corresponding positions, associated with base-pairing positions, mediated by hydrogen bonds. It follows that if $(i,j)$ and $(k,l)$ are base pairs in $S$, there is no overlapping extremities  $\{i,j\}\cap \{k,l\}=\varnothing$ and either the intersection is empty 
  ($[i,j]\cap[k,l]=\varnothing$) or one is included in the other ($[k,l]\subset[i,j]$ or 
  $[i,j]\subset[k,l])$. Let us finally denote by $\delta: \B^*\times \B^* \to \mathbb{N}^+$ the Hamming distance, i.e. the number of differing positions between two sequences $s'$ and $s''$ such that $|s'|=|s''|$.
-\TODOYann{Move above, define secondary structure and add fancy VARNA illustration}
+%\TODOYann{Move above, define secondary structure and add fancy VARNA illustration}
 
 
 
@@ -49,7 +49,7 @@ The concept of isostericity score is based on the geometric discrepancy (superim
 is the average isostericity of a base-pair in the candidate sequence, compared with the reference alignment.
 The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, $0$ corresponding to a perfect isostericity, and a penalty of $10$ is used for missing entries.
 The isostericity contribution exponentially favors sequences that are likely to adopt a similar local conformation as the sequences contained in the alignment.
-\TODOYann{Avoid duplicate reference to Stombaugh et al}
+%\TODOYann{Avoid duplicate reference to Stombaugh et al}
 
 \subsubsection{Combining contributions.}
 Let us remark that any of the individual contributions can be associated to (a subset of) the base-pairs occurring in the structure, possibly complemented, in the case of stacking pairs, with the knowledge of flanking base-pairing nucleotide.
