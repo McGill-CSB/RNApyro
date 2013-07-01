@@ -95,7 +95,7 @@ def createTimeFigMultiAl():
     dataPoints = {}
     pylab.figure()
     for yamaska_name in ("TimeBench_yamaska.dat",
-                 "TimeBench_yamaska_75.dat",
+                         "TimeBench_yamaska_75.dat",
                          "TimeBench_yamaska_100.dat"):
         for l in open(yamaska_name,"r"):
             data = l[:-1].split()
