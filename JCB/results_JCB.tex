@@ -15,7 +15,7 @@ Since typical use-cases of \RNApyro require efficiency and scalability, we prese
 typical runtimes required to compute the probabilities for  every nucleotide at every positions for a vast set of parameters.
 For those tests, both the multiple sequence alignment and the reference sequence were generated uniformly at random,
 based on a realistic random secondary structure, generated as described in Levin~\emph{et al}~\cite{Levin:2012kx}.
-\TODOVlad{Add more extensive time benchmark, as a plot}
+%\TODOVlad{Add more extensive time benchmark, as a plot}
 %\TODOVlad{Is time benchmark still on Mac mini or mcbbigram?}
 
 \begin{figure}[t]
@@ -95,7 +95,7 @@ the isostericity scores (i.e. for low $\alpha$ values) seem more robust to under
 
 \subsection{Correcting Illumina sequencing errors in 16s rRNAs}
 \label{sec:16S}
-\TODOTous{Describe and present results????}
+%\TODOTous{Describe and present results????}
 
 To complete our benchmark, we turned to the small subunit ribosomal RNA in bacteriae, a molecule which is of particular interest  in metagenomics and phylogenetics. Our aim was to get as close as possible to a pyrosequencing context, in which reads are produced non-uniformly by an Illumina sequencer, impacting the distribution of errors in the sequence. 
 We chose this setting both because of the popularity of Illumina sequencing in metagenomics, and since the underlying sequencing technique only considers base substitutions (no insertions), the only type of errors currently detected by \RNApyro.
