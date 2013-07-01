@@ -157,7 +157,7 @@ ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the i
   \includegraphics[width=\linewidth]{figures/15fold-b}
     \caption{$15-$fold coverage}
 \end{subfigure}
-\caption{Performance of error-correction over structured positions (i.e. inside a base pair). Subfigures show accuracy when
+\caption{Performance of error-correction restricted to structured positions (i.e. involved in a canonical base pair). Subfigures show accuracy when
 ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the impact of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores and use values ranging of $\alpha = \{0, 0.5, 0.8, 1.0\}$. The AUC is indicated in the legend of the figures. Each individual ROC curve represent the average performance over at least 10 experiments.}
 \label{fig:16s_bp}
 \end{figure}
@@ -170,8 +170,8 @@ contributions to the energy and isostericity only arise from structured regions,
 
 An interesting feature is that best results are almost always when $\alpha=0$, i.e. all the contribution
 comes from the isostericity. A notable exception is when the number of mutation is underestimated, 
-in that case best performances were observed for non-null values of $\alpha$.
+in that case best performances were observed for larger values of $\alpha$.
 
-Another observation is when we look at all positions as in Fig.~\ref{fig:16s_all}. The first $20\%$ to $30\%$ of sensitivity are obtained almost without any errors and correspond to the nucleotides in 
+A final observation is related to  all positions as in Fig.~\ref{fig:16s_all}. The first $20\%$ to $30\%$ of sensitivity are obtained almost without any errors and correspond to the nucleotides in 
 structured regions. The rest of the predictions are done on un-paired nucleotides.
 
