@@ -108,7 +108,7 @@ To simulate sequencing errors, we used the next-generation sequencing read simul
 {\tt ART}~\cite{huang2012art}. The \emph{Illumina technology} setting was chosen as the main error mode, generating reads of $75~\text{bps}$, featuring mostly base substitution errors. Reads were mapped back to the original sequence, and a consensus sequence was determined, from the sequencing output, by a simple majority vote in the case of multiple coverage. Uncovered regions were simply generated at random. The average  rate of errors observed in the final consensus sequence was empirically estimated to represent $2.4\%$, $0.9\%$ and $0.6\%$ of the reference sequence, for prescribed sequencing coverages of $5$, $10$ and $15$ fold respectively.
 
 As in Section~\ref{sec:5S}, we evaluated the predictive power of \RNApyro-computed mutational profiles using a leave-one-out strategy. We picked a sequence at random from the MSA, sequenced/mutated it as above, and run \RNApyro to establish its mutational profile. In this execution, we used values of $\beta=15$ and $\alpha\in [0, 0.5, 0.8, 1.0]$, and set the presumed number of mutations to twice the average error rate made by {\tt ART}, i.e. $4.8\%$, $1.8\%$ and $1.2\%$ for fold coverages of $5$, $10$ and $15$ respectively.
-We repeated the whole procedure $12$/$10$/$14$ times for the $5$/$10$/$15-$fold coverage. 
+We repeated the whole procedure $30$ times for each ($5$/$10$/$15-$fold) coverage. 
 We evaluated the predictive power of the profile by a computing a joint ROC curve for each value of $\alpha$, and each coverage, as described in Section~\ref{sec:5S}. Figure~\ref{fig:16s_all} shows the ROC curves, computed over all positions, while Figure~\ref{fig:16s_bp} only focuses on positions that are paired in the consensus secondary structure.
 
 
@@ -135,7 +135,7 @@ We evaluated the predictive power of the profile by a computing a joint ROC curv
     \caption{$15-$fold coverage}
 \end{subfigure}
 \caption{Performance of error-correction over all positions. Subfigures show accuracy when
-ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the impact of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores and use values ranging of $\alpha = \{0, 0.5, 0.8, 1.0\}$. The AUC is indicated in the legend of the figures. Each individual ROC curve represent the average performance over at least 10 experiments.}
+ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the impact of the parameter $\alpha$ distributing the weights of stacking pair energies vs isostericity scores and use values ranging of $\alpha = \{0, 0.5, 0.8, 1.0\}$. The AUC is indicated in the legend of the figures. Each individual ROC curve represent the average performance over 30 experiments.}
 
 \label{fig:16s_all}
 \end{figure}
@@ -165,12 +165,13 @@ ART fold parameter is set to 5, 10 and $15-$fold coverage. We also analyze the i
 Our data demonstrates that even on long sequences our algorithm shows interesting potential for 
 error-correction applications. First, the AUC values (up to 0.81) when looking at all positions, 
 in Fig.~\ref{fig:16s_all},  indicate that a signal has been successfully extracted. When restraining
-to structured regions (i.e. base paired regions) we obtain AUC values up to 0.998.  Since 
+to structured regions (i.e. base paired regions) we obtain AUC values up to 0.988.  Since 
 contributions to the energy and isostericity only arise from structured regions, this was an expected result.
 
 An interesting feature is that best results are almost always when $\alpha=0$, i.e. all the contribution
-comes from the isostericity. A notable exception is when the number of mutation is underestimated, 
-in that case best performances were observed for non-null values of $\alpha$.
+comes from the isostericity.
+% A notable exception is when the number of mutation is underestimated, 
+%in that case best performances were observed for non-null values of $\alpha$.
 
 Another observation is when we look at all positions as in Fig.~\ref{fig:16s_all}. The first $20\%$ to $30\%$ of sensitivity are obtained almost without any errors and correspond to the nucleotides in 
 structured regions. The rest of the predictions are done on un-paired nucleotides.
