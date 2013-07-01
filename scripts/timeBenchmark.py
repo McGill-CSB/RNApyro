@@ -36,7 +36,7 @@ def genMSA(secstr,numseqs):
     result.append("".join(seq))
   return result
 
-def genRNAPyroInputFiles(basepath,fromlength=50,tolength=500,lengthincr=25,numseqs=25,alignmentlength=50):
+def genRNAPyroInputFiles(basepath,fromlength=50,tolength=500,lengthincr=25,numseqs=25,alignmentlength=75):
   for i in range(fromlength,tolength,25):
     sys.stderr.write("*%s"%(i))
     os.system("grgfreqs --draw RNALoopsOut.ggd %s %s > out.txt 2> dummy"%(i,numseqs))
@@ -60,7 +60,7 @@ if __name__=="__main__":
 #  if not os.path.exists("TimeBench"):
 #    os.mkdir("TimeBench")
 #  genRNAPyroInputFiles(os.path.join("TimeBench","MSA"),50,500,25,50,50)
-  exec_name = os.path.join('..','src','RNAPyro_iso.py')
+  exec_name = os.path.join('..','src','RNAPyro.py')
   nbmuts = 10
   alpha = .5
 
@@ -73,7 +73,7 @@ if __name__=="__main__":
     dataPoints[length].append(f_name)
   maxSize = max([len(x) for x in dataPoints.values()])
 
-  outfile = open("TimeBench_yamaska.dat","w")
+  outfile = open("TimeBench_yamaska_75.dat","w")
   lengths = dataPoints.keys()
   lengths.sort()
   for i in range(maxSize):
