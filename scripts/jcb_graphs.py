@@ -91,6 +91,35 @@ def getTimes(path):
     print len(seq),nbMut,times
     return times
 
+def createTimeFigMultiAl():
+    dataPoints = {}
+    pylab.figure()
+    for yamaska_name in ("TimeBench_yamaska.dat",
+                 "TimeBench_yamaska_75.dat",
+                         "TimeBench_yamaska_100.dat"):
+        for l in open(yamaska_name,"r"):
+            data = l[:-1].split()
+            print data
+            try:
+                if len(data)==2:
+                    f_name,time = data[0],float(data[1])
+                    args = f_name.split("-")
+                    length = int(args[1][len("length"):])
+                    if (length not in dataPoints):
+                        dataPoints[length] = []
+                    dataPoints[length].append(time)
+            except Exception, e:
+                print e
+                pass
+        x = dataPoints.keys()
+        x.sort()
+        y = [numpy.mean(dataPoints[v]) for v in x]    
+        err = [numpy.std(dataPoints[v]) for v in x]    
+        pylab.errorbar(x, y, yerr=err,linewidth=1.5)
+    pylab.title("")
+    pylab.xlabel('Length (nts)',fontsize=16)
+    pylab.ylabel('Time (sec.)',fontsize=16)
+    pylab.savefig(os.path.join("Figs_Bench","TimeBenchmark.pdf"), format='pdf',bbox_inches='tight')
 
 def createTimeFig():
     dataPoints = {}
@@ -135,7 +164,7 @@ if __name__ == '__main__':
     if batch_flag:
         batch(modes)
     elif time_flag:
-        createTimeFig()
+        createTimeFigMultiAl()
     else:
         ind(modes)
 
