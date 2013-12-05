@@ -1,3 +1,4 @@
+'RNApyro 2.0, for python3'
 ###############################################################################
 #Copyright (c) 2013, Vladimir Reinharz, Yann Ponty & Jerome Waldispuhl        #
 #All rights reserved.                                                         #
@@ -29,13 +30,19 @@ import itertools
 import random
 import math
 import time
+from decimal import Decimal
+
+if sys.version_info.major != 3:
+    print("You need to run this software with python 3")
+    return 1
+
 
 def MPMATH_MISSING():
-  print """The module `mpmath` was not found. This might impeed the
+  print("""The module `mpmath` was not found. This might impeed the
   processing of long RNAs.
   More information can be found on http://code.google.com/p/mpmath/
   We also recommand installation of `gmpy` (http://code.google.com/p/gmpy/),
-  automatically leveraged by `mpmath` to increase the speed of computations"""
+  automatically leveraged by `mpmath` to increase the speed of computations""")
 
 try: #For infinite precision
   from mpmath import mpf
@@ -47,308 +54,308 @@ except ImportError:
 sys.setrecursionlimit(10000)
 
 BASES = ['A','C','G','U']
-BOLTZMANN = 0.0019872041
-T = 310.15
+BOLTZMANN = Decimal('0.0019872041')
+T = Decimal('310.15')
 
-#Control non defined stacking energies
+#control STACKING_ENERGY with get(key,STACKING_ENERGY_MALUS)
 global STACKING_ENERGY_MALUS
-STACKING_ENERGY_MALUS = sys.maxint
+STACKING_ENERGY_MALUS = Decimal(sys.maxsize)
 #turner04
 #The order of the nucleotides is from 5' -> 3'
-STACKING_ENERGY = {('A', 'A', 'U', 'U'):-0.9,
-                    ('A', 'C', 'G', 'U'):-2.2,
-                    ('A', 'G', 'C', 'U'):-2.1,
-                    ('A', 'G', 'U', 'U'):-0.6,
-                    ('A', 'U', 'A', 'U'):-1.1,
-                    ('A', 'U', 'G', 'U'):-1.4,
-                    ('C', 'A', 'U', 'G'):-2.1,
-                    ('C', 'G', 'U', 'G'):-1.4,
-                    ('C', 'U', 'A', 'G'):-2.1,
-                    ('C', 'U', 'G', 'G'):-2.1,
-                    ('G', 'A', 'U', 'C'):-2.4,
-                    ('G', 'C', 'G', 'C'):-3.4,
-                    ('G', 'G', 'C', 'C'):-3.3,
-                    ('G', 'G', 'U', 'C'):-1.5,
-                    ('G', 'U', 'A', 'C'):-2.2,
-                    ('G', 'U', 'G', 'C'):-2.5,
-                    ('G', 'A', 'U', 'U'):-1.3,
-                    ('G', 'C', 'G', 'U'):-2.5,
-                    ('G', 'G', 'C', 'U'):-2.1,
-                    ('G', 'G', 'U', 'U'):-0.5,
-                    ('G', 'U', 'A', 'U'):-1.4,
-                    ('G', 'U', 'G', 'U'):1.3,
-                    ('U', 'A', 'U', 'A'):-1.3,
-                    ('U', 'C', 'G', 'A'):-2.4,
-                    ('U', 'G', 'C', 'A'):-2.1,
-                    ('U', 'G', 'U', 'A'):-1.0,
-                    ('U', 'U', 'A', 'A'):-0.9,
-                    ('U', 'U', 'G', 'A'):-1.3,
-                    ('U', 'A', 'U', 'G'):-1.0,
-                    ('U', 'C', 'G', 'G'):-1.5,
-                    ('U', 'G', 'C', 'G'):-1.4,
-                    ('U', 'G', 'U', 'G'):0.3,
-                    ('U', 'U', 'A', 'G'):-0.6,
-                    ('U', 'U', 'G', 'G'):-0.5,
-                    ('C', 'C', 'G', 'G'):-3.3,
-                    ('C', 'G', 'C', 'G'):-2.4}
+STACKING_ENERGY  = {('A', 'A', 'U', 'U'):Decimal('-0.9'),
+                    ('A', 'C', 'G', 'U'):Decimal('-2.2'),
+                    ('A', 'G', 'C', 'U'):Decimal('-2.1'),
+                    ('A', 'G', 'U', 'U'):Decimal('-0.6'),
+                    ('A', 'U', 'A', 'U'):Decimal('-1.1'),
+                    ('A', 'U', 'G', 'U'):Decimal('-1.4'),
+                    ('C', 'A', 'U', 'G'):Decimal('-2.1'),
+                    ('C', 'G', 'U', 'G'):Decimal('-1.4'),
+                    ('C', 'U', 'A', 'G'):Decimal('-2.1'),
+                    ('C', 'U', 'G', 'G'):Decimal('-2.1'),
+                    ('G', 'A', 'U', 'C'):Decimal('-2.4'),
+                    ('G', 'C', 'G', 'C'):Decimal('-3.4'),
+                    ('G', 'G', 'C', 'C'):Decimal('-3.3'),
+                    ('G', 'G', 'U', 'C'):Decimal('-1.5'),
+                    ('G', 'U', 'A', 'C'):Decimal('-2.2'),
+                    ('G', 'U', 'G', 'C'):Decimal('-2.5'),
+                    ('G', 'A', 'U', 'U'):Decimal('-1.3'),
+                    ('G', 'C', 'G', 'U'):Decimal('-2.5'),
+                    ('G', 'G', 'C', 'U'):Decimal('-2.1'),
+                    ('G', 'G', 'U', 'U'):Decimal('-0.5'),
+                    ('G', 'U', 'A', 'U'):Decimal('-1.4'),
+                    ('G', 'U', 'G', 'U'):Decimal('1.3'),
+                    ('U', 'A', 'U', 'A'):Decimal('-1.3'),
+                    ('U', 'C', 'G', 'A'):Decimal('-2.4'),
+                    ('U', 'G', 'C', 'A'):Decimal('-2.1'),
+                    ('U', 'G', 'U', 'A'):Decimal('-1.0'),
+                    ('U', 'U', 'A', 'A'):Decimal('-0.9'),
+                    ('U', 'U', 'G', 'A'):Decimal('-1.3'),
+                    ('U', 'A', 'U', 'G'):Decimal('-1.0'),
+                    ('U', 'C', 'G', 'G'):Decimal('-1.5'),
+                    ('U', 'G', 'C', 'G'):Decimal('-1.4'),
+                    ('U', 'G', 'U', 'G'):Decimal('0.3'),
+                    ('U', 'U', 'A', 'G'):Decimal('-0.6'),
+                    ('U', 'U', 'G', 'G'):Decimal('-0.5'),
+                    ('C', 'C', 'G', 'G'):Decimal('-3.3'),
+                    ('C', 'G', 'C', 'G'):Decimal('-2.4')}
 
 #All isostericity values. GG->anything or anything->GG is 10
-ISO = {(('A', 'C'), ('C', 'A')):4.93,
-    (('G', 'C'), ('A', 'G')):3.5,
-    (('G', 'C'), ('G', 'C')):0.0,
-    (('U', 'G'), ('U', 'G')):0.0,
-    (('A', 'C'), ('G', 'U')):0.8,
-        (('A', 'G'), ('U', 'U')):8.18,
-        (('G', 'A'), ('A', 'G')):2.25,
-        (('A', 'A'), ('A', 'C')):4.58,
-        (('A', 'C'), ('U', 'G')):4.76,
-        (('U', 'G'), ('C', 'G')):2.14,
-        (('U', 'G'), ('G', 'G')):10.0,
-        (('U', 'C'), ('U', 'U')):4.36,
-        (('G', 'G'), ('U', 'A')):10.0,
-        (('C', 'G'), ('G', 'C')):0.26,
-        (('A', 'U'), ('C', 'A')):2.75,
-        (('A', 'U'), ('U', 'U')):3.8,
-        (('U', 'U'), ('G', 'C')):3.94,
-        (('U', 'G'), ('G', 'C')):2.39,
-        (('C', 'A'), ('C', 'A')):0.0,
-        (('G', 'A'), ('U', 'G')):3.8,
-        (('A', 'G'), ('G', 'C')):4.38,
-        (('A', 'A'), ('C', 'G')):3.44,
-        (('G', 'G'), ('C', 'U')):10.0,
-        (('G', 'C'), ('U', 'A')):0.34,
-        (('U', 'A'), ('A', 'A')):4.66,
-        (('U', 'U'), ('U', 'C')):6.46,
-        (('U', 'U'), ('C', 'G')):3.8,
-        (('C', 'C'), ('U', 'C')):8.25,
-        (('G', 'A'), ('C', 'U')):0.0,
-        (('C', 'U'), ('G', 'U')):5.06,
-        (('C', 'G'), ('U', 'C')):3.44,
-        (('U', 'C'), ('G', 'U')):2.89,
-        (('U', 'U'), ('U', 'G')):2.89,
-        (('G', 'A'), ('U', 'U')):5.97,
-        (('G', 'U'), ('A', 'G')):4.44,
-        (('A', 'C'), ('G', 'A')):5.05,
-        (('G', 'C'), ('U', 'G')):2.39,
-        (('G', 'G'), ('A', 'A')):10.0,
-        (('U', 'U'), ('C', 'A')):2.39,
-        (('G', 'G'), ('C', 'A')):10.0,
-        (('A', 'A'), ('C', 'U')):1.53,
-        (('G', 'U'), ('C', 'C')):6.25,
-        (('C', 'C'), ('U', 'U')):2.37,
-        (('C', 'U'), ('U', 'C')):7.97,
-        (('C', 'C'), ('G', 'G')):10.0,
-        (('G', 'G'), ('A', 'U')):10.0,
-        (('C', 'G'), ('A', 'U')):0.34,
-        (('C', 'U'), ('A', 'U')):5.3,
-        (('U', 'A'), ('C', 'A')):2.47,
-        (('U', 'U'), ('A', 'U')):3.8,
-        (('G', 'G'), ('U', 'U')):10.0,
-        (('U', 'A'), ('C', 'C')):5.3,
-        (('G', 'G'), ('A', 'G')):10.0,
-        (('A', 'G'), ('A', 'U')):4.52,
-        (('A', 'A'), ('A', 'G')):2.33,
-        (('U', 'C'), ('U', 'A')):3.8,
-        (('G', 'U'), ('U', 'U')):5.27,
-        (('A', 'A'), ('C', 'A')):5.3,
-        (('U', 'G'), ('C', 'U')):3.8,
-        (('G', 'U'), ('G', 'U')):0.0,
-        (('G', 'A'), ('A', 'U')):3.57,
-        (('U', 'A'), ('A', 'U')):0.31,
-        (('U', 'A'), ('U', 'C')):3.57,
-        (('U', 'G'), ('A', 'G')):4.33,
-        (('C', 'G'), ('C', 'A')):2.55,
-        (('U', 'A'), ('U', 'A')):0.0,
-        (('G', 'G'), ('G', 'A')):10.0,
-        (('U', 'U'), ('C', 'U')):5.97,
-        (('A', 'C'), ('A', 'G')):5.14,
-        (('U', 'C'), ('A', 'A')):6.91,
-        (('A', 'C'), ('A', 'U')):2.47,
-        (('G', 'C'), ('A', 'C')):2.55,
-        (('C', 'C'), ('A', 'C')):5.91,
-        (('A', 'U'), ('A', 'U')):0.0,
-        (('C', 'C'), ('C', 'C')):0.0,
-        (('U', 'C'), ('A', 'C')):2.39,
-        (('G', 'A'), ('C', 'C')):7.97,
-        (('A', 'A'), ('G', 'C')):3.39,
-        (('U', 'C'), ('A', 'G')):6.96,
-        (('G', 'C'), ('G', 'A')):3.49,
-        (('U', 'U'), ('U', 'A')):3.63,
-        (('G', 'U'), ('G', 'G')):10.0,
-        (('C', 'G'), ('U', 'G')):2.14,
-        (('A', 'G'), ('U', 'A')):4.66,
-        (('A', 'A'), ('U', 'A')):3.57,
-        (('U', 'G'), ('U', 'A')):2.11,
-        (('C', 'A'), ('U', 'C')):5.3,
-        (('G', 'A'), ('C', 'G')):3.39,
-        (('U', 'A'), ('C', 'G')):0.21,
-        (('A', 'U'), ('C', 'U')):3.57,
-        (('G', 'C'), ('U', 'U')):3.94,
-        (('U', 'U'), ('C', 'C')):2.37,
-        (('G', 'U'), ('A', 'A')):4.1,
-        (('A', 'C'), ('C', 'U')):5.3,
-        (('A', 'G'), ('C', 'C')):9.77,
-        (('U', 'A'), ('G', 'C')):0.34,
-        (('A', 'U'), ('A', 'C')):2.47,
-        (('U', 'G'), ('G', 'A')):4.44,
-        (('G', 'U'), ('A', 'U')):2.11,
-        (('A', 'U'), ('A', 'A')):4.52,
-        (('C', 'U'), ('C', 'C')):3.02,
-        (('C', 'U'), ('U', 'A')):5.39,
-        (('A', 'C'), ('U', 'C')):4.58,
-        (('C', 'G'), ('G', 'A')):3.5,
-        (('C', 'A'), ('G', 'G')):10.0,
-        (('G', 'A'), ('G', 'G')):10.0,
-        (('C', 'G'), ('U', 'U')):3.8,
-        (('U', 'A'), ('A', 'C')):2.75,
-        (('G', 'A'), ('C', 'A')):4.58,
-        (('G', 'A'), ('A', 'C')):5.3,
-        (('A', 'C'), ('C', 'G')):2.78,
-        (('U', 'C'), ('G', 'G')):10.0,
-        (('A', 'A'), ('A', 'U')):3.5,
-        (('C', 'C'), ('C', 'U')):7.97,
-        (('A', 'G'), ('U', 'C')):2.71,
-        (('A', 'C'), ('A', 'C')):0.0,
-        (('U', 'A'), ('G', 'A')):3.67,
-        (('C', 'C'), ('G', 'U')):6.25,
-        (('A', 'U'), ('U', 'G')):2.4,
-        (('U', 'C'), ('C', 'G')):3.94,
-        (('U', 'C'), ('U', 'C')):5.97,
-        (('A', 'G'), ('A', 'A')):0.0,
-        (('A', 'A'), ('U', 'G')):4.59,
-        (('C', 'C'), ('A', 'U')):5.39,
-        (('A', 'G'), ('C', 'U')):3.77,
-        (('C', 'C'), ('U', 'G')):5.06,
-        (('G', 'U'), ('C', 'G')):2.39,
-        (('G', 'C'), ('A', 'A')):4.38,
-        (('U', 'C'), ('U', 'G')):5.27,
-        (('U', 'G'), ('C', 'A')):0.8,
-        (('A', 'A'), ('G', 'U')):3.8,
-        (('C', 'U'), ('U', 'U')):4.31,
-        (('C', 'C'), ('G', 'C')):5.56,
-        (('G', 'C'), ('G', 'U')):2.14,
-        (('U', 'U'), ('U', 'U')):0.0,
-        (('U', 'C'), ('G', 'A')):6.91,
-        (('C', 'U'), ('C', 'U')):8.25,
-        (('C', 'G'), ('A', 'C')):2.78,
-        (('G', 'U'), ('U', 'C')):3.8,
-        (('A', 'G'), ('C', 'G')):4.5,
-        (('G', 'G'), ('U', 'C')):10.0,
-        (('U', 'G'), ('U', 'C')):4.59,
-        (('C', 'A'), ('C', 'U')):4.58,
-        (('G', 'A'), ('U', 'C')):1.53,
-        (('G', 'G'), ('C', 'G')):10.0,
-        (('A', 'U'), ('G', 'U')):2.11,
-        (('G', 'U'), ('C', 'A')):4.76,
-        (('A', 'C'), ('U', 'U')):5.21,
-        (('A', 'G'), ('C', 'A')):6.7,
-        (('C', 'A'), ('U', 'A')):2.47,
-        (('A', 'G'), ('U', 'G')):6.07,
-        (('C', 'G'), ('U', 'A')):0.21,
-        (('U', 'G'), ('A', 'U')):2.4,
-        (('G', 'G'), ('C', 'C')):10.0,
-        (('C', 'G'), ('A', 'A')):4.5,
-        (('C', 'U'), ('C', 'A')):5.91,
-        (('G', 'U'), ('U', 'G')):4.48,
-        (('G', 'C'), ('C', 'A')):2.78,
-        (('A', 'A'), ('U', 'C')):0.0,
-        (('G', 'G'), ('G', 'C')):10.0,
-        (('A', 'U'), ('G', 'C')):0.21,
-        (('C', 'A'), ('C', 'G')):2.55,
-        (('U', 'C'), ('C', 'A')):5.21,
-        (('U', 'G'), ('U', 'U')):2.89,
-        (('G', 'G'), ('G', 'U')):10.0,
-        (('C', 'A'), ('A', 'G')):5.05,
-        (('A', 'C'), ('U', 'A')):2.75,
-        (('A', 'U'), ('C', 'G')):0.34,
-        (('U', 'G'), ('C', 'C')):5.06,
-        (('A', 'C'), ('G', 'C')):2.55,
-        (('G', 'U'), ('A', 'C')):0.8,
-        (('C', 'A'), ('C', 'C')):4.49,
-        (('A', 'U'), ('G', 'G')):10.0,
-        (('A', 'A'), ('U', 'U')):6.46,
-        (('G', 'G'), ('G', 'G')):0.0,
-        (('A', 'C'), ('G', 'G')):10.0,
-        (('A', 'C'), ('A', 'A')):4.8,
-        (('A', 'A'), ('G', 'G')):10.0,
-        (('G', 'C'), ('U', 'C')):3.39,
-        (('U', 'C'), ('G', 'C')):3.8,
-        (('U', 'A'), ('G', 'U')):2.4,
-        (('G', 'A'), ('G', 'C')):3.44,
-        (('G', 'G'), ('A', 'C')):10.0,
-        (('A', 'A'), ('A', 'A')):2.71,
-        (('C', 'C'), ('A', 'G')):8.82,
-        (('C', 'G'), ('C', 'C')):5.49,
-        (('U', 'A'), ('U', 'G')):2.11,
-        (('U', 'G'), ('A', 'C')):4.76,
-        (('C', 'U'), ('U', 'G')):6.25,
-        (('C', 'C'), ('C', 'G')):5.49,
-        (('G', 'U'), ('G', 'A')):4.33,
-        (('G', 'C'), ('C', 'G')):0.26,
-        (('A', 'G'), ('A', 'G')):2.41,
-        (('A', 'A'), ('C', 'C')):8.25,
-        (('A', 'G'), ('G', 'A')):2.18,
-        (('C', 'G'), ('G', 'U')):2.39,
-        (('A', 'C'), ('C', 'C')):5.91,
-        (('A', 'G'), ('G', 'G')):10.0,
-        (('U', 'U'), ('G', 'A')):6.96,
-        (('U', 'C'), ('C', 'U')):6.46,
-        (('A', 'U'), ('U', 'A')):0.31,
-        (('G', 'A'), ('G', 'A')):2.33,
-        (('G', 'C'), ('C', 'U')):3.44,
-        (('G', 'A'), ('U', 'A')):3.5,
-        (('U', 'G'), ('A', 'A')):6.07,
-        (('C', 'U'), ('A', 'G')):8.86,
-        (('U', 'U'), ('G', 'U')):5.27,
-        (('A', 'U'), ('A', 'G')):3.67,
-        (('G', 'C'), ('C', 'C')):5.56,
-        (('A', 'U'), ('C', 'C')):5.39,
-        (('U', 'C'), ('A', 'U')):3.63,
-        (('C', 'A'), ('G', 'C')):2.78,
-        (('C', 'G'), ('C', 'G')):0.0,
-        (('C', 'C'), ('A', 'A')):9.77,
-        (('G', 'C'), ('A', 'U')):0.21,
-        (('A', 'U'), ('G', 'A')):3.67,
-        (('U', 'U'), ('A', 'A')):8.18,
-        (('U', 'C'), ('C', 'C')):4.31,
-        (('C', 'U'), ('G', 'A')):8.82,
-        (('C', 'A'), ('U', 'G')):0.8,
-        (('C', 'U'), ('A', 'A')):9.05,
-        (('C', 'A'), ('A', 'A')):6.7,
-        (('C', 'C'), ('U', 'A')):5.3,
-        (('G', 'U'), ('C', 'U')):4.59,
-        (('C', 'A'), ('A', 'C')):4.93,
-        (('C', 'A'), ('G', 'U')):4.76,
-        (('G', 'C'), ('G', 'G')):10.0,
-        (('U', 'A'), ('G', 'G')):10.0,
-        (('G', 'A'), ('A', 'A')):3.77,
-        (('U', 'U'), ('A', 'G')):6.91,
-        (('C', 'G'), ('C', 'U')):3.39,
-        (('A', 'G'), ('A', 'C')):4.8,
-        (('U', 'U'), ('A', 'C')):5.21,
-        (('U', 'A'), ('U', 'U')):3.63,
-        (('G', 'U'), ('G', 'C')):2.14,
-        (('C', 'U'), ('A', 'C')):4.49,
-        (('C', 'A'), ('G', 'A')):5.14,
-        (('C', 'G'), ('G', 'G')):10.0,
-        (('C', 'C'), ('G', 'A')):8.86,
-        (('G', 'A'), ('G', 'U')):4.59,
-        (('U', 'A'), ('A', 'G')):3.67,
-        (('U', 'U'), ('G', 'G')):10.0,
-        (('U', 'A'), ('C', 'U')):3.5,
-        (('C', 'C'), ('C', 'A')):4.49,
-        (('C', 'U'), ('G', 'C')):5.49,
-        (('C', 'U'), ('C', 'G')):5.56,
-        (('A', 'A'), ('G', 'A')):2.25,
-        (('C', 'U'), ('G', 'G')):10.0,
-        (('C', 'A'), ('U', 'U')):2.39,
-        (('A', 'G'), ('G', 'U')):4.1,
-        (('G', 'U'), ('U', 'A')):2.4,
-        (('U', 'G'), ('G', 'U')):4.48,
-        (('C', 'A'), ('A', 'U')):2.75,
-        (('C', 'G'), ('A', 'G')):3.49,
-        (('G', 'G'), ('U', 'G')):10.0,
-        (('A', 'U'), ('U', 'C')):3.5}
+ISO = {(('A', 'C'), ('C', 'A')):Decimal('4.93'),
+        (('G', 'C'), ('A', 'G')):Decimal('3.5'),
+        (('G', 'C'), ('G', 'C')):Decimal('0.0'),
+        (('U', 'G'), ('U', 'G')):Decimal('0.0'),
+        (('A', 'C'), ('G', 'U')):Decimal('0.8'),
+        (('A', 'G'), ('U', 'U')):Decimal('8.18'),
+        (('G', 'A'), ('A', 'G')):Decimal('2.25'),
+        (('A', 'A'), ('A', 'C')):Decimal('4.58'),
+        (('A', 'C'), ('U', 'G')):Decimal('4.76'),
+        (('U', 'G'), ('C', 'G')):Decimal('2.14'),
+        (('U', 'G'), ('G', 'G')):Decimal('10.0'),
+        (('U', 'C'), ('U', 'U')):Decimal('4.36'),
+        (('G', 'G'), ('U', 'A')):Decimal('10.0'),
+        (('C', 'G'), ('G', 'C')):Decimal('0.26'),
+        (('A', 'U'), ('C', 'A')):Decimal('2.75'),
+        (('A', 'U'), ('U', 'U')):Decimal('3.8'),
+        (('U', 'U'), ('G', 'C')):Decimal('3.94'),
+        (('U', 'G'), ('G', 'C')):Decimal('2.39'),
+        (('C', 'A'), ('C', 'A')):Decimal('0.0'),
+        (('G', 'A'), ('U', 'G')):Decimal('3.8'),
+        (('A', 'G'), ('G', 'C')):Decimal('4.38'),
+        (('A', 'A'), ('C', 'G')):Decimal('3.44'),
+        (('G', 'G'), ('C', 'U')):Decimal('10.0'),
+        (('G', 'C'), ('U', 'A')):Decimal('0.34'),
+        (('U', 'A'), ('A', 'A')):Decimal('4.66'),
+        (('U', 'U'), ('U', 'C')):Decimal('6.46'),
+        (('U', 'U'), ('C', 'G')):Decimal('3.8'),
+        (('C', 'C'), ('U', 'C')):Decimal('8.25'),
+        (('G', 'A'), ('C', 'U')):Decimal('0.0'),
+        (('C', 'U'), ('G', 'U')):Decimal('5.06'),
+        (('C', 'G'), ('U', 'C')):Decimal('3.44'),
+        (('U', 'C'), ('G', 'U')):Decimal('2.89'),
+        (('U', 'U'), ('U', 'G')):Decimal('2.89'),
+        (('G', 'A'), ('U', 'U')):Decimal('5.97'),
+        (('G', 'U'), ('A', 'G')):Decimal('4.44'),
+        (('A', 'C'), ('G', 'A')):Decimal('5.05'),
+        (('G', 'C'), ('U', 'G')):Decimal('2.39'),
+        (('G', 'G'), ('A', 'A')):Decimal('10.0'),
+        (('U', 'U'), ('C', 'A')):Decimal('2.39'),
+        (('G', 'G'), ('C', 'A')):Decimal('10.0'),
+        (('A', 'A'), ('C', 'U')):Decimal('1.53'),
+        (('G', 'U'), ('C', 'C')):Decimal('6.25'),
+        (('C', 'C'), ('U', 'U')):Decimal('2.37'),
+        (('C', 'U'), ('U', 'C')):Decimal('7.97'),
+        (('C', 'C'), ('G', 'G')):Decimal('10.0'),
+        (('G', 'G'), ('A', 'U')):Decimal('10.0'),
+        (('C', 'G'), ('A', 'U')):Decimal('0.34'),
+        (('C', 'U'), ('A', 'U')):Decimal('5.3'),
+        (('U', 'A'), ('C', 'A')):Decimal('2.47'),
+        (('U', 'U'), ('A', 'U')):Decimal('3.8'),
+        (('G', 'G'), ('U', 'U')):Decimal('10.0'),
+        (('U', 'A'), ('C', 'C')):Decimal('5.3'),
+        (('G', 'G'), ('A', 'G')):Decimal('10.0'),
+        (('A', 'G'), ('A', 'U')):Decimal('4.52'),
+        (('A', 'A'), ('A', 'G')):Decimal('2.33'),
+        (('U', 'C'), ('U', 'A')):Decimal('3.8'),
+        (('G', 'U'), ('U', 'U')):Decimal('5.27'),
+        (('A', 'A'), ('C', 'A')):Decimal('5.3'),
+        (('U', 'G'), ('C', 'U')):Decimal('3.8'),
+        (('G', 'U'), ('G', 'U')):Decimal('0.0'),
+        (('G', 'A'), ('A', 'U')):Decimal('3.57'),
+        (('U', 'A'), ('A', 'U')):Decimal('0.31'),
+        (('U', 'A'), ('U', 'C')):Decimal('3.57'),
+        (('U', 'G'), ('A', 'G')):Decimal('4.33'),
+        (('C', 'G'), ('C', 'A')):Decimal('2.55'),
+        (('U', 'A'), ('U', 'A')):Decimal('0.0'),
+        (('G', 'G'), ('G', 'A')):Decimal('10.0'),
+        (('U', 'U'), ('C', 'U')):Decimal('5.97'),
+        (('A', 'C'), ('A', 'G')):Decimal('5.14'),
+        (('U', 'C'), ('A', 'A')):Decimal('6.91'),
+        (('A', 'C'), ('A', 'U')):Decimal('2.47'),
+        (('G', 'C'), ('A', 'C')):Decimal('2.55'),
+        (('C', 'C'), ('A', 'C')):Decimal('5.91'),
+        (('A', 'U'), ('A', 'U')):Decimal('0.0'),
+        (('C', 'C'), ('C', 'C')):Decimal('0.0'),
+        (('U', 'C'), ('A', 'C')):Decimal('2.39'),
+        (('G', 'A'), ('C', 'C')):Decimal('7.97'),
+        (('A', 'A'), ('G', 'C')):Decimal('3.39'),
+        (('U', 'C'), ('A', 'G')):Decimal('6.96'),
+        (('G', 'C'), ('G', 'A')):Decimal('3.49'),
+        (('U', 'U'), ('U', 'A')):Decimal('3.63'),
+        (('G', 'U'), ('G', 'G')):Decimal('10.0'),
+        (('C', 'G'), ('U', 'G')):Decimal('2.14'),
+        (('A', 'G'), ('U', 'A')):Decimal('4.66'),
+        (('A', 'A'), ('U', 'A')):Decimal('3.57'),
+        (('U', 'G'), ('U', 'A')):Decimal('2.11'),
+        (('C', 'A'), ('U', 'C')):Decimal('5.3'),
+        (('G', 'A'), ('C', 'G')):Decimal('3.39'),
+        (('U', 'A'), ('C', 'G')):Decimal('0.21'),
+        (('A', 'U'), ('C', 'U')):Decimal('3.57'),
+        (('G', 'C'), ('U', 'U')):Decimal('3.94'),
+        (('U', 'U'), ('C', 'C')):Decimal('2.37'),
+        (('G', 'U'), ('A', 'A')):Decimal('4.1'),
+        (('A', 'C'), ('C', 'U')):Decimal('5.3'),
+        (('A', 'G'), ('C', 'C')):Decimal('9.77'),
+        (('U', 'A'), ('G', 'C')):Decimal('0.34'),
+        (('A', 'U'), ('A', 'C')):Decimal('2.47'),
+        (('U', 'G'), ('G', 'A')):Decimal('4.44'),
+        (('G', 'U'), ('A', 'U')):Decimal('2.11'),
+        (('A', 'U'), ('A', 'A')):Decimal('4.52'),
+        (('C', 'U'), ('C', 'C')):Decimal('3.02'),
+        (('C', 'U'), ('U', 'A')):Decimal('5.39'),
+        (('A', 'C'), ('U', 'C')):Decimal('4.58'),
+        (('C', 'G'), ('G', 'A')):Decimal('3.5'),
+        (('C', 'A'), ('G', 'G')):Decimal('10.0'),
+        (('G', 'A'), ('G', 'G')):Decimal('10.0'),
+        (('C', 'G'), ('U', 'U')):Decimal('3.8'),
+        (('U', 'A'), ('A', 'C')):Decimal('2.75'),
+        (('G', 'A'), ('C', 'A')):Decimal('4.58'),
+        (('G', 'A'), ('A', 'C')):Decimal('5.3'),
+        (('A', 'C'), ('C', 'G')):Decimal('2.78'),
+        (('U', 'C'), ('G', 'G')):Decimal('10.0'),
+        (('A', 'A'), ('A', 'U')):Decimal('3.5'),
+        (('C', 'C'), ('C', 'U')):Decimal('7.97'),
+        (('A', 'G'), ('U', 'C')):Decimal('2.71'),
+        (('A', 'C'), ('A', 'C')):Decimal('0.0'),
+        (('U', 'A'), ('G', 'A')):Decimal('3.67'),
+        (('C', 'C'), ('G', 'U')):Decimal('6.25'),
+        (('A', 'U'), ('U', 'G')):Decimal('2.4'),
+        (('U', 'C'), ('C', 'G')):Decimal('3.94'),
+        (('U', 'C'), ('U', 'C')):Decimal('5.97'),
+        (('A', 'G'), ('A', 'A')):Decimal('0.0'),
+        (('A', 'A'), ('U', 'G')):Decimal('4.59'),
+        (('C', 'C'), ('A', 'U')):Decimal('5.39'),
+        (('A', 'G'), ('C', 'U')):Decimal('3.77'),
+        (('C', 'C'), ('U', 'G')):Decimal('5.06'),
+        (('G', 'U'), ('C', 'G')):Decimal('2.39'),
+        (('G', 'C'), ('A', 'A')):Decimal('4.38'),
+        (('U', 'C'), ('U', 'G')):Decimal('5.27'),
+        (('U', 'G'), ('C', 'A')):Decimal('0.8'),
+        (('A', 'A'), ('G', 'U')):Decimal('3.8'),
+        (('C', 'U'), ('U', 'U')):Decimal('4.31'),
+        (('C', 'C'), ('G', 'C')):Decimal('5.56'),
+        (('G', 'C'), ('G', 'U')):Decimal('2.14'),
+        (('U', 'U'), ('U', 'U')):Decimal('0.0'),
+        (('U', 'C'), ('G', 'A')):Decimal('6.91'),
+        (('C', 'U'), ('C', 'U')):Decimal('8.25'),
+        (('C', 'G'), ('A', 'C')):Decimal('2.78'),
+        (('G', 'U'), ('U', 'C')):Decimal('3.8'),
+        (('A', 'G'), ('C', 'G')):Decimal('4.5'),
+        (('G', 'G'), ('U', 'C')):Decimal('10.0'),
+        (('U', 'G'), ('U', 'C')):Decimal('4.59'),
+        (('C', 'A'), ('C', 'U')):Decimal('4.58'),
+        (('G', 'A'), ('U', 'C')):Decimal('1.53'),
+        (('G', 'G'), ('C', 'G')):Decimal('10.0'),
+        (('A', 'U'), ('G', 'U')):Decimal('2.11'),
+        (('G', 'U'), ('C', 'A')):Decimal('4.76'),
+        (('A', 'C'), ('U', 'U')):Decimal('5.21'),
+        (('A', 'G'), ('C', 'A')):Decimal('6.7'),
+        (('C', 'A'), ('U', 'A')):Decimal('2.47'),
+        (('A', 'G'), ('U', 'G')):Decimal('6.07'),
+        (('C', 'G'), ('U', 'A')):Decimal('0.21'),
+        (('U', 'G'), ('A', 'U')):Decimal('2.4'),
+        (('G', 'G'), ('C', 'C')):Decimal('10.0'),
+        (('C', 'G'), ('A', 'A')):Decimal('4.5'),
+        (('C', 'U'), ('C', 'A')):Decimal('5.91'),
+        (('G', 'U'), ('U', 'G')):Decimal('4.48'),
+        (('G', 'C'), ('C', 'A')):Decimal('2.78'),
+        (('A', 'A'), ('U', 'C')):Decimal('0.0'),
+        (('G', 'G'), ('G', 'C')):Decimal('10.0'),
+        (('A', 'U'), ('G', 'C')):Decimal('0.21'),
+        (('C', 'A'), ('C', 'G')):Decimal('2.55'),
+        (('U', 'C'), ('C', 'A')):Decimal('5.21'),
+        (('U', 'G'), ('U', 'U')):Decimal('2.89'),
+        (('G', 'G'), ('G', 'U')):Decimal('10.0'),
+        (('C', 'A'), ('A', 'G')):Decimal('5.05'),
+        (('A', 'C'), ('U', 'A')):Decimal('2.75'),
+        (('A', 'U'), ('C', 'G')):Decimal('0.34'),
+        (('U', 'G'), ('C', 'C')):Decimal('5.06'),
+        (('A', 'C'), ('G', 'C')):Decimal('2.55'),
+        (('G', 'U'), ('A', 'C')):Decimal('0.8'),
+        (('C', 'A'), ('C', 'C')):Decimal('4.49'),
+        (('A', 'U'), ('G', 'G')):Decimal('10.0'),
+        (('A', 'A'), ('U', 'U')):Decimal('6.46'),
+        (('G', 'G'), ('G', 'G')):Decimal('0.0'),
+        (('A', 'C'), ('G', 'G')):Decimal('10.0'),
+        (('A', 'C'), ('A', 'A')):Decimal('4.8'),
+        (('A', 'A'), ('G', 'G')):Decimal('10.0'),
+        (('G', 'C'), ('U', 'C')):Decimal('3.39'),
+        (('U', 'C'), ('G', 'C')):Decimal('3.8'),
+        (('U', 'A'), ('G', 'U')):Decimal('2.4'),
+        (('G', 'A'), ('G', 'C')):Decimal('3.44'),
+        (('G', 'G'), ('A', 'C')):Decimal('10.0'),
+        (('A', 'A'), ('A', 'A')):Decimal('2.71'),
+        (('C', 'C'), ('A', 'G')):Decimal('8.82'),
+        (('C', 'G'), ('C', 'C')):Decimal('5.49'),
+        (('U', 'A'), ('U', 'G')):Decimal('2.11'),
+        (('U', 'G'), ('A', 'C')):Decimal('4.76'),
+        (('C', 'U'), ('U', 'G')):Decimal('6.25'),
+        (('C', 'C'), ('C', 'G')):Decimal('5.49'),
+        (('G', 'U'), ('G', 'A')):Decimal('4.33'),
+        (('G', 'C'), ('C', 'G')):Decimal('0.26'),
+        (('A', 'G'), ('A', 'G')):Decimal('2.41'),
+        (('A', 'A'), ('C', 'C')):Decimal('8.25'),
+        (('A', 'G'), ('G', 'A')):Decimal('2.18'),
+        (('C', 'G'), ('G', 'U')):Decimal('2.39'),
+        (('A', 'C'), ('C', 'C')):Decimal('5.91'),
+        (('A', 'G'), ('G', 'G')):Decimal('10.0'),
+        (('U', 'U'), ('G', 'A')):Decimal('6.96'),
+        (('U', 'C'), ('C', 'U')):Decimal('6.46'),
+        (('A', 'U'), ('U', 'A')):Decimal('0.31'),
+        (('G', 'A'), ('G', 'A')):Decimal('2.33'),
+        (('G', 'C'), ('C', 'U')):Decimal('3.44'),
+        (('G', 'A'), ('U', 'A')):Decimal('3.5'),
+        (('U', 'G'), ('A', 'A')):Decimal('6.07'),
+        (('C', 'U'), ('A', 'G')):Decimal('8.86'),
+        (('U', 'U'), ('G', 'U')):Decimal('5.27'),
+        (('A', 'U'), ('A', 'G')):Decimal('3.67'),
+        (('G', 'C'), ('C', 'C')):Decimal('5.56'),
+        (('A', 'U'), ('C', 'C')):Decimal('5.39'),
+        (('U', 'C'), ('A', 'U')):Decimal('3.63'),
+        (('C', 'A'), ('G', 'C')):Decimal('2.78,')
+        (('C', 'G'), ('C', 'G')):Decimal('0.0,')
+        (('C', 'C'), ('A', 'A')):Decimal('9.77,')
+        (('G', 'C'), ('A', 'U')):Decimal('0.21,')
+        (('A', 'U'), ('G', 'A')):Decimal('3.67,')
+        (('U', 'U'), ('A', 'A')):Decimal('8.18,')
+        (('U', 'C'), ('C', 'C')):Decimal('4.31,')
+        (('C', 'U'), ('G', 'A')):Decimal('8.82,')
+        (('C', 'A'), ('U', 'G')):Decimal('0.8,')
+        (('C', 'U'), ('A', 'A')):Decimal('9.05,')
+        (('C', 'A'), ('A', 'A')):Decimal('6.7,')
+        (('C', 'C'), ('U', 'A')):Decimal('5.3,')
+        (('G', 'U'), ('C', 'U')):Decimal('4.59,')
+        (('C', 'A'), ('A', 'C')):Decimal('4.93,')
+        (('C', 'A'), ('G', 'U')):Decimal('4.76,')
+        (('G', 'C'), ('G', 'G')):Decimal('10.0,')
+        (('U', 'A'), ('G', 'G')):Decimal('10.0,')
+        (('G', 'A'), ('A', 'A')):Decimal('3.77,')
+        (('U', 'U'), ('A', 'G')):Decimal('6.91,')
+        (('C', 'G'), ('C', 'U')):Decimal('3.39,')
+        (('A', 'G'), ('A', 'C')):Decimal('4.8,')
+        (('U', 'U'), ('A', 'C')):Decimal('5.21,')
+        (('U', 'A'), ('U', 'U')):Decimal('3.63,')
+        (('G', 'U'), ('G', 'C')):Decimal('2.14,')
+        (('C', 'U'), ('A', 'C')):Decimal('4.49,')
+        (('C', 'A'), ('G', 'A')):Decimal('5.14,')
+        (('C', 'G'), ('G', 'G')):Decimal('10.0,')
+        (('C', 'C'), ('G', 'A')):Decimal('8.86,')
+        (('G', 'A'), ('G', 'U')):Decimal('4.59,')
+        (('U', 'A'), ('A', 'G')):Decimal('3.67,')
+        (('U', 'U'), ('G', 'G')):Decimal('10.0,')
+        (('U', 'A'), ('C', 'U')):Decimal('3.5,')
+        (('C', 'C'), ('C', 'A')):Decimal('4.49,')
+        (('C', 'U'), ('G', 'C')):Decimal('5.49,')
+        (('C', 'U'), ('C', 'G')):Decimal('5.56,')
+        (('A', 'A'), ('G', 'A')):Decimal('2.25,')
+        (('C', 'U'), ('G', 'G')):Decimal('10.0,')
+        (('C', 'A'), ('U', 'U')):Decimal('2.39,')
+        (('A', 'G'), ('G', 'U')):Decimal('4.1,')
+        (('G', 'U'), ('U', 'A')):Decimal('2.4,')
+        (('U', 'G'), ('G', 'U')):Decimal('4.48,')
+        (('C', 'A'), ('A', 'U')):Decimal('2.75,')
+        (('C', 'G'), ('A', 'G')):Decimal('3.49,')
+        (('G', 'G'), ('U', 'G')):Decimal('10.0,')
+        (('A', 'U'), ('U', 'C')):Decimal('3.5')}
 
 
 class memoize(dict):
@@ -398,16 +405,20 @@ def delta(seq,i,c):
   else:
     return 1
 
-def energy((a,b),(a2,b2),alpha):
+def energy(xxx_todo_changeme6, xxx_todo_changeme7,alpha):
   #stacking energy of base pair (a,b) around base pair (a2,b2)
-  E = STACKING_ENERGY.get((a,a2,b2,b), STACKING_ENERGY_MALUS)
+  (a,b) = xxx_todo_changeme6
+  (a2,b2) = xxx_todo_changeme7
+  E = STACKING_ENERGY.get((a,a2,b2,b), MAX_NB)
   return  math.exp(-(alpha*E)/(BOLTZMANN*T))
 
 def isGapChar(c):
   return c=="." or c=="-"
 
 @memoize_iso
-def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
+def isostericity(seq,ref_seq, xxx_todo_changeme, xxx_todo_changeme1, alpha):
+  (i,j) = xxx_todo_changeme
+  (a,b) = xxx_todo_changeme1
   if not ref_seq:
     return 1.
   #isostericity of going from original base pair to (a,b)
@@ -424,8 +435,10 @@ def isostericity(seq,ref_seq,(i,j),(a,b), alpha):
   return  math.exp(-((1-alpha)*iso)/(BOLTZMANN*T))
 
 @memoize
-def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
+def forward(seq,ref_seq,struct, xxx_todo_changeme2, xxx_todo_changeme3,m, alpha):
   #alpha gives the weight energy vs isostericity
+  (i,j) = xxx_todo_changeme2
+  (a,b) = xxx_todo_changeme3
   result = 0.
   if m<0 or m>j-i+1: return 0
   if i > j :
@@ -477,7 +490,7 @@ def forward(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
 def random_weighted_sampling(l_samples):
   tot = sum(x[1] for x in l_samples)
   if tot == 0:
-    print l_samples
+    print(l_samples)
     return random.choice([x[0] for x in l_samples])
   scaled_weights = [x[1]/tot for x in l_samples]
   rand_nb = random.random()
@@ -488,8 +501,10 @@ def random_weighted_sampling(l_samples):
       return l_samples[i][0]
   return l_samples[-1][0]
 
-def backtrack(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
+def backtrack(seq,ref_seq,struct, xxx_todo_changeme8, xxx_todo_changeme9,m, alpha):
   #alpha gives the weight energy vs isostericity
+  (i,j) = xxx_todo_changeme8
+  (a,b) = xxx_todo_changeme9
   result = 0.
   max_seq = ''
   if m==0: return seq[i:j+1]
@@ -547,7 +562,9 @@ def backtrack(seq,ref_seq,struct,(i,j),(a,b),m, alpha):
   return max_seq
 
 @memoize
-def backward(seq,ref_seq,struct,(i,j),(a,b),m,alpha):
+def backward(seq,ref_seq,struct, xxx_todo_changeme4, xxx_todo_changeme5,m,alpha):
+  (i,j) = xxx_todo_changeme4
+  (a,b) = xxx_todo_changeme5
   result = 0.
   if m<0: return 0
   if i<0:
@@ -660,8 +677,8 @@ def probability_given_i_m(seq,ref_seq,struct,i,a,m,alpha):
   tot = forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
   result = product_given_i_m(seq,ref_seq,struct,i,a,m,alpha)
   if tot == 0:
-    print """The total partition function is 0, you might want to increase
-    the number of mutations allowed"""
+    print("""The total partition function is 0, you might want to increase
+    the number of mutations allowed""")
     sys.exit(1)
   return result/tot
 
@@ -676,8 +693,8 @@ def probability_given_i_most_m(seq,ref_seq,struct,i,a,m,alpha):
     tot += forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m2,alpha)
     result += product_given_i_m(seq,ref_seq,struct,i,a,m2,alpha)
   if tot == 0:
-    print """The total partition function is 0, you might want to increase
-    the number of mutations allowed"""
+    print("""The total partition function is 0, you might want to increase
+    the number of mutations allowed""")
     sys.exit(1)
 
   return result/tot
@@ -690,13 +707,13 @@ def testSingleSequence(seq,ref_seq,struct,m,alpha):
   i = 29
   #print "Given i=%s and m=%s the probability of sequence is:" %(i,m)
   #print "\t", probability_given_i_most_m(seq,ref_seq,struct,i,'C',m,alpha=1.0)
-  print "  Forward: \t",forward(seq,ref_seq,struct,(0,n-1),('A','G'),m,alpha)
+  print("  Forward: \t",forward(seq,ref_seq,struct,(0,n-1),('A','G'),m,alpha))
   i = n-1
   res = 0
   for j in BASES:
     d = delta(seq,i,j)
     res += backward(seq,ref_seq,struct,(i-1,i+1),(j,j),m-d,alpha)
-  print "  Backward of nuc %s:\t" % i, res
+  print("  Backward of nuc %s:\t" % i, res)
 
 def test():
   
@@ -744,7 +761,7 @@ def all_probabilities(seq,ref_seq, stuct, m, alpha):
 
 def display_all_probabilities(results):
   for i, x in enumerate(results):
-    print i, '\t'.join(str(y) for y in x)
+    print(i, '\t'.join(str(y) for y in x))
 
 def verify_file_name(file_name):
   if not os.path.isfile(file_name):
@@ -775,12 +792,14 @@ def verify_alpha(a):
   return a
 
 def verify_penality(z):
-  global STACKING_ENERGY_MALUS
+  global STACKING_ENERGY
   try:
     z = float(opts[4])
-    STACKING_ENERGY_MALUS = z
+    for x in STACKING_ENERGY:
+      if STACKING_ENERGY[x] == sys.maxsize:
+        STACKING_ENERGY[x] = z
   except ValueError:
-    print help(penality=True)
+    print(help(penality=True))
     sys.exit(1)
   return None
 
@@ -798,7 +817,7 @@ def help(file_name=False,
          penality=False,
          nb_backtrack=False):
 
-  print """Required:
+  print("""Required:
       -f <file_path>  Path to the file containing the reference
                       sequence, the MSE (optional) and the secondary
                       structure. The FIRST sequence in the file
@@ -813,27 +832,27 @@ def help(file_name=False,
                     sys.maxint)
       -b <int>      Backtrack stochastic, number of sequences to output
       -no_profile   Do no output the resultant profile
-    """
+    """)
 
 
 
 
   if file_name:
-    print """The location of the file does not exist, please enter
-    a valid path\n"""
+    print("""The location of the file does not exist, please enter
+    a valid path\n""")
  
   if mutants:
-    print """The number of mutants should be an integer bigger than 0\n"""
+    print("""The number of mutants should be an integer bigger than 0\n""")
 
   if alpha:
-    print """The weight to the MSE/SecStruct match should be a 
-    float between 0 and 1\n"""
+    print("""The weight to the MSE/SecStruct match should be a 
+    float between 0 and 1\n""")
 
   if penality:
-    print """The penality argument should be a float\n"""
+    print("""The penality argument should be a float\n""")
 
   if nb_backtrack:
-    print """The number of backtracked sequence should be an int\n"""
+    print("""The number of backtracked sequence should be an int\n""")
 
 if __name__ == "__main__":
 
@@ -860,7 +879,7 @@ if __name__ == "__main__":
 
 
   if len(seq) < m:
-    print "The number of mutants is bigger than the length of the seq."
+    print("The number of mutants is bigger than the length of the seq.")
     help()
     sys.exit(1)
 
@@ -869,9 +888,9 @@ if __name__ == "__main__":
     tic = time.time()
     results = all_probabilities(seq,ref_seq,struct,m,alpha)
     display_all_probabilities(results)
-    print time.time() - tic
+    print(time.time() - tic)
   else:
     forward(seq,ref_seq,struct,(0,n-1),('X', 'X'),m,alpha)
 
   for i in range(f_nb_backtrack):
-    print backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha)
+    print(backtrack(seq,ref_seq,struct,(0,n-1),('X','X'),m, alpha))
