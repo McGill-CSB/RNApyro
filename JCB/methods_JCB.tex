@@ -4,7 +4,7 @@
 \label{sec:methods}
 
 We introduce a probabilistic model, which aims at capturing both the stability of the folded RNA and its affinity towards a predefined 3D conformation.
-To that purpose, a Boltzmann weighted distribution is assumed, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\cite{Lari1990} in time which scales linearly with the sequence length.
+To that purpose, a Boltzmann weighted distribution is assumed, based on a pseudo-energy function $\PE{\cdot}$ which includes contributions for both the free-energy and its putative isostericity towards a multiple sequence alignment. In this model, the probability that the nucleotide at a given position needs to be mutated (i.e. corresponds to a sequencing error) can be computed using a variant of the \emph{Inside-Outside algorithm}~\citep{Lari1990} in time which scales linearly with the sequence length.
 
 
 \subsubsection{Definitions.}
@@ -28,14 +28,14 @@ where $R$ is the Boltzmann constant, $T$ the temperature in Kelvin, $\ES(s)$ and
 are the free-energy and isostericity contributions respectively (further described below), and $\alpha\in[0,1]$ is an arbitrary parameter that sets the relative weight for both contributions.
 
 \subsubsection{Energy Contribution.}
-The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, using values from the Turner 2004 model retrieved from the NNDB~\cite{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
+The free-energy contribution in our pseudo-energy model corresponds to an additive stacking-pairs model, using values from the Turner 2004 model retrieved from the NNDB~\citep{Turner2010}. Given a candidate sequence $s$ for a secondary structure $S$, the free-energy of $S$ on $s$ is given by
 \begin{align*}
   \ES(s,S) = \sum_{\substack{(i,j)\to (i',j')\in S\\ \text{stacking pairs}}}\ES^{\beta}_{s_is_j\to s_{i'}s_{j'}} 
 \end{align*}
 where $\ES^{\beta}_{ab\to a'b'}$ is set to $0$ if $ab=\varnothing$ (no base-pair to stack onto), the tabulated free-energy of stacking pairs $(ab)/(a'b')$ in the Turner model if available, or $\beta\in[0,\infty]$ for non-Watson-Crick/Wobble entries (i.e. neither $\Gb\Ub$, $\Ub\Gb$, $\Cb\Gb$, $\Gb\Cb$, $\Ab\Ub$ nor $\Ub\Ab$). This latter parameter allows to choose whether to simply penalize invalid base pairs, or forbid them altogether ($\beta = \infty$).
 The loss of precision due to this simplification of the Turner model remains reasonable since the targeted secondary structure is fixed. For instance, multiloops do not consider base-specific contributions, and therefore their consideration would constitute a criterion for preferring a sequence over another. Furthermore, it greatly eases the design and implementation of dynamic-programming equations. 
 \subsubsection{Isostericity Contribution.}
-The concept of isostericity score is based on the geometric discrepancy (superimposability) of two base-pairs, using individual additive contributions computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gap-free RNA alignment $\Omega$,  we define the isostericity contribution to the pseudo-energy as
+The concept of isostericity score is based on the geometric discrepancy (superimposability) of two base-pairs, using individual additive contributions computed by Stombaugh~\emph{et al}~\citep{Stombaugh2009}. Let $s$ be a candidate sequence for a secondary structure $S$, given in the context of a gap-free RNA alignment $\Omega$,  we define the isostericity contribution to the pseudo-energy as
 \begin{align*}
   \ES(s,S,\Omega) &= \sum_{\substack{(i,j)\in S\\ \text{pairs}}}\EI^{\Omega}_{(i,j),s_i s_j}, & \text{where}&& 	\EI^{\Omega}_{(i,j),ab}:=
 	\frac{
@@ -47,7 +47,7 @@ The concept of isostericity score is based on the geometric discrepancy (superim
 	}
 \end{align*}
 is the average isostericity of a base-pair in the candidate sequence, compared with the reference alignment.
-The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\cite{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, $0$ corresponding to a perfect isostericity, and a penalty of $10$ is used for missing entries.
+The $\ISO$ function uses the {Watson-Crick/Watson-Crick} cis isostericity matrix computed by Stombaugh~\emph{et al}~\citep{Stombaugh2009}. Isostericity scores range between $0$ and $9.7$, $0$ corresponding to a perfect isostericity, and a penalty of $10$ is used for missing entries.
 The isostericity contribution exponentially favors sequences that are likely to adopt a similar local conformation as the sequences contained in the alignment.
 %\TODOYann{Avoid duplicate reference to Stombaugh et al}
 
@@ -69,7 +69,7 @@ We are interested in  the probability that a given position contains a specific 
 
  
 Clearly, the number of sequences in $\mathcal{D}_{s,M}$ grows exponentially with the sequence length, therefore one cannot realistically rely on an exhaustive enumeration to compute the mutational profile. To work around this issue, we propose a linear-time variant of the
- \emph{Inside-Outside algorithm}~\cite{Lari1990} to compute this probability, based on two sets of dynamic programming equations. 
+ \emph{Inside-Outside algorithm}~\citep{Lari1990} to compute this probability, based on two sets of dynamic programming equations. 
 %from the two  functions $\mathcal{Z}_*^*$ and $\mathcal{Y}_*^*$. 
 
 The former, defined in Equations~\eqref{eq:Z_in} and~\eqref{eq:Z_rec_A}-\eqref{eq:Z_rec_C}, is analogous to an \emph{inside} computation: Considering a given substructure of the input structure, it computes the accumulated contributions of any possible sequences that have suitable Hamming distance within the interval. It is therefore similar to a partition function, i.e. the sum of Boltzmann factors over all sequences within $[i,j]$, 
@@ -91,7 +91,7 @@ knowing  that flanking inner positions $(i+1,j-1)$ contain nucleotides $a$ and $
 
 \subsubsection{Inside computation.}
 \begin{figure}[t]\centering
-\includegraphics[scale=\ScaleDP]{FigDPInsideWrapper}
+\includegraphics[scale=\ScaleDP]{Figure1-FigDPInsideWrapper}
 \caption{Principle of the inside computation (partition function). Any sequence (mutated)  
 can be decomposed as a sequence preceded by a, possibly mutated, base 
 (Unpaired case), a sequence surrounded by some base-pair (Stacking-pair case), 
@@ -130,7 +130,7 @@ Indeed, any suitable sequence is a concatenation of a, possibly mutated, nucleot
 \end{equation}
 Any sequence generated here consists of two, possibly mutated, nucleotides $a'$ and $b'$, flanking a sequence over the remaining portion. In order for the total distance to sum to $m$, this portion must feature $m-\Kron_{ab,a'b'}$ additional point wise mutations.
 
-\item {\bf Case 3: Paired leftmost position, but no stacking pairs.} In this case, the structure is split into two parts by the base pair ($\Struct = \op \Struct'\cp\Struct''$). Let us denote by $k$ the partner of position $i$, and by $a$, $b$ and $c$ the bases found at positions $i$, $k$ and $j$ respectively, then one has:
+\item {\bf Case 3: Paired leftmost position + absence of stacking pairs.} In this case, the structure is split into two parts by the base pair ($\Struct = \op \Struct'\cp\Struct''$). Let us denote by $k$ the partner of position $i$, and by $a$, $b$ and $c$ the bases found at positions $i$, $k$ and $j$ respectively, then one has:
 \begin{equation}
 \label{eq:Z_rec_C}
 	\Z{\Struct}{m}{x,y}=\sum_{\substack{a',b'\in \B^2,\\ \Kron_{ab, a'b'}\le m}}
@@ -158,7 +158,7 @@ In other words, the sequences explored by an outside computation, excluding a pr
 It is also worth pointing out that $\Y{\Struct}{m}{x,y}= \Z{\varepsilon}{m}{y,X}=\mathbb{1}_{m=0}$.
 
 \begin{figure}[t]\centering
-\includegraphics[scale=\ScaleDP]{FigDPOutsideWrapper}
+\includegraphics[scale=\ScaleDP]{Figure2-FigDPOutsideWrapper}
 \caption{Principle of the outside computation. Note that the outside algorithm uses intermediate results from the inside algorithm, 
 therefore its efficient implementation requires the precomputation and storage of the inside contributions.\label{fig:outside}}
 \end{figure}
@@ -178,7 +178,7 @@ In general, the main recurrence below works by extending the excluded structure 
     \Y{\op\Struct\cp}{m- \Kron_{ab,a'b'}}{a',b'} 
 \label{eq:Y_rec_B}
 \end{equation}
-\item {\bf Case 3: Next position paired rightward, in the absence of stacking pair.} In this case, the innermost leftward position $i$ is paired to the right at some position $k$ . 
+\item {\bf Case 3: Next position paired rightward + absence of stacking pair.} In this case, the innermost leftward position $i$ is paired to the right at some position $k$ . 
 Let us assume that its partner resides outside the excluded structure $\Struct$ (This assumption is provably without loss of generality, and directly follows from the fact that $\Struct$ is well-parenthesized). 
 The structure within the base-pair may be described by the expression $\op\Struct \Struct'\cp$, where $\Struct'$ may possibly be empty (except if $\Struct$ is enclosed within corresponding brackets, to avoid stacking pairs). Therefore, any sequence considered by the outside computation consists in three independent parts: two nucleotides for the paired positions, a sequence for the region excluding $\Struct''$, and a sequence for $\Struct'$. It follows that:
 \begin{equation}
@@ -213,7 +213,7 @@ of the set of sequences featuring the nucleotide, and $\Z{\varepsilon}{\le M}{X,
 where $X,X'\in\B$ may be any nucleotides (no impact on energy/weights).
 
 \begin{figure}[t]\centering
-\includegraphics[scale=\ScaleDP]{FigDPCombineWrapper}
+\includegraphics[scale=\ScaleDP]{Figure3-FigDPCombineWrapper}
 \caption{Combining the inside and outside contributions to compute the total Boltzmann weight of all sequences having a given base (case 1) or base-pair (cases 2 and 3) at a given position.\label{fig:combine}}
 \end{figure}
 
